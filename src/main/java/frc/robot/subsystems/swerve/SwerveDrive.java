@@ -25,12 +25,12 @@ import frc.robot.Constants;
 import frc.robot.services.QualityControlService;
 import frc.robot.subsystems.swerve.Gyro.GyroIO;
 import frc.robot.subsystems.swerve.Gyro.GyroIOInputsAutoLogged;
+import frc.robot.subsystems.swerve.Gyro.GyroPigeon;
 import frc.robot.subsystems.swerve.Gyro.GyroSim;
 import frc.robot.subsystems.swerve.Odometry.OdometryIO;
 import frc.robot.subsystems.swerve.Odometry.OdometryIOInputs;
 import frc.robot.subsystems.swerve.Odometry.OdometryReal;
 import frc.robot.subsystems.swerve.Odometry.OdometrySim;
-import frc.robot.subsystems.swerve.Gyro.GyroPigeon;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModule;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleIOInputs;
 

@@ -10,12 +10,11 @@ public interface FlywheelIO {
 
     @AutoLog
     public static class FlywheelIOInputs  {
-        public double motorEncoderRotations = 0.0;
+        public double velocityRpm = 0.0;
 
         // quality control
         public boolean motorController1IsPowered = false;
         public boolean motorController2IsPowered = false;
-        public double velocityRpm = 0.0;
 
     }
 

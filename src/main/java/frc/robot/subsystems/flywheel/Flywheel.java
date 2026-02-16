@@ -5,9 +5,6 @@
 package frc.robot.subsystems.flywheel;
 
 import org.littletonrobotics.junction.Logger;
-
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -17,60 +14,68 @@ import frc.robot.Constants;
 import frc.robot.services.QualityControlService;
 
 public class Flywheel extends SubsystemBase {
-  /** Creates a new indexerSubsystem. */
-  private final FlywheelIO io;
-  private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
+    private final FlywheelIO io;
+    private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-  private final QualityControlService qualityControlService = new QualityControlService("Flywheel", 0, 8);
-  private final QualityControlService.MonitoredHardware monitoredMotor1, monitoredMotor2;
+    private final QualityControlService qualityControlService = new QualityControlService("Flywheel", 0, 8);
+    private final QualityControlService.MonitoredHardware monitoredMotor1, monitoredMotor2;
 
-  private double setpointRPM = 0.0;
-  private double tolerenceRPM = 2.0;
-  private double maxMotorOutput = 0.6;
+    private double setpointRpm = 0.0;
+    private double tolerenceRPM = 2.0;
+    private double maxMotorOutput = 0.6;
+    private double kP = 0.0;
 
-  PIDController pid = new PIDController(1.0, 0.0, 0.0);
+    PIDController pid = new PIDController(kP, 0.0, 0.0);
 
-  /** Creates a new testerSubsystem. */
-  public Flywheel() {
-    if (RobotBase.isSimulation()) {
-      io = new FlywheelIOSim();
-    } else {
-      io = new FlywheelIOReal();
+    /** Creates a new testerSubsystem. */
+    public Flywheel() {
+
+        // add default rpm and flywheel kp to shuffleboard
+        SmartDashboard.setDefaultNumber("flywheel target rpm", setpointRpm);
+        SmartDashboard.setDefaultNumber("flywheel kp", kP);
+
+        if (RobotBase.isSimulation()) {
+        io = new FlywheelIOSim();
+        } else {
+        io = new FlywheelIOReal();
+        }
+
+        pid.setTolerance(tolerenceRPM);
+
+        monitoredMotor1 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor1CanId);
+        monitoredMotor2 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor2CanId);
     }
 
-    pid.setTolerance(tolerenceRPM);
+    @Override
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Flywheel", inputs);
 
-    monitoredMotor1 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor1CanId);
-    monitoredMotor2 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor2CanId);
-  }
+        
+        setpointRpm = SmartDashboard.getNumber("flywheel target rpm", setpointRpm);
+        double kPFromShuffleboard = SmartDashboard.getNumber("flywheel kp", kP);
+        pid.setP(kPFromShuffleboard);
+        
+        double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm );
+        motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    io.updateInputs(inputs);
-    Logger.processInputs("Flywheel", inputs);
-    
-    double motorOutput = pid.calculate(inputs.velocityRpm, setpointRPM);
-    motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
+        // Command motor
+        io.setMotorOutput(motorOutput);
 
-    // Command motor
-    io.setMotorOutput(motorOutput);
+        double errorRpm = setpointRpm - inputs.velocityRpm;
 
-    double errorRPM = setpointRPM - inputs.velocityRpm;
+        //Log Stuff
+        Logger.recordOutput("Flywheel/SetpointRPM", setpointRpm);
+        Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
+        Logger.recordOutput("Flywheel/AtSetpoint", pid.atSetpoint());
 
-    //Log Stuff
-    Logger.recordOutput("Flywheel/SetpointRPM", setpointRPM);
-    Logger.recordOutput("Flywheel/SetpointRPM", setpointRPM);
-    Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
-    Logger.recordOutput("Flywheel/AtSetpoint", pid.atSetpoint());
+        // quality control log to shuffleboard
+        monitoredMotor1.update(inputs.motorController1IsPowered);
+        monitoredMotor2.update(inputs.motorController2IsPowered);
 
-    // quality control log to shuffleboard
-    monitoredMotor1.update(inputs.motorController1IsPowered);
-    monitoredMotor2.update(inputs.motorController2IsPowered);
+    }
 
-  }
-
-  public void setSetpoint(double setpointRPM) {
-    this.setpointRPM = setpointRPM;
-  }
+    public void setSetpoint(double setpointRpm) {
+        this.setpointRpm = setpointRpm;
+    }
 }

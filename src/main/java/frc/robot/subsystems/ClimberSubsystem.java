@@ -16,7 +16,7 @@ public class ClimberSubsystem extends SubsystemBase {
   double speed;
   /** Creates a new testerSubsystem. */
   public ClimberSubsystem() {
-    climberMotor = new SparkMax(15, MotorType.kBrushless);
+    climberMotor = new SparkMax(17, MotorType.kBrushless);
     speed = 0.0;
   }
 

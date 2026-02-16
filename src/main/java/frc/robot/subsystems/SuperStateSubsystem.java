@@ -25,6 +25,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     // loop-hydrated variables
     private double turretSetpointRadians = 0.0;
     private Translation2d fieldTargetPose = new Translation2d();
+    private double flywheelSetpointRpm = 0.0;
 
     // public getters
     public double getTurretSetpointRadians() {
@@ -33,12 +34,18 @@ public class SuperStateSubsystem extends SubsystemBase {
     public Translation2d getFieldTargetPose() {
         return fieldTargetPose;
     }
+    public double getFlywheelSetpointRpm() {
+        return flywheelSetpointRpm;
+    }
 
     // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
 
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
+
+        // TODO: add a flywheel service and calculate this value based on lookup table data
+        flywheelSetpointRpm = 0.0;
     }
     
 }

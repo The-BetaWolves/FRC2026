@@ -10,6 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.services.QualityControlService;
@@ -25,10 +26,15 @@ public class TurretSubsystem extends SubsystemBase {
     private double setpointRadians = 0; // not an input, it's an output of what we command, so doesn't go in io
     private double toleranceDegrees = 2.0;
     private double maxMotorOutput = 0.6;
-
-    PIDController pid = new PIDController(1.0, 0.0, 0.0);
+    private double kP = 0.0;
+    PIDController pid = new PIDController( kP, 0.0, 0.0);
 
     public TurretSubsystem() {
+
+        // add default radians and turret kp to shuffleboard
+        SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
+        SmartDashboard.setDefaultNumber("turret kp", kP);
+        
         if (RobotBase.isSimulation()) {
             io = new TurretIOSim();
         } else {
@@ -48,6 +54,10 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.processInputs("Turret", inputs);
 
         // pid.setSetpoint((setpointRadians + 180) / 360);
+         
+        setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
+        double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);
+        pid.setP(kPFromShuffleboard);
 
         double motorOutput = pid.calculate(inputs.positionRadians, setpointRadians);
         motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);

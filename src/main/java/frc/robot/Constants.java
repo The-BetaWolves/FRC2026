@@ -1,15 +1,17 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleConstants;
 
 public final class Constants {
 
     public static final class Drivetrain {
         // Physical robot dimensions (meters)
-        public static final double TRACK_WIDTH = 0.576; // 22.68 in
-        public static final double WHEEL_BASE = 0.576;  // 22.68 in
+        public static final double TRACK_WIDTH = Units.inchesToMeters(21.75);
+        public static final double WHEEL_BASE = Units.inchesToMeters(22.75);
 
         // Gyro
         public static final int GYRO_ID = 9;
@@ -31,8 +33,8 @@ public final class Constants {
     }
 
     public static final class Flywheel {
-        public static final int motor1CanId = 17;
-        public static final int motor2CanId = 18;
+        public static final int motor1CanId = 24;
+        public static final int motor2CanId = 25;
 
     }
 
@@ -97,43 +99,43 @@ public final class Constants {
 
     public static final class SwerveModules {
         public static final SwerveModuleConstants FRONT_LEFT = new SwerveModuleConstants(
-            12,
             11,
+            12,
             13,
             "rio",
             true,
             true,
-            Rotation2d.fromDegrees(188.877), // degrees
+            Rotation2d.fromDegrees(204.79), // degrees
             new Translation2d(Drivetrain.WHEEL_BASE / 2.0, Drivetrain.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants FRONT_RIGHT = new SwerveModuleConstants(
-            22, 
             21, 
+            22, 
             23, 
             "rio",
             true, true,
-            Rotation2d.fromDegrees(162.7),
+            Rotation2d.fromDegrees(191.34),
             new Translation2d(Drivetrain.WHEEL_BASE / 2.0, -Drivetrain.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants BACK_LEFT = new SwerveModuleConstants(
-            32, 
             31, 
+            32, 
             33,
             "rio",
             true, true,
-            Rotation2d.fromDegrees(142.7),
+            Rotation2d.fromDegrees(50.19),
             new Translation2d(-Drivetrain.WHEEL_BASE / 2.0, Drivetrain.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants BACK_RIGHT = new SwerveModuleConstants(
-            38, 
             37, 
+            38, 
             39,
             "rio",
             true, true,
-            Rotation2d.fromDegrees(224.2),
+            Rotation2d.fromDegrees(352.71),
             new Translation2d(-Drivetrain.WHEEL_BASE / 2.0, -Drivetrain.TRACK_WIDTH / 2.0)
         );
     }

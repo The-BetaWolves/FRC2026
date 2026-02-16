@@ -10,20 +10,20 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class testerSubsystem extends SubsystemBase {
+public class KickerSubsystem extends SubsystemBase {
 
   SparkMax testingMotor;
   double speed = .7;
   /** Creates a new testerSubsystem. */
-  public testerSubsystem() {
-    testingMotor = new SparkMax(1, MotorType.kBrushless);
+  public KickerSubsystem() {
+    testingMotor = new SparkMax(26, MotorType.kBrushless);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     testingMotor.set(speed);
-    SmartDashboard.putNumber("testingSpeed", speed);
+    SmartDashboard.putNumber("kickerSpeed", speed);
   }
 
   public void setSpeed(double speed) {

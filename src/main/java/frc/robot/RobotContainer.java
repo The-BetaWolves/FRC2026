@@ -19,7 +19,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SuperStateSubsystem;
-import frc.robot.subsystems.testerSubsystem;
+import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.turret.TurretSubsystem;
@@ -31,9 +31,10 @@ public class RobotContainer {
     //public testerSubsystem tester = new testerSubsystem();
     public IntakeSubsystem intake = new IntakeSubsystem();
     //public indexerSubsystem indexer = new indexerSubsystem();
-    //public Flywheel flywheel = new Flywheel();
+    public Flywheel flywheel = new Flywheel();
     public TurretSubsystem turret = new TurretSubsystem();
     //public climberSubsystem climber = new climberSubsystem();
+    public KickerSubsystem kicker = new KickerSubsystem();
 
     Joystick driverJoyStick = new Joystick(0);
 
@@ -54,13 +55,19 @@ public class RobotContainer {
             }, turret)
         );
 
+        flywheel.setDefaultCommand(
+            Commands.run(()->{
+                flywheel.setSetpoint(superState.getFlywheelSetpointRpm());
+            }, flywheel)
+        );
+
         configureBindings();
         //configureBindings();
         //autoChooser = AutoBuilder.buildAutoChooser();
 
 
         // Default driving command (joystick)
-        /* 
+         
         swerveDrive.setDefaultCommand(
             new TeleopDriveCommand(
                 swerveDrive,
@@ -69,7 +76,7 @@ public class RobotContainer {
                 ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
             )
         );
-        */
+        
 
         printDebugValues();
         //SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -89,6 +96,14 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 4).onTrue(
         new InstantCommand(()-> intake.setSpeed(-0.5), intake)
         ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+
+        new JoystickButton(driverJoyStick, 7).onTrue(
+        new InstantCommand(()-> intake.setSpeed(0.5), intake)
+        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+        new JoystickButton(driverJoyStick, 8).onTrue(
+        new InstantCommand(()-> intake.setSpeed(-0.5), intake)
+        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+
         /* 
         new JoystickButton(driverJoyStick, 2).onTrue(
         new InstantCommand(()-> indexer.setSpeed(0.5), indexer)
