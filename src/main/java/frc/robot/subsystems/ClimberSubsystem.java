@@ -23,8 +23,14 @@ public class ClimberSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        climberMotor.set(speed);
+        if ((climberMotor.getEncoder().getPosition() < 0.0 && speed < 0) || (climberMotor.getEncoder().getPosition() > 425) && speed > 0) {
+            climberMotor.set(0.0);
+        } else {
+            climberMotor.set(speed);
+        }
+        
         SmartDashboard.putNumber("climberSpeed", speed);
+        SmartDashboard.putNumber("climberEncoder", climberMotor.getEncoder().getPosition());
     }
 
     public void setSpeed(double speed) {

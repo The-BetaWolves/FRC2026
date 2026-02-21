@@ -24,10 +24,10 @@ public class TurretSubsystem extends SubsystemBase {
     private final QualityControlService qualityControlService = new QualityControlService("Turret", 0, 0);
     private final QualityControlService.MonitoredHardware monitoredMotor, monitoredEncoder;
 
-    private double setpointRadians = 0; // not an input, it's an output of what we command, so doesn't go in io
+    private double setpointRadians = 0.0; // not an input, it's an output of what we command, so doesn't go in io
     private double toleranceDegrees = 2.0;
     private double maxMotorOutput = 0.6;
-    private double kP = 0.0;
+    private double kP = 0.0; //1?
     PIDController pid = new PIDController( kP, 0.0, 0.0);
 
 
@@ -55,11 +55,11 @@ public class TurretSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
 
-        // pid.setSetpoint((setpointRadians + 180) / 360);
+        //pid.setSetpoint((setpointRadians + 180) / 360);
          
-        setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
-        double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);
-        pid.setP(kPFromShuffleboard);
+        //setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
+        //double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);
+        //pid.setP(kPFromShuffleboard);
 
         double motorOutput = pid.calculate(inputs.positionRadians, setpointRadians);
 
@@ -96,6 +96,10 @@ public class TurretSubsystem extends SubsystemBase {
 
     public void setSetpoint(double setpointRadians) {
         this.setpointRadians = setpointRadians;
+    }
+
+    public void incrementSetpoint(double rate) {
+        setpointRadians = setpointRadians + rate;
     }
 
     public boolean atSetpoint() {

@@ -34,7 +34,7 @@ public class RobotContainer {
     public IndexerSubsystem indexer = new IndexerSubsystem();
     public Flywheel flywheel = new Flywheel();
     public TurretSubsystem turret = new TurretSubsystem();
-    //public climberSubsystem climber = new climberSubsystem();
+    public ClimberSubsystem climber = new ClimberSubsystem();
     public KickerSubsystem kicker = new KickerSubsystem();
 
     Joystick driverJoyStick = new Joystick(0);
@@ -124,6 +124,13 @@ public class RobotContainer {
         );
         
         
+        new JoystickButton(driverJoyStick, 7).onTrue(
+            new InstantCommand(()-> climber.setSpeed(0.3), climber)
+        ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
+        new JoystickButton(driverJoyStick, 8).onTrue(
+            new InstantCommand(()-> climber.setSpeed(-0.3), climber)
+        ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
+        
 
         /* 
         new JoystickButton(driverJoyStick, 2).onTrue(
@@ -134,15 +141,17 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> shooter.setSpeed(0.0), shooter));
         */
         
-        // // Turret CW
-        // new JoystickButton(driverJoyStick, 5).whileTrue(
-        //     new RunCommand(()-> turret.setManualOutput(-0.2), turret)
-        // ).onFalse(new RunCommand(()-> turret.setManualOutput(0.0), turret));
+        // Turret CW
+        /* 
+        new JoystickButton(driverJoyStick, 6).whileTrue(
+            new RunCommand(()-> turret.incrementSetpoint(0.05), turret)
+        );
         
-        // // Turret CCW
-        // new JoystickButton(driverJoyStick, 6).whileTrue(
-        //     new RunCommand(()-> turret.setManualOutput(0.2), turret)
-        // ).onFalse(new RunCommand(()-> turret.setManualOutput(0.0), turret));
+        // Turret CCW
+        new JoystickButton(driverJoyStick, 9).whileTrue(
+            new RunCommand(()-> turret.incrementSetpoint(-0.05), turret)
+        );
+        */
         
     }
 

@@ -24,9 +24,10 @@ public class Flywheel extends SubsystemBase {
     private double tolerenceRPM = 2.0;
     private double maxMotorOutput = 1.0;
     private double kP = 0.00025;
-    private double kI = 0.00075;
+    private double kI = 0.000185;
+    private double kD = 0.000;
 
-    PIDController pid = new PIDController(kP, kI, 0.0);
+    PIDController pid = new PIDController(kP, kI, kD);
 
     /** Creates a new testerSubsystem. */
     public Flywheel() {
@@ -35,6 +36,7 @@ public class Flywheel extends SubsystemBase {
         SmartDashboard.setDefaultNumber("flywheel target rpm", setpointRpm);
         SmartDashboard.setDefaultNumber("flywheel kp", kP);
         SmartDashboard.setDefaultNumber("flywheel ki", kI);
+        SmartDashboard.setDefaultNumber("flywheel kd", kD);
 
         if (RobotBase.isSimulation()) {
             io = new FlywheelIOSim();
@@ -58,9 +60,10 @@ public class Flywheel extends SubsystemBase {
         setpointRpm = setpointFromShuffleboard;
         double kPFromShuffleboard = SmartDashboard.getNumber("flywheel kp", kP);
         pid.setP(kPFromShuffleboard);
-
-        double kIFromShuffleboard = SmartDashboard.getNumber("flywheel ki", kP);
+        double kIFromShuffleboard = SmartDashboard.getNumber("flywheel ki", kI);
         pid.setI(kIFromShuffleboard);
+        double kDFromShuffleboard = SmartDashboard.getNumber("flywheel kd", kD);
+        pid.setD(kDFromShuffleboard);
         
         double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm );
         motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
