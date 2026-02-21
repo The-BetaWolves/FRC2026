@@ -7,27 +7,66 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
 
-  SparkMax intakeMotor;
-  double speed;
+  SparkMax intakeRollerMotor;
+  SparkMax intakeRotatorMotor;
+  DutyCycleEncoder encoder;
+  double rollerSpeed, rotatorSpeed, kp, setpoint;
+
+  PIDController pid;
   /** Creates a new testerSubsystem. */
   public IntakeSubsystem() {
-    intakeMotor = new SparkMax(15, MotorType.kBrushless);
-    speed = 0.0;
+    intakeRollerMotor = new SparkMax(15, MotorType.kBrushless);
+    intakeRotatorMotor = new SparkMax(4, MotorType.kBrushless);
+    encoder = new DutyCycleEncoder(1);
+    rollerSpeed = 0.0;
+    setpoint = 4.0;
+    kp = 0.13;
+    pid = new PIDController(kp, 0.0, 0.0);
+
+    encoder.setInverted(true);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    intakeMotor.set(speed);
-    SmartDashboard.putNumber("intakeSpeed", speed);
+    intakeRollerMotor.set(rollerSpeed);
+
+    if (setpoint < Constants.Intake.minRotatorDegree) {
+      setpoint = Constants.Intake.minRotatorDegree;
+    } else if (setpoint > Constants.Intake.maxRotatorDegree) {
+      setpoint = Constants.Intake.maxRotatorDegree;
+    }
+
+    intakeRotatorMotor.set(pid.calculate(((encoder.get() - 0.476) * 360), setpoint));
+    SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
+    SmartDashboard.putNumber("intakeRotatorSpeed", rotatorSpeed);
+    SmartDashboard.putNumber("absoluteEncoderValue", encoder.get() - 0.476);
+    SmartDashboard.putNumber("absoluteEncoderDegree", (encoder.get() - 0.476) * 360);
+    SmartDashboard.putNumber("intakeRotatorSetpoint", setpoint);
   }
 
-  public void setSpeed(double speed) {
-    this.speed = speed;
+  public void setRollerSpeed(double speed) {
+    rollerSpeed = speed;
+  }
+  public void setRotatorSpeed(double speed) {
+    rotatorSpeed = speed;
+  }
+
+  public void setSetpoint(double setpoint) {
+    this.setpoint = setpoint;
+  }
+  public void increaseSetpoint() {
+    setpoint = setpoint + 1.5;
+  }
+  public void decreaseSetpoint() {
+    setpoint = setpoint - 1.5;
   }
 }

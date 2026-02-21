@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +29,7 @@ public class TurretSubsystem extends SubsystemBase {
     private double maxMotorOutput = 0.6;
     private double kP = 0.0;
     PIDController pid = new PIDController( kP, 0.0, 0.0);
+
 
     public TurretSubsystem() {
 
@@ -60,10 +62,12 @@ public class TurretSubsystem extends SubsystemBase {
         pid.setP(kPFromShuffleboard);
 
         double motorOutput = pid.calculate(inputs.positionRadians, setpointRadians);
+
+
         motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
 
         // Command motor
-        io.setMotorOutput(motorOutput);
+        setMotorOutput(motorOutput);
 
         double errorRadians = setpointRadians - inputs.positionRadians;
 
@@ -78,8 +82,16 @@ public class TurretSubsystem extends SubsystemBase {
         monitoredEncoder.update(inputs.encoderConnected);
     }
 
-    public void setMotorOutput(double motorOutput) {
-        io.setMotorOutput(motorOutput);
+    public void setMotorOutput(double output) {
+        // if we are going ccw and we are at or beyond the max, stop
+        if(output > 0 && (inputs.positionRadians >= (Units.degreesToRadians(Constants.Turret.turretRotationLimitDegrees)))) {
+            output = 0;
+        
+        // if we are going cw and are at or beyond max, stop
+        } else if(output < 0 && (inputs.positionRadians <= (Units.degreesToRadians(-Constants.Turret.turretRotationLimitDegrees)))) {
+            output = 0;
+        }
+        io.setMotorOutput(output);
     }
 
     public void setSetpoint(double setpointRadians) {
@@ -92,9 +104,5 @@ public class TurretSubsystem extends SubsystemBase {
 
     public void stop() {
         io.setMotorOutput(0.0);
-    }
-
-    public void setupQualityControl(ShuffleboardTab tab) {
-        
     }
 }

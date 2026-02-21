@@ -13,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -28,9 +30,8 @@ public class RobotContainer {
     private final SuperStateSubsystem superState = new SuperStateSubsystem();
     private final SwerveDrive swerveDrive = new SwerveDrive();
 
-    //public testerSubsystem tester = new testerSubsystem();
     public IntakeSubsystem intake = new IntakeSubsystem();
-    //public indexerSubsystem indexer = new indexerSubsystem();
+    public IndexerSubsystem indexer = new IndexerSubsystem();
     public Flywheel flywheel = new Flywheel();
     public TurretSubsystem turret = new TurretSubsystem();
     //public climberSubsystem climber = new climberSubsystem();
@@ -61,13 +62,18 @@ public class RobotContainer {
             }, flywheel)
         );
 
-        configureBindings();
-        //configureBindings();
-        //autoChooser = AutoBuilder.buildAutoChooser();
+        kicker.setDefaultCommand(
+            Commands.run(()->{
+                kicker.setSpeed(superState.getKickerSpeed());
+            }, kicker)
+        );
 
+        indexer.setDefaultCommand(
+            Commands.run(()->{
+                indexer.setSpeed(superState.getIndexerSpeed());
+            }, indexer)
+        );
 
-        // Default driving command (joystick)
-         
         swerveDrive.setDefaultCommand(
             new TeleopDriveCommand(
                 swerveDrive,
@@ -76,7 +82,10 @@ public class RobotContainer {
                 ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
             )
         );
-        
+
+        configureBindings();
+        //autoChooser = AutoBuilder.buildAutoChooser();
+
 
         printDebugValues();
         //SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -90,19 +99,31 @@ public class RobotContainer {
         */
 
         
+        // Intake In
         new JoystickButton(driverJoyStick, 3).onTrue(
-        new InstantCommand(()-> intake.setSpeed(0.5), intake)
-        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+            new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
+        ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
         new JoystickButton(driverJoyStick, 4).onTrue(
-        new InstantCommand(()-> intake.setSpeed(-0.5), intake)
-        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+            new InstantCommand(()-> intake.setRollerSpeed(-0.8), intake)
+        ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
 
-        new JoystickButton(driverJoyStick, 7).onTrue(
-        new InstantCommand(()-> intake.setSpeed(0.5), intake)
-        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
-        new JoystickButton(driverJoyStick, 8).onTrue(
-        new InstantCommand(()-> intake.setSpeed(-0.5), intake)
-        ).onFalse(new InstantCommand(()-> intake.setSpeed(0.0), intake));
+        // Intake Rotator
+        new JoystickButton(driverJoyStick, 5).whileTrue(
+            new RunCommand(()-> intake.increaseSetpoint(), intake));
+        new JoystickButton(driverJoyStick, 10).whileTrue(
+            new RunCommand(()-> intake.decreaseSetpoint(), intake));
+
+
+        // SHOOT! - Kicker and Flywheel
+        new JoystickButton(driverJoyStick, 1).onTrue(
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
+        ).
+        onFalse(
+            new ParallelCommandGroup(
+                new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE)))
+        );
+        
+        
 
         /* 
         new JoystickButton(driverJoyStick, 2).onTrue(
@@ -112,14 +133,17 @@ public class RobotContainer {
         new InstantCommand(()-> shooter.setSpeed(0.7), shooter)
         ).onFalse(new InstantCommand(()-> shooter.setSpeed(0.0), shooter));
         */
-        /* 
-        new JoystickButton(driverJoyStick, 5).onTrue(
-        new InstantCommand(()-> turret.setSpeed(-1.0), turret)
-        ).onFalse(new InstantCommand(()-> turret.setSpeed(0.0), turret));
-        new JoystickButton(driverJoyStick, 6).onTrue(
-        new InstantCommand(()-> turret.setSpeed(1.0), turret)
-        ).onFalse(new InstantCommand(()-> turret.setSpeed(0.0), turret));
-        */
+        
+        // // Turret CW
+        // new JoystickButton(driverJoyStick, 5).whileTrue(
+        //     new RunCommand(()-> turret.setManualOutput(-0.2), turret)
+        // ).onFalse(new RunCommand(()-> turret.setManualOutput(0.0), turret));
+        
+        // // Turret CCW
+        // new JoystickButton(driverJoyStick, 6).whileTrue(
+        //     new RunCommand(()-> turret.setManualOutput(0.2), turret)
+        // ).onFalse(new RunCommand(()-> turret.setManualOutput(0.0), turret));
+        
     }
 
     private void printDebugValues() {

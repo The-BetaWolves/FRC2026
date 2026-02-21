@@ -5,29 +5,29 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ClimberSubsystem extends SubsystemBase {
 
-  SparkMax climberMotor;
-  double speed;
-  /** Creates a new testerSubsystem. */
-  public ClimberSubsystem() {
-    climberMotor = new SparkMax(17, MotorType.kBrushless);
-    speed = 0.0;
-  }
+    SparkFlex climberMotor;
+    double speed;
+    /** Creates a new testerSubsystem. */
+    public ClimberSubsystem() {
+        climberMotor = new SparkFlex(35, MotorType.kBrushless);
+        speed = 0.0;
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    climberMotor.set(speed);
-    SmartDashboard.putNumber("climberSpeed", speed);
-  }
+    @Override
+    public void periodic() {
+        // This method will be called once per scheduler run
+        climberMotor.set(speed);
+        SmartDashboard.putNumber("climberSpeed", speed);
+    }
 
-  public void setSpeed(double speed) {
-    this.speed = speed;
-  }
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
 }

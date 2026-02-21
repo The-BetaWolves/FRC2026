@@ -50,7 +50,7 @@ public class FlywheelIOReal implements FlywheelIO {
     public void updateInputs(FlywheelIOInputs inputs) {
         inputs.velocityRpm = getVelocityRPM();
         inputs.motorController1IsPowered = motor1.getBusVoltage() > 6.0;
-        inputs.motorController1IsPowered = motor2.getBusVoltage() > 6.0;
+        inputs.motorController2IsPowered = motor2.getBusVoltage() > 6.0;
     }
 
     public void setMotorOutput(double speed) {

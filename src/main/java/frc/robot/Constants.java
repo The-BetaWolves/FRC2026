@@ -40,11 +40,21 @@ public final class Constants {
 
     public static final class Turret {
         // Channel ID for the rev throughbore encoder
-        public static final int encoderChannel = 5;
+        public static final int encoderChannel = 0;
 
         public static final int motorCanId = 19;
 
-        public static final double turretRotationLimit = 170;
+        public static final double turretRotationLimitDegrees = 90;
+    }
+
+    public static final class Intake {
+        public static final int encoderChannel = 1;
+
+        public static final int rotatorMotorCanId = 4;
+        public static final int rollerMotorCanId = 15;
+
+        public static final double minRotatorDegree = 4;
+        public static final double maxRotatorDegree = 155;
     }
 
     public static final class Field {

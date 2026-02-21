@@ -23,7 +23,7 @@ public class TurretService {
         double turretRelativeRadians = MathUtil.angleModulus(robotRelativeRadians - Math.PI);
 
         // don't let the turret spin too far, clamp the setpoint to our limits
-        double setpointRadians = MathUtil.clamp(turretRelativeRadians, -Constants.Turret.turretRotationLimit, Constants.Turret.turretRotationLimit);
+        double setpointRadians = MathUtil.clamp(turretRelativeRadians, -Constants.Turret.turretRotationLimitDegrees, Constants.Turret.turretRotationLimitDegrees);
         
         return setpointRadians;
     }
