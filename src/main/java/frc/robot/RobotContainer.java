@@ -6,8 +6,11 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import static frc.robot.subsystems.vision.VisionConstants.*;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +28,9 @@ import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.turret.TurretSubsystem;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
 public class RobotContainer {
     private final SuperStateSubsystem superState = new SuperStateSubsystem();
@@ -36,6 +42,7 @@ public class RobotContainer {
     public TurretSubsystem turret = new TurretSubsystem();
     public ClimberSubsystem climber = new ClimberSubsystem();
     public KickerSubsystem kicker = new KickerSubsystem();
+    //public Vision vision;
 
     Joystick driverJoyStick = new Joystick(0);
 
@@ -43,6 +50,24 @@ public class RobotContainer {
 
 
     public RobotContainer() {
+
+        /* 
+        if(!RobotBase.isSimulation()) {
+            vision =
+            new Vision(
+                swerveDrive::addVisionMeasurement,
+                new VisionIOPhotonVision(camera0Name, robotToCamera0)
+                //new VisionIOPhotonVision(camera1Name, robotToCamera1)
+            );
+        } else {
+            vision =
+            new Vision(
+                swerveDrive::addVisionMeasurement,
+                new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, swerveDrive::getPose),
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, swerveDrive::getPose));
+        }
+        */
+
         // processes service logic and stores in gettable variables
         superState.setDefaultCommand(
             Commands.run(()->{
