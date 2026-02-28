@@ -12,6 +12,7 @@ public interface TurretIO {
     public static class TurretIOInputs  {
         public double rawPositionRotations = 0.0; // raw encoder value
         public double positionRadians = 0.0; // adjusted encoder value
+        public double motorEncoderRotations = 0.0; //raw encoder value of the motor's encoder
         public boolean encoderConnected = false;
 
         // quality control

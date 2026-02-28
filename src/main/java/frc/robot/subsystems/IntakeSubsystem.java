@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
   SparkMax intakeRollerMotor;
   SparkMax intakeRotatorMotor;
   DutyCycleEncoder encoder;
-  double rollerSpeed, rotatorSpeed, kp, setpoint;
+  double rollerSpeed, rotatorSpeed, kp, ki, setpoint, motorOutput;
 
   PIDController pid;
   /** Creates a new testerSubsystem. */
@@ -28,8 +28,11 @@ public class IntakeSubsystem extends SubsystemBase {
     encoder = new DutyCycleEncoder(1);
     rollerSpeed = 0.0;
     setpoint = 4.0;
-    kp = 0.13;
-    pid = new PIDController(kp, 0.0, 0.0);
+    kp = 0.05; //0.13;
+    ki = 0.00;
+    pid = new PIDController(kp, ki, 0.0);
+
+    motorOutput = 0.0;
 
     encoder.setInverted(true);
   }
@@ -45,11 +48,13 @@ public class IntakeSubsystem extends SubsystemBase {
       setpoint = Constants.Intake.maxRotatorDegree;
     }
 
-    intakeRotatorMotor.set(pid.calculate(((encoder.get() - 0.476) * 360), setpoint));
+    motorOutput = pid.calculate(((encoder.get() - 0.476) * 360), setpoint);
+    intakeRotatorMotor.set(motorOutput);
+
     SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
     SmartDashboard.putNumber("intakeRotatorSpeed", rotatorSpeed);
-    SmartDashboard.putNumber("absoluteEncoderValue", encoder.get() - 0.476);
-    SmartDashboard.putNumber("absoluteEncoderDegree", (encoder.get() - 0.476) * 360);
+    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderValue", encoder.get() - 0.476);
+    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderDegree", (encoder.get() - 0.476) * 360);
     SmartDashboard.putNumber("intakeRotatorSetpoint", setpoint);
   }
 

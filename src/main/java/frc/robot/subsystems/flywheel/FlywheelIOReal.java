@@ -31,7 +31,7 @@ public class FlywheelIOReal implements FlywheelIO {
         SparkMaxConfig motor2FollowerConfig = new SparkMaxConfig();
 
         globalConfig
-            .smartCurrentLimit(40)
+            .smartCurrentLimit(80)
             .idleMode(IdleMode.kCoast);
 
         motor1Config
@@ -59,6 +59,10 @@ public class FlywheelIOReal implements FlywheelIO {
 
     public double getVelocityRPM() {
         return (motor1Encoder.getVelocity() + motor2Encoder.getVelocity()) / 2;
+    }
+
+    public double getMotorVoltage() {
+        return (motor1.getAppliedOutput() + motor1.getAppliedOutput()) /2;
     }
 }
  

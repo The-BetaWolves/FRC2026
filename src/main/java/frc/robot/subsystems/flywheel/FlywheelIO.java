@@ -20,4 +20,5 @@ public interface FlywheelIO {
 
     public default void updateInputs(FlywheelIOInputs inputs) {}
     public void setMotorOutput(double output);
+    public double getMotorVoltage();
 }

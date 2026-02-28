@@ -21,6 +21,7 @@ public class TurretIOSim implements TurretIO {
         inputs.encoderConnected = true;
         inputs.rawPositionRotations = 0.0;
         inputs.motorControllerIsPowered = true;
+        inputs.motorEncoderRotations = 0.0;
     }
 
     public double getAbsolutePos() {

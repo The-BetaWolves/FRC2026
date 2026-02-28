@@ -26,13 +26,11 @@ public class TurretSubsystem extends SubsystemBase {
 
     private double setpointRadians = 0.0; // not an input, it's an output of what we command, so doesn't go in io
     private double toleranceDegrees = 2.0;
-    private double maxMotorOutput = 0.6;
-    private double kP = 0.0; //1?
+    private double maxMotorOutput = 0.8;
+    private double kP = 1.0; //1?
     PIDController pid = new PIDController( kP, 0.0, 0.0);
 
-
     public TurretSubsystem() {
-
         // add default radians and turret kp to shuffleboard
         SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
         SmartDashboard.setDefaultNumber("turret kp", kP);
@@ -62,7 +60,6 @@ public class TurretSubsystem extends SubsystemBase {
         //pid.setP(kPFromShuffleboard);
 
         double motorOutput = pid.calculate(inputs.positionRadians, setpointRadians);
-
 
         motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
 

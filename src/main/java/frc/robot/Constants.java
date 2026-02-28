@@ -44,7 +44,7 @@ public final class Constants {
 
         public static final int motorCanId = 19;
 
-        public static final double turretRotationLimitDegrees = 90;
+        public static final double turretRotationLimitDegrees = 160;
     }
 
     public static final class Intake {

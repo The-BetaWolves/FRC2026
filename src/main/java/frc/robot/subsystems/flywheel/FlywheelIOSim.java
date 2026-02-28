@@ -34,4 +34,8 @@ public class FlywheelIOSim implements FlywheelIO {
     public double getVelocityRPM() {
         return 0.0;
     }
+
+    public double getMotorVoltage() {
+        return 0.0;
+    }
 }

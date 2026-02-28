@@ -224,7 +224,8 @@ public class SwerveDrive extends SubsystemBase {
         }
         Logger.recordOutput("Swerve/MyStates", getModuleStates());
 
-        gyro.updateInputs(gyroInputs, getChassisSpeeds().omegaRadiansPerSecond);
+        //gyro.updateInputs(gyroInputs, getChassisSpeeds().omegaRadiansPerSecond);
+        gyro.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
 
         Logger.recordOutput("Swerve/Pose", getPose());

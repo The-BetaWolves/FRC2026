@@ -9,6 +9,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,6 +20,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.ScheduleCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -71,7 +75,7 @@ public class RobotContainer {
         // processes service logic and stores in gettable variables
         superState.setDefaultCommand(
             Commands.run(()->{
-                superState.updateValues(swerveDrive::getPose);
+                superState.updateValues(swerveDrive::getPose, flywheel::isAtSetpoint, ()->flywheel.getSmartDashboardRpm(), turret::atSetpoint);
             }, superState)
         );
 
@@ -108,6 +112,8 @@ public class RobotContainer {
             )
         );
 
+        swerveDrive.resetPose(new Pose2d(4.0, 4.0, (new Rotation2d(0.0))));
+
         configureBindings();
         //autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -133,19 +139,27 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
 
         // Intake Rotator
+         
         new JoystickButton(driverJoyStick, 5).whileTrue(
             new RunCommand(()-> intake.increaseSetpoint(), intake));
         new JoystickButton(driverJoyStick, 10).whileTrue(
             new RunCommand(()-> intake.decreaseSetpoint(), intake));
-
+        
+        
+        new JoystickButton(driverJoyStick, 6).onTrue(
+            new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree))
+        );
+        new JoystickButton(driverJoyStick, 9).onTrue(
+            new InstantCommand(()-> intake.setSetpoint(Constants.Intake.minRotatorDegree))
+        );
+         
 
         // SHOOT! - Kicker and Flywheel
         new JoystickButton(driverJoyStick, 1).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
         ).
         onFalse(
-            new ParallelCommandGroup(
-                new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE)))
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR))
         );
         
         

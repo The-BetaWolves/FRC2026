@@ -18,7 +18,7 @@ public class GyroPigeon implements GyroIO {
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-        inputs.yaw =  getYaw();
+        inputs.yaw = getYaw();
         inputs.yawDegrees = getYaw().getDegrees();
         inputs.gyroIsPowered = gyro.getYaw().getStatus().isOK();
     }
