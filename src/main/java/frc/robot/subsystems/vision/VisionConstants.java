@@ -34,18 +34,16 @@ public class VisionConstants {
         return layout;
     }
 
-    // TODO: Adjust names to match the names in Photonvisiom
     // Camera names, must match names configured on coprocessor
     public static String camera0Name = "camera_0";
     public static String camera1Name = "camera_1";
 
-    // TODO: Adjust the transforms to match actual camera positions
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
     public static Transform3d robotToCamera0 =
-        new Transform3d(-0.3, 0.22, 0.34, new Rotation3d(0.0, -0.4, 0.0));
+        new Transform3d(0.3, 0.22, 0.34, new Rotation3d(0.0, 0.0, Math.toRadians(135)));
     public static Transform3d robotToCamera1 =
-        new Transform3d(-0.2, 0.0, 0.2, new Rotation3d(0.0, -0.4, Math.PI));
+        new Transform3d(-0.3, 0.22, 0.34, new Rotation3d(0.0, 0.0, Math.toRadians(225)));
 
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;
@@ -54,7 +52,7 @@ public class VisionConstants {
     // Standard deviation baselines, for 1 meter distance and 1 tag
     // (Adjusted automatically based on distance and # of tags)
     public static double linearStdDevBaseline = 0.02; // Meters
-    public static double angularStdDevBaseline = 0.06; // Radians
+    public static double angularStdDevBaseline = 0.1; // Radians
 
     // Standard deviation multipliers for each camera
     // (Adjust to trust some cameras more than others)

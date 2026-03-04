@@ -38,4 +38,16 @@ public class FlywheelIOSim implements FlywheelIO {
     public double getMotorVoltage() {
         return 0.0;
     }
+
+    public void setMotorSetpoint(double setpoint) {
+
+    }
+
+    public boolean atSetpoint() {
+        return true;
+    }
+
+    public void updateFromSmartDashboard(double kP, double kV, double setpointRPM) {
+
+    }
 }

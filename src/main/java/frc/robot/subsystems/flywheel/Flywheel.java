@@ -24,8 +24,8 @@ public class Flywheel extends SubsystemBase {
     private double setpointRpm = 0.0;
     private double tolerenceRPM = 300.0;
     private double maxMotorOutput = 1.0;
-    private double kP = 0.00001;
-    private double kV = 0.00017;
+    private double kP = 0.00018;
+    private double kV = 0.0018;
 
     PIDController pid = new PIDController(kP, 0.0, 0.0);
     SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(0.0, kV);
@@ -43,7 +43,7 @@ public class Flywheel extends SubsystemBase {
             io = new FlywheelIOReal();
         }
 
-        pid.setTolerance(tolerenceRPM);
+        // pid.setTolerance(tolerenceRPM);
 
         monitoredMotor1 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor1CanId);
         monitoredMotor2 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor2CanId);
@@ -55,22 +55,36 @@ public class Flywheel extends SubsystemBase {
         Logger.processInputs("Flywheel", inputs);
 
         double kPFromShuffleboard = SmartDashboard.getNumber("flywheel kp", kP);
-        pid.setP(kPFromShuffleboard);
+        // pid.setP(kPFromShuffleboard);
         double kVFromShuffleboard = SmartDashboard.getNumber("flywheel kv", kV);
-        feedForward.setKv(kVFromShuffleboard);
+        // feedForward.setKv(kVFromShuffleboard);
+        double setpointRpmFromShuffleboard = SmartDashboard.getNumber("flywheel target rpm", setpointRpm);
 
         double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm) + feedForward.calculate(setpointRpm);
         motorOutput = MathUtil.clamp(motorOutput, 0.0, maxMotorOutput); //The Zero stops it from breaking
 
+        // Command motor speed
+        //io.setMotorOutput(motorOutput);
+
         // Command motor
-        io.setMotorOutput(motorOutput);
+        io.setMotorSetpoint(setpointRpm);
 
-        //Log Stuff
+        //Update From SmartDashBoard
+        /* 
+        if (kP != kPFromShuffleboard || kV != kVFromShuffleboard || setpointRpm != setpointRpmFromShuffleboard) {
+            io.updateFromSmartDashboard(kPFromShuffleboard, kVFromShuffleboard, setpointRpmFromShuffleboard);
+        }
+        kP = kPFromShuffleboard;
+        kV = kVFromShuffleboard;
+        setpointRpm = setpointRpmFromShuffleboard;
+        */
+
+        // //Log Stuff
         Logger.recordOutput("Flywheel/SetpointRPM", setpointRpm);
-        Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
-        Logger.recordOutput("Flywheel/AtSetpoint", pid.atSetpoint());
+        // Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
+        Logger.recordOutput("Flywheel/AtSetpoint", io.atSetpoint());
 
-        SmartDashboard.putNumber("flywheelSpeed", motorOutput);
+        // SmartDashboard.putNumber("flywheelSpeed", motorOutput);
         SmartDashboard.putNumber("flywheelTrueSpeed", io.getMotorVoltage());
 
         // quality control log to shuffleboard
@@ -83,10 +97,6 @@ public class Flywheel extends SubsystemBase {
         this.setpointRpm = setpointRpm;
     }
     public boolean isAtSetpoint() {
-        return pid.atSetpoint();
-    }
-
-    public double getSmartDashboardRpm() {
-        return SmartDashboard.getNumber("flywheel target rpm", setpointRpm);
+        return io.atSetpoint();
     }
 }

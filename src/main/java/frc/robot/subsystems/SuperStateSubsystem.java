@@ -53,7 +53,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     int clearTimer = 0;
 
     // run on a loop to keep variables hydrated
-    public void updateValues(Supplier<Pose2d> robotPose, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Double> flywheelSmartDashboardRpm, Supplier<Boolean> turretIsAtSetpoint) {       
+    public void updateValues(Supplier<Pose2d> robotPose, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(0.6, 3));
         
@@ -80,8 +80,7 @@ public class SuperStateSubsystem extends SubsystemBase {
 
 
         } else if (fireIntent == FireIntent.FIRE) {
-            //flywheelSetpointRpm = shooterService.getShotSpeed(3.1); //Change switch targets later
-            flywheelSetpointRpm = flywheelSmartDashboardRpm.get();
+            flywheelSetpointRpm = shooterService.getShotSpeed(3.1); //Change switch targets later
             kickerSpeed = 0.8;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {

@@ -46,22 +46,22 @@ public class RobotContainer {
     public TurretSubsystem turret = new TurretSubsystem();
     public ClimberSubsystem climber = new ClimberSubsystem();
     public KickerSubsystem kicker = new KickerSubsystem();
-    //public Vision vision;
+    public Vision vision;
 
     Joystick driverJoyStick = new Joystick(0);
 
-    //private final SendableChooser<Command> autoChooser;
+    private final SendableChooser<Command> autoChooser;
 
 
     public RobotContainer() {
 
-        /* 
+        //Vision stuffs
         if(!RobotBase.isSimulation()) {
             vision =
             new Vision(
                 swerveDrive::addVisionMeasurement,
-                new VisionIOPhotonVision(camera0Name, robotToCamera0)
-                //new VisionIOPhotonVision(camera1Name, robotToCamera1)
+                new VisionIOPhotonVision(camera0Name, robotToCamera0),
+                new VisionIOPhotonVision(camera1Name, robotToCamera1)
             );
         } else {
             vision =
@@ -70,12 +70,12 @@ public class RobotContainer {
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, swerveDrive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, swerveDrive::getPose));
         }
-        */
+        
 
         // processes service logic and stores in gettable variables
         superState.setDefaultCommand(
             Commands.run(()->{
-                superState.updateValues(swerveDrive::getPose, flywheel::isAtSetpoint, ()->flywheel.getSmartDashboardRpm(), turret::atSetpoint);
+                superState.updateValues(swerveDrive::getPose, flywheel::isAtSetpoint, turret::atSetpoint);
             }, superState)
         );
 
@@ -112,14 +112,14 @@ public class RobotContainer {
             )
         );
 
-        swerveDrive.resetPose(new Pose2d(4.0, 4.0, (new Rotation2d(0.0))));
+        swerveDrive.resetPose(new Pose2d(2.0, 3.0, (new Rotation2d(0.0))));
 
         configureBindings();
-        //autoChooser = AutoBuilder.buildAutoChooser();
+        autoChooser = AutoBuilder.buildAutoChooser();
 
 
         printDebugValues();
-        //SmartDashboard.putData("Auto Chooser", autoChooser);
+        SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     private void configureBindings() {
@@ -199,8 +199,8 @@ public class RobotContainer {
         }
 
     public Command getAutonomousCommand() {
-        //return autoChooser.getSelected();
+        return autoChooser.getSelected();
         //return new TestBangBang(swerveDrive);
-        return Commands.print("No autonomous command configured");
+        //return Commands.print("No autonomous command configured");
     }
 }

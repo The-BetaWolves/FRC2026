@@ -81,7 +81,7 @@ public class VisionIOPhotonVision implements VisionIO {
                 PoseObservationType.PHOTONVISION)); // Observation type
 
       } else if (!result.targets.isEmpty()) { // Single tag result
-        var target = result.targets.get(0);
+        var target = result.getBestTarget();
 
         // Calculate robot pose
         var tagPose = aprilTagLayout.getTagPose(target.fiducialId);
