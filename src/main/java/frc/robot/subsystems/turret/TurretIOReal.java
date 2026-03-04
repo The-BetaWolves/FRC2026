@@ -18,7 +18,7 @@ public class TurretIOReal implements TurretIO {
     DutyCycleEncoder encoder;
     double positionRadians, lastMotorOutput;
 
-    private final double zeroOffsetRotations = 0.763;   // if forward reads 0.6, enter 0.6 here
+    private final double zeroOffsetRotations = 0.804;   // if forward reads 0.6, enter 0.6 here
     private final boolean invertEncoder = false;
 
     SparkMax motor;
