@@ -61,6 +61,10 @@ public class VisionIOPhotonVision implements VisionIO {
         Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
         Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
+        robotPose = new Pose3d()
+        .transformBy(fieldToCamera)
+        .transformBy(robotToCamera.inverse());
+
         // Calculate average tag distance
         double totalTagDistance = 0.0;
         for (var target : result.targets) {

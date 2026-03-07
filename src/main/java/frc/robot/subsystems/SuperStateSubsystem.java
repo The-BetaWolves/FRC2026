@@ -4,8 +4,9 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.services.FieldService;
 import frc.robot.services.ShooterService;
 import frc.robot.services.TurretService;
@@ -30,8 +31,10 @@ public class SuperStateSubsystem extends SubsystemBase {
     // loop-hydrated variables
     private double turretSetpointRadians = 0.0;
     private Translation2d fieldTargetPose = new Translation2d();
+    private Translation2d adjustedTargetPose = new Translation2d();
     private double flywheelSetpointRpm = 0.0;
     private double kickerSpeed, indexerSpeed = 0.0;
+    private double distanceToTarget;
 
     // public getters
     public double getTurretSetpointRadians() {
@@ -49,14 +52,21 @@ public class SuperStateSubsystem extends SubsystemBase {
     public double getIndexerSpeed() {
         return indexerSpeed;
     }
+    public Translation2d getAdjustedTargetPose() {
+        return adjustedTargetPose;
+    }
+    public double getDistanceToTarget() {
+        return distanceToTarget;
+    }
 
     int clearTimer = 0;
 
     // run on a loop to keep variables hydrated
-    public void updateValues(Supplier<Pose2d> robotPose, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
+    public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(0.6, 3));
-        
+        adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.realBlueHubPose, fieldRelativeChassisSpeeds.get());
+        distanceToTarget = fieldService.getDistanceToTarget(robotPose.get(), adjustedTargetPose);
 
         if(fireIntent == FireIntent.STOP) {
             flywheelSetpointRpm = 0.0;
@@ -80,7 +90,7 @@ public class SuperStateSubsystem extends SubsystemBase {
 
 
         } else if (fireIntent == FireIntent.FIRE) {
-            flywheelSetpointRpm = shooterService.getShotSpeed(3.1); //Change switch targets later
+            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
             kickerSpeed = 0.8;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {

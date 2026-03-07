@@ -75,7 +75,7 @@ public class RobotContainer {
         // processes service logic and stores in gettable variables
         superState.setDefaultCommand(
             Commands.run(()->{
-                superState.updateValues(swerveDrive::getPose, flywheel::isAtSetpoint, turret::atSetpoint);
+                superState.updateValues(swerveDrive::getPose, swerveDrive::getFieldRelativeChassisSpeeds, flywheel::isAtSetpoint, turret::atSetpoint);
             }, superState)
         );
 
@@ -112,7 +112,7 @@ public class RobotContainer {
             )
         );
 
-        swerveDrive.resetPose(new Pose2d(2.0, 3.0, (new Rotation2d(0.0))));
+        swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d(Math.PI))));
 
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -195,8 +195,13 @@ public class RobotContainer {
     }
 
     private void printDebugValues() {
-            // add smart dashboard debug calls here instead of in subsystems
-        }
+        // add smart dashboard debug calls here instead of in subsystems
+
+        double[] adjustedTargetArray = {superState.getAdjustedTargetPose().getX(), superState.getAdjustedTargetPose().getY()};
+        SmartDashboard.putNumberArray("Adjusted Target Position Meters", adjustedTargetArray);
+        SmartDashboard.putNumber("Distance to Target", superState.getDistanceToTarget());
+
+    }
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();

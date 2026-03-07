@@ -147,6 +147,10 @@ public class SwerveDrive extends SubsystemBase {
         return kinematics.toChassisSpeeds(this.getModuleStates());
     }
 
+    public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), gyro.getYaw());
+    }
+
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -173,7 +177,7 @@ public class SwerveDrive extends SubsystemBase {
     // Drive (x, y, z, isFieldRelative)
     public void drive(double desiredXVelocity, double desiredYVelocity, double desiredRotationalVelocity, boolean isFieldRelative) {
         if(isFieldRelative) {
-            this.desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity, getHeading());
+            this.desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity, getPose().getRotation());
         } else {
             this.desiredChassisSpeeds = new ChassisSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity);
         }            

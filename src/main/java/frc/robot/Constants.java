@@ -36,6 +36,7 @@ public final class Constants {
         public static final int motor1CanId = 24;
         public static final int motor2CanId = 25;
 
+        public static final double ballSpeedMetersPerSecond = 3.0;
     }
 
     public static final class Turret {
@@ -54,10 +55,12 @@ public final class Constants {
         public static final int rollerMotorCanId = 15;
 
         public static final double minRotatorDegree = 4;
-        public static final double maxRotatorDegree = 155;
+        public static final double maxRotatorDegree = 68.8;
     }
 
     public static final class Field {
+        public static final Translation2d realBlueHubPose = new Translation2d(4.034536, 4.625594); //Hopefully x and y are not flipped
+
         public static final Translation2d blueHubPose = new Translation2d(0.5, 3.0);
         public static final Translation2d blueLeftPose = new Translation2d(0.5, 0);
         public static final Translation2d blueRightPose = new Translation2d(0.5, 6);

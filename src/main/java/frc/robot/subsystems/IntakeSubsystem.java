@@ -48,7 +48,7 @@ public class IntakeSubsystem extends SubsystemBase {
       setpoint = Constants.Intake.maxRotatorDegree;
     }
 
-    motorOutput = pid.calculate(((encoder.get() - 0.476) * 360), setpoint);
+    motorOutput = pid.calculate(((encoder.get() - 0.268) * 360), setpoint);
     intakeRotatorMotor.set(motorOutput);
 
     SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
