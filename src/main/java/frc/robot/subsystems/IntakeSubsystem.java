@@ -18,7 +18,7 @@ public class IntakeSubsystem extends SubsystemBase {
   SparkMax intakeRollerMotor;
   SparkMax intakeRotatorMotor;
   DutyCycleEncoder encoder;
-  double rollerSpeed, rotatorSpeed, kp, ki, setpoint, motorOutput;
+  double rollerSpeed, rotatorSpeed, kp, ki, setpoint, motorOutput, intakeEncoderOffset, intakePositionDegrees, maxMotorOutput;
 
   PIDController pid;
   /** Creates a new testerSubsystem. */
@@ -27,10 +27,12 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeRotatorMotor = new SparkMax(4, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(1);
     rollerSpeed = 0.0;
-    setpoint = 4.0;
+    setpoint = 3.0;
     kp = 0.05; //0.13;
     ki = 0.00;
     pid = new PIDController(kp, ki, 0.0);
+    intakeEncoderOffset = 0.32;
+    maxMotorOutput = 1.0;
 
     motorOutput = 0.0;
 
@@ -42,19 +44,25 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     intakeRollerMotor.set(rollerSpeed);
 
+    intakePositionDegrees = (encoder.get() - intakeEncoderOffset) * 360;
+
     if (setpoint < Constants.Intake.minRotatorDegree) {
       setpoint = Constants.Intake.minRotatorDegree;
     } else if (setpoint > Constants.Intake.maxRotatorDegree) {
       setpoint = Constants.Intake.maxRotatorDegree;
     }
 
-    motorOutput = pid.calculate(((encoder.get() - 0.268) * 360), setpoint);
+    motorOutput = pid.calculate(intakePositionDegrees, setpoint);
+
+    // limit speed of motor to max speed
+    if(Math.abs(motorOutput) > maxMotorOutput) motorOutput = maxMotorOutput * Math.signum(motorOutput);
+
     intakeRotatorMotor.set(motorOutput);
 
     SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
     SmartDashboard.putNumber("intakeRotatorSpeed", rotatorSpeed);
-    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderValue", encoder.get() - 0.476);
-    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderDegree", (encoder.get() - 0.476) * 360);
+    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderValue", encoder.get());
+    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderDegree", intakePositionDegrees);
     SmartDashboard.putNumber("intakeRotatorSetpoint", setpoint);
   }
 

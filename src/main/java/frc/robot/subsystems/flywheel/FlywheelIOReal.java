@@ -53,7 +53,7 @@ public class FlywheelIOReal implements FlywheelIO {
 
         motor1Config
             .apply(globalConfig)
-            .inverted(false)
+            .inverted(true)
             .voltageCompensation(12)
             .closedLoop
                 .pid(kP,0.0, 0.0)
@@ -102,10 +102,13 @@ public class FlywheelIOReal implements FlywheelIO {
         return (motor1.getAppliedOutput() + motor1.getAppliedOutput()) /2;
     }
 
-    public void updateFromSmartDashboard(double kP, double kV, double setpointRPM) {
+    public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM) {
         motor1Config.closedLoop
             .pid(kP, 0.0, 0.0)
-            .feedForward.kV(kV);
+            .feedForward
+                .kS(kS)
+                .kV(kV);
+            
 
         motor1.configure(motor1Config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         

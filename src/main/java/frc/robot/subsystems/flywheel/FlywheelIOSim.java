@@ -47,7 +47,7 @@ public class FlywheelIOSim implements FlywheelIO {
         return true;
     }
 
-    public void updateFromSmartDashboard(double kP, double kV, double setpointRPM) {
+    public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM) {
 
     }
 }

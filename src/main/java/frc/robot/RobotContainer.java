@@ -112,7 +112,7 @@ public class RobotContainer {
             )
         );
 
-        swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d(Math.PI))));
+        swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
 
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -131,10 +131,11 @@ public class RobotContainer {
 
         
         // Intake In
-        new JoystickButton(driverJoyStick, 3).onTrue(
+        new JoystickButton(driverJoyStick, 4).onTrue(
             new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
         ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
-        new JoystickButton(driverJoyStick, 4).onTrue(
+
+        new JoystickButton(driverJoyStick, 3).onTrue(
             new InstantCommand(()-> intake.setRollerSpeed(-0.8), intake)
         ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
 
