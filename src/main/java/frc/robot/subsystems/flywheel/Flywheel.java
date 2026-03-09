@@ -65,27 +65,29 @@ public class Flywheel extends SubsystemBase {
         double kSFromShuffleboard = SmartDashboard.getNumber("flywheel ks", kS);
 
 
-        double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm) + feedForward.calculate(setpointRpm);
-        motorOutput = MathUtil.clamp(motorOutput, 0.0, maxMotorOutput); //The Zero stops it from breaking
+        //double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm) + feedForward.calculate(setpointRpm);
+        //motorOutput = MathUtil.clamp(motorOutput, 0.0, maxMotorOutput); //The Zero stops it from breaking
 
         // Command motor speed
-        io.setMotorOutput(0.2);
+        //io.setMotorOutput(0.2);
 
         // Command motor
         //io.setMotorSetpoint(setpointRpm);
 
         //Update From SmartDashBoard
-        /* 
+        boolean updateFromSmartDashboardIsSet = false;
         if (kP != kPFromShuffleboard || kV != kVFromShuffleboard || kS != kSFromShuffleboard || setpointRpm != setpointRpmFromShuffleboard) {
             io.updateFromSmartDashboard(kPFromShuffleboard, kVFromShuffleboard, kSFromShuffleboard, setpointRpmFromShuffleboard);
+            updateFromSmartDashboardIsSet = true;
         }
         kP = kPFromShuffleboard;
         kV = kVFromShuffleboard;
         kS = kSFromShuffleboard;
         setpointRpm = setpointRpmFromShuffleboard;
-        */
+        
 
         // //Log Stuff
+        Logger.recordOutput("Flywheel/UpdateFromSmartDashboard", updateFromSmartDashboardIsSet);
         Logger.recordOutput("Flywheel/SetpointRPM", setpointRpm);
         // Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
         Logger.recordOutput("Flywheel/AtSetpoint", io.atSetpoint());

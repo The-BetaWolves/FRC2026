@@ -8,6 +8,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -36,6 +37,7 @@ public class FlywheelIOReal implements FlywheelIO {
     private double maxMotorOutput = 1.0;
     private double kP = 0.00018;
     private double kV = 0.001825;
+    private double kS = 0.0;
 
     public FlywheelIOReal() {
         motor1 = new SparkFlex(Constants.Flywheel.motor1CanId, MotorType.kBrushless);
@@ -47,8 +49,11 @@ public class FlywheelIOReal implements FlywheelIO {
         motor1Config = new SparkFlexConfig();
         motor2FollowerConfig = new SparkFlexConfig();
 
+        // reset motor controllers
+        
+
         globalConfig
-            .smartCurrentLimit(80)
+            //.smartCurrentLimit(80)
             .idleMode(IdleMode.kCoast);
 
         motor1Config
@@ -56,18 +61,19 @@ public class FlywheelIOReal implements FlywheelIO {
             .inverted(true)
             .voltageCompensation(12)
             .closedLoop
-                .pid(kP,0.0, 0.0)
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(kP,0.0, 0.0, ClosedLoopSlot.kSlot0)
                     .maxOutput(maxMotorOutput)
                     .minOutput(0.0)
                     //.allowedClosedLoopError(tolerenceRPM, ClosedLoopSlot.kSlot0)
-                .feedForward.kV(kV);
+                .feedForward.kV(kV, ClosedLoopSlot.kSlot0).kS(kS);
             
         motor2FollowerConfig
             .apply(globalConfig)
             .follow(motor1, true);
 
         motor1.configure(motor1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        motor2.configure(motor2FollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        //motor2.configure(motor2FollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         controller = motor1.getClosedLoopController();
         controller.setSetpoint(setpointRPM, ControlType.kVelocity);
@@ -95,11 +101,13 @@ public class FlywheelIOReal implements FlywheelIO {
     
 
     public double getVelocityRPM() {
-        return (motor1Encoder.getVelocity() + motor2Encoder.getVelocity()) / 2;
+        //return (motor1Encoder.getVelocity() + motor2Encoder.getVelocity()) / 2;
+        return motor1Encoder.getVelocity();
     }
 
     public double getMotorVoltage() {
-        return (motor1.getAppliedOutput() + motor1.getAppliedOutput()) /2;
+        //return (motor1.getAppliedOutput() + motor1.getAppliedOutput()) /2;
+        return motor1.getAppliedOutput();
     }
 
     public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM) {
