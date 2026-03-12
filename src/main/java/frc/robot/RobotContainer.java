@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
@@ -28,6 +29,7 @@ import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.SuperStateSubsystem;
+import frc.robot.subsystems.SuperStateSubsystem.FireIntent;
 import frc.robot.subsystems.KickerSubsystem;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.swerve.SwerveDrive;
@@ -103,6 +105,12 @@ public class RobotContainer {
             }, indexer)
         );
 
+        intake.setDefaultCommand(
+            Commands.run(()->{
+                intake.setState(superState.getIntakeRotatorSetpoint(), superState.getIntakeSpeed());
+            }, intake)
+        );
+
         swerveDrive.setDefaultCommand(
             new TeleopDriveCommand(
                 swerveDrive,
@@ -112,8 +120,16 @@ public class RobotContainer {
             )
         );
 
-        swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
-
+        //swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
+        swerveDrive.resetPose(new Pose2d(3.0, 4.0, (new Rotation2d(Math.PI))));
+        
+        //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
+        //NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
+        NamedCommands.registerCommand("setToFire", new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE)));
+        NamedCommands.registerCommand("setToClear", new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR)));
+        NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
+        NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
+        
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -129,7 +145,6 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> tester.setSpeed(0.0), tester));
         */
 
-        
         // Intake In
         new JoystickButton(driverJoyStick, 4).onTrue(
             new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
@@ -157,10 +172,17 @@ public class RobotContainer {
 
         // SHOOT! - Kicker and Flywheel
         new JoystickButton(driverJoyStick, 1).onTrue(
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
+        ).
+        onFalse(
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE))
+        );
+
+        new JoystickButton(driverJoyStick, 2).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
         ).
         onFalse(
-            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR))
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE))
         );
         
         

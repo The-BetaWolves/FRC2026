@@ -23,7 +23,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     // TODO: add the kicker. make it's rpm based on the FireIntent state
 
     // setup state enums
-    public enum FireIntent { STOP, IDLE, FIRE, CLEAR }
+    public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, FIREANDINTAKE}
     private FireIntent fireIntent = FireIntent.STOP;
     public void setFireIntent(FireIntent intent) { this.fireIntent = intent; }
     public FireIntent getFireIntent() { return fireIntent; }
@@ -33,7 +33,8 @@ public class SuperStateSubsystem extends SubsystemBase {
     private Translation2d fieldTargetPose = new Translation2d();
     private Translation2d adjustedTargetPose = new Translation2d();
     private double flywheelSetpointRpm = 0.0;
-    private double kickerSpeed, indexerSpeed = 0.0;
+    private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
+    private double intakeRotatorSetpoint = 0.0;
     private double distanceToTarget;
 
     // public getters
@@ -58,13 +59,19 @@ public class SuperStateSubsystem extends SubsystemBase {
     public double getDistanceToTarget() {
         return distanceToTarget;
     }
+    public double getIntakeSpeed() {
+        return intakeSpeed;
+    }
+    public double getIntakeRotatorSetpoint() {
+        return intakeRotatorSetpoint;
+    }
 
-    int clearTimer = 0;
+    int clearTimer, rotatorTimer = 0;
 
     // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
-        turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(0.6, 3));
+        turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(3.7, 4.02));
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.realBlueHubPose, fieldRelativeChassisSpeeds.get());
         distanceToTarget = fieldService.getDistanceToTarget(robotPose.get(), adjustedTargetPose);
 
@@ -72,10 +79,14 @@ public class SuperStateSubsystem extends SubsystemBase {
             flywheelSetpointRpm = 0.0;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
+            intakeSpeed = 0.0;
+
         } else if( fireIntent == FireIntent.IDLE) {
             flywheelSetpointRpm = 500.0;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
+            intakeSpeed = 0.0;
+
         } else if (fireIntent == FireIntent.CLEAR) {
             clearTimer++;
             if(clearTimer > 10) {
@@ -87,17 +98,52 @@ public class SuperStateSubsystem extends SubsystemBase {
             kickerSpeed = -0.8;
             //kickerSpeed = 0.0;
             indexerSpeed = -1.0;
+            intakeSpeed = 0.0;
 
-
+        } else if (fireIntent == FireIntent.INTAKE) {
+            flywheelSetpointRpm = 500.0;
+            kickerSpeed = 0.0;
+            indexerSpeed = 0.0;
+            intakeSpeed = 0.9;
+            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
             kickerSpeed = 0.8;
+            intakeSpeed = 0.0;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
                 indexerSpeed = 0.9;
             } else {
                 indexerSpeed = 0.0;
             }
-        } 
+
+            rotatorTimer++;
+            if(rotatorTimer < 60) {
+                intakeRotatorSetpoint = 50;
+            } else if (rotatorTimer > 120) {
+                intakeRotatorSetpoint = 5;
+                rotatorTimer = 0;
+            }
+        } else if (fireIntent == FireIntent.FIREANDINTAKE) {
+            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
+            kickerSpeed = 0.8;
+            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+
+            /*
+            rotatorTimer++;
+            if(rotatorTimer > 60) {
+                intakeRotatorSetpoint = 100;
+            } else if (rotatorTimer > 120) {
+                intakeRotatorSetpoint = 4;
+                rotatorTimer = 0;
+            }
+             */
+
+            if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
+                indexerSpeed = 0.9;
+            } else {
+                indexerSpeed = 0.0;
+            }
+        }
     }
 }

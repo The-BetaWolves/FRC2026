@@ -55,7 +55,7 @@ public final class Constants {
         public static final int rollerMotorCanId = 15;
 
         public static final double minRotatorDegree = 3;
-        public static final double maxRotatorDegree = 68.8;
+        public static final double maxRotatorDegree = 80; //68.8;
     }
 
     public static final class Field {

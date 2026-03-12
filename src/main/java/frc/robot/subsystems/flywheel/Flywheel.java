@@ -24,9 +24,9 @@ public class Flywheel extends SubsystemBase {
     private double setpointRpm = 0.0;
     private double tolerenceRPM = 300.0;
     private double maxMotorOutput = 1.0;
-    private double kP = 0.00018;
-    private double kV = 0.0018;
-    private double kS = 0.65;
+    private double kP = 0.00002;
+    private double kV = 0.001815;
+    private double kS = 0.0;
 
     PIDController pid = new PIDController(kP, 0.0, 0.0);
     SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV);
@@ -72,30 +72,28 @@ public class Flywheel extends SubsystemBase {
         //io.setMotorOutput(0.2);
 
         // Command motor
-        //io.setMotorSetpoint(setpointRpm);
+        io.setMotorSetpoint(setpointRpm);
 
         //Update From SmartDashBoard
-        boolean updateFromSmartDashboardIsSet = false;
+        /* 
         if (kP != kPFromShuffleboard || kV != kVFromShuffleboard || kS != kSFromShuffleboard || setpointRpm != setpointRpmFromShuffleboard) {
             io.updateFromSmartDashboard(kPFromShuffleboard, kVFromShuffleboard, kSFromShuffleboard, setpointRpmFromShuffleboard);
-            updateFromSmartDashboardIsSet = true;
         }
         kP = kPFromShuffleboard;
         kV = kVFromShuffleboard;
         kS = kSFromShuffleboard;
         setpointRpm = setpointRpmFromShuffleboard;
+        */
         
 
         // //Log Stuff
-        Logger.recordOutput("Flywheel/UpdateFromSmartDashboard", updateFromSmartDashboardIsSet);
         Logger.recordOutput("Flywheel/SetpointRPM", setpointRpm);
         // Logger.recordOutput("Flywheel/MotorOutput", motorOutput);
         Logger.recordOutput("Flywheel/AtSetpoint", io.atSetpoint());
 
         Logger.recordOutput("Flywheel/kS", kS);
 
-        // SmartDashboard.putNumber("flywheelSpeed", motorOutput);
-        SmartDashboard.putNumber("flywheelTrueSpeed", io.getMotorVoltage());
+        SmartDashboard.putNumber("flywheelTrueSpeed", io.getMotorOutput());
 
         // quality control log to shuffleboard
         monitoredMotor1.update(inputs.motorController1IsPowered);

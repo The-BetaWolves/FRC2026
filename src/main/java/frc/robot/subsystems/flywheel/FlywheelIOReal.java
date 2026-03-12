@@ -35,8 +35,8 @@ public class FlywheelIOReal implements FlywheelIO {
     private double setpointRPM = 0.0;
     private double tolerenceRPM = 100.0;
     private double maxMotorOutput = 1.0;
-    private double kP = 0.00018;
-    private double kV = 0.001825;
+    private double kP = 0.00002;
+    private double kV = 0.001815;
     private double kS = 0.0;
 
     public FlywheelIOReal() {
@@ -73,7 +73,7 @@ public class FlywheelIOReal implements FlywheelIO {
             .follow(motor1, true);
 
         motor1.configure(motor1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        //motor2.configure(motor2FollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        motor2.configure(motor2FollowerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         controller = motor1.getClosedLoopController();
         controller.setSetpoint(setpointRPM, ControlType.kVelocity);
@@ -101,13 +101,13 @@ public class FlywheelIOReal implements FlywheelIO {
     
 
     public double getVelocityRPM() {
-        //return (motor1Encoder.getVelocity() + motor2Encoder.getVelocity()) / 2;
-        return motor1Encoder.getVelocity();
+        return (motor1Encoder.getVelocity() + motor2Encoder.getVelocity()) / 2;
+        //return motor2Encoder.getVelocity();
     }
 
-    public double getMotorVoltage() {
-        //return (motor1.getAppliedOutput() + motor1.getAppliedOutput()) /2;
-        return motor1.getAppliedOutput();
+    public double getMotorOutput() {
+        return (motor1.getAppliedOutput() + motor2.getAppliedOutput()) /2;
+        //return motor2.getAppliedOutput();
     }
 
     public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM) {
@@ -118,7 +118,7 @@ public class FlywheelIOReal implements FlywheelIO {
                 .kV(kV);
             
 
-        motor1.configure(motor1Config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        motor1.configure(motor1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         
         controller.setSetpoint(setpointRPM, ControlType.kVelocity);
     }

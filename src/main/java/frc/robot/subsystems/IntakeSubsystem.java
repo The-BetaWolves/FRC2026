@@ -82,4 +82,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void decreaseSetpoint() {
     setpoint = setpoint - 1.5;
   }
+  public void setState(double setpoint, double rollerSpeed) {
+    this.setpoint = setpoint;
+    this.rollerSpeed = rollerSpeed;
+  }
 }

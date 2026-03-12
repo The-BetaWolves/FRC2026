@@ -35,7 +35,7 @@ public class FlywheelIOSim implements FlywheelIO {
         return 0.0;
     }
 
-    public double getMotorVoltage() {
+    public double getMotorOutput() {
         return 0.0;
     }
 
