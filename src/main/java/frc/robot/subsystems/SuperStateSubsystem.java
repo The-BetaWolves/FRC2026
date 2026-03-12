@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -73,7 +74,9 @@ public class SuperStateSubsystem extends SubsystemBase {
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(3.7, 4.02));
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.realBlueHubPose, fieldRelativeChassisSpeeds.get());
-        distanceToTarget = fieldService.getDistanceToTarget(robotPose.get(), adjustedTargetPose);
+        distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
+
+        
 
         if(fireIntent == FireIntent.STOP) {
             flywheelSetpointRpm = 0.0;

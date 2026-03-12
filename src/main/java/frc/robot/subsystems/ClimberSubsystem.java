@@ -33,7 +33,6 @@ public class ClimberSubsystem extends SubsystemBase {
 
         speed = pid.calculate(setpoint);
 
-        // This method will be called once per scheduler run
         if ((climberMotor.getEncoder().getPosition() < 0.0 && speed < 0) || (climberMotor.getEncoder().getPosition() > 425) && speed > 0) {
             climberMotor.set(0.0);
         } else {

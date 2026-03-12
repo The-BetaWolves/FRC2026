@@ -28,6 +28,15 @@ public class FieldService {
         return Math.sqrt(Math.pow(targetPose.getX() - robotPose.getX(), 2) + Math.pow(targetPose.getY() - robotPose.getY(), 2));
     }
 
+    public double getDistanceFromTurretToTarget(Pose2d robotPose, Translation2d targetPose) {
+
+        double distanceOfTurretToCenterMeters = 0.19;
+        //Gets the point along the circle from x = r*cos(theta) and y = r*sin(theta)
+        Translation2d turretHoleFieldPose = new Translation2d(-(distanceOfTurretToCenterMeters * Math.cos(robotPose.getRotation().getDegrees())), distanceOfTurretToCenterMeters * Math.sin(robotPose.getRotation().getDegrees()));
+
+        return turretHoleFieldPose.getDistance(targetPose);
+    }
+
     public Translation2d getAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
         double distanceToTargetMeters = getDistanceToTarget(robotPose, targetPose);
         double timeOfFlightSeconds = distanceToTargetMeters / Constants.Flywheel.ballSpeedMetersPerSecond;
