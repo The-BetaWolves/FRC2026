@@ -130,6 +130,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
         NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
         
+        NamedCommands.registerCommand("climberSetUp", new InstantCommand(()->climber.setSetpoint(300)));
+        NamedCommands.registerCommand("climberSetDown", new InstantCommand(()->climber.setSetpoint(5)));
+
+
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
 
