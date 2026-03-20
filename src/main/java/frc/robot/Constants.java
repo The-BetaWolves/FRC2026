@@ -23,7 +23,7 @@ public final class Constants {
 
     public static final class Controls {
         // Joystick deadband for angle-only control (e.g. rotation stick ring)
-        public static final double ANGLE_JOYSTICK_DEADBAND = 0.5;
+        public static final double ANGLE_JOYSTICK_DEADBAND = 0.2;
         public static final double Y_DEADBAND = 0.2;
     
         // PID values for heading hold (used for snapping or rotating to angle)
@@ -36,7 +36,7 @@ public final class Constants {
         public static final int motor1CanId = 24;
         public static final int motor2CanId = 25;
 
-        public static final double ballSpeedMetersPerSecond = 3.0;
+        public static final double ballSpeedMetersPerSecond = 3.5; //6.0; //was at 3
     }
 
     public static final class Turret {
@@ -55,11 +55,14 @@ public final class Constants {
         public static final int rollerMotorCanId = 15;
 
         public static final double minRotatorDegree = 3;
-        public static final double maxRotatorDegree = 80; //68.8;
+        public static final double maxRotatorDegree = 80; //83.25; //68.8;
     }
 
     public static final class Field {
-        public static final Translation2d realBlueHubPose = new Translation2d(4.034536, 4.625594); //Hopefully x and y are not flipped
+        //public static final Translation2d realBlueHubPose = new Translation2d(4.034536, 4.625594); //Hopefully x and y are not flipped
+        //public static final Translation2d realBlueHubPose = new Translation2d(3.7, 4.02);
+        public static final Translation2d realBlueHubPose = new Translation2d(4.5, 4.0);
+
 
         public static final Translation2d blueHubPose = new Translation2d(0.5, 3.0);
         public static final Translation2d blueLeftPose = new Translation2d(0.5, 0);
@@ -73,7 +76,7 @@ public final class Constants {
     
         // used to adjust auto drive distance
         // multiply by wheel diameter to fudge from tuning steps
-        public static final double fudge = 0.98175;
+        public static final double fudge = 0.983;
 
         // Wheel diameter in meters (4 inch wheel)
         public static final double WHEEL_DIAMETER_METERS = 0.1016 * fudge; // 4 inches

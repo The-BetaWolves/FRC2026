@@ -247,6 +247,7 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs) {
-        //poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        //poseEstimator.addVisionMeasurement(new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), getHeading()), timestampSeconds, visionMeasurementStdDevs);
     }
 }

@@ -25,15 +25,15 @@ public class TurretSubsystem extends SubsystemBase {
     private final QualityControlService.MonitoredHardware monitoredMotor, monitoredEncoder;
 
     private double setpointRadians = 0.0; // not an input, it's an output of what we command, so doesn't go in io
-    private double toleranceDegrees = 2.0;
+    private double toleranceDegrees = 5.0;
     private double maxMotorOutput = 0.8;
-    private double kP = 1.0; //1?
-    PIDController pid = new PIDController( kP, 0.0, 0.0);
+    private double kP = 2.5;
+    PIDController pid = new PIDController(kP, 0.0, 0.0);
 
     public TurretSubsystem() {
         // add default radians and turret kp to shuffleboard
         SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
-        SmartDashboard.setDefaultNumber("turret kp", kP);
+        //SmartDashboard.setDefaultNumber("turret kp", kP);
         
         if (RobotBase.isSimulation()) {
             io = new TurretIOSim();

@@ -121,7 +121,8 @@ public class RobotContainer {
         );
 
         //swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
-        swerveDrive.resetPose(new Pose2d(3.0, 4.0, (new Rotation2d(Math.PI))));
+        //swerveDrive.resetPose(new Pose2d(0.5, 7.25, (new Rotation2d()))); //Math.PI
+        swerveDrive.resetPose(new Pose2d(2.5, 6, (new Rotation2d(-(Math.PI)/2))));
         
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
         //NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
@@ -132,7 +133,6 @@ public class RobotContainer {
         
         NamedCommands.registerCommand("climberSetUp", new InstantCommand(()->climber.setSetpoint(300)));
         NamedCommands.registerCommand("climberSetDown", new InstantCommand(()->climber.setSetpoint(5)));
-
 
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
@@ -150,20 +150,28 @@ public class RobotContainer {
         */
 
         // Intake In
-        new JoystickButton(driverJoyStick, 4).onTrue(
-            new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
-        ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
-
+        // new JoystickButton(driverJoyStick, 4).onTrue(
+        //     new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
+        // ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
         new JoystickButton(driverJoyStick, 3).onTrue(
+             new InstantCommand(()-> superState.setFireIntent(FireIntent.INTAKE))
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
+
+        new JoystickButton(driverJoyStick, 4).onTrue(
             new InstantCommand(()-> intake.setRollerSpeed(-0.8), intake)
         ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
 
         // Intake Rotator
-         
+        /* 
         new JoystickButton(driverJoyStick, 5).whileTrue(
             new RunCommand(()-> intake.increaseSetpoint(), intake));
         new JoystickButton(driverJoyStick, 10).whileTrue(
             new RunCommand(()-> intake.decreaseSetpoint(), intake));
+        */
+        new JoystickButton(driverJoyStick, 5).whileTrue(
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(1.5), climber));
+        new JoystickButton(driverJoyStick, 10).whileTrue(
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-1.5), climber));
         
         
         new JoystickButton(driverJoyStick, 6).onTrue(
@@ -179,24 +187,34 @@ public class RobotContainer {
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
         ).
         onFalse(
-            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE))
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
 
         new JoystickButton(driverJoyStick, 2).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
         ).
         onFalse(
-            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE))
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
         
-        
+        //Climber
+        /*
         new JoystickButton(driverJoyStick, 7).onTrue(
             new InstantCommand(()-> climber.setSpeed(0.3), climber)
         ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
         new JoystickButton(driverJoyStick, 8).onTrue(
             new InstantCommand(()-> climber.setSpeed(-0.3), climber)
         ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
-        
+         */
+
+        new JoystickButton(driverJoyStick, 7).whileTrue(
+            new RunCommand(()-> climber.incrementSetpoint(3.0), climber));
+        new JoystickButton(driverJoyStick, 8).whileTrue(
+            new RunCommand(()-> climber.incrementSetpoint(-3.0), climber));
+
+        new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
+        new JoystickButton(driverJoyStick, 12).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
+
 
         /* 
         new JoystickButton(driverJoyStick, 2).onTrue(
@@ -224,9 +242,9 @@ public class RobotContainer {
     private void printDebugValues() {
         // add smart dashboard debug calls here instead of in subsystems
 
-        double[] adjustedTargetArray = {superState.getAdjustedTargetPose().getX(), superState.getAdjustedTargetPose().getY()};
-        SmartDashboard.putNumberArray("Adjusted Target Position Meters", adjustedTargetArray);
-        SmartDashboard.putNumber("Distance to Target", superState.getDistanceToTarget());
+        //double[] adjustedTargetArray = {superState.getAdjustedTargetPose().getX(), superState.getAdjustedTargetPose().getY()};
+        //SmartDashboard.putNumberArray("Adjusted Target Position Meters", adjustedTargetArray);
+        //SmartDashboard.putNumber("Distance to Target", superState.getDistanceToTarget());
 
     }
 
@@ -234,5 +252,9 @@ public class RobotContainer {
         return autoChooser.getSelected();
         //return new TestBangBang(swerveDrive);
         //return Commands.print("No autonomous command configured");
+    }
+
+    public void setToIdle() {
+        superState.setFireIntent(FireIntent.IDLE);
     }
 }

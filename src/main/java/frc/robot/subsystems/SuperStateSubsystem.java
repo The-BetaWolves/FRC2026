@@ -2,10 +2,14 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.services.FieldService;
@@ -14,7 +18,9 @@ import frc.robot.services.TurretService;
 import frc.robot.subsystems.flywheel.Flywheel;
 
 public class SuperStateSubsystem extends SubsystemBase {
-    public SuperStateSubsystem () {}
+    public SuperStateSubsystem () {
+        SmartDashboard.setDefaultNumber("ballSpeedConstant", 1);
+    }
 
     // instantiate logic services
     private FieldService fieldService = new FieldService();
@@ -66,17 +72,27 @@ public class SuperStateSubsystem extends SubsystemBase {
     public double getIntakeRotatorSetpoint() {
         return intakeRotatorSetpoint;
     }
+    public void incrementIntakeRotatorSetpoint(double rate) {
+        intakeRotatorSetpoint = intakeRotatorSetpoint + rate;
+    }
 
     int clearTimer, rotatorTimer = 0;
 
     // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
-        turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), new Translation2d(3.7, 4.02));
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.realBlueHubPose, fieldRelativeChassisSpeeds.get());
+        turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+        //turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
+        //distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), fieldTargetPose);
 
+        double[] adjustedTargetArray = {adjustedTargetPose.getX(), adjustedTargetPose.getY()};
+        SmartDashboard.putNumberArray("adjustedTargetPose", adjustedTargetArray);
+        SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
+        SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
         
+        Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
 
         if(fireIntent == FireIntent.STOP) {
             flywheelSetpointRpm = 0.0;
@@ -112,7 +128,7 @@ public class SuperStateSubsystem extends SubsystemBase {
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
             kickerSpeed = 0.8;
-            intakeSpeed = 0.0;
+            intakeSpeed = 0.9;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
                 indexerSpeed = 0.9;
@@ -121,16 +137,19 @@ public class SuperStateSubsystem extends SubsystemBase {
             }
 
             rotatorTimer++;
-            if(rotatorTimer < 60) {
-                intakeRotatorSetpoint = 50;
-            } else if (rotatorTimer > 120) {
+            if(rotatorTimer < 50) {
+                intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
+            } else if (rotatorTimer > 50) {
                 intakeRotatorSetpoint = 5;
+            } 
+            if (rotatorTimer > 100) {
                 rotatorTimer = 0;
             }
         } else if (fireIntent == FireIntent.FIREANDINTAKE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
             kickerSpeed = 0.8;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+            intakeSpeed = 0.9;
 
             /*
             rotatorTimer++;

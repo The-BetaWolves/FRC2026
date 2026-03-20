@@ -5,6 +5,10 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,8 +38,10 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeEncoderOffset = 0.32;
     maxMotorOutput = 1.0;
 
-    motorOutput = 0.0;
+    SparkMaxConfig config = new SparkMaxConfig();
+    config.inverted(true);
 
+    intakeRollerMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     encoder.setInverted(true);
   }
 
@@ -52,12 +58,12 @@ public class IntakeSubsystem extends SubsystemBase {
       setpoint = Constants.Intake.maxRotatorDegree;
     }
 
-    motorOutput = pid.calculate(intakePositionDegrees, setpoint);
+    rotatorSpeed = pid.calculate(intakePositionDegrees, setpoint);
 
     // limit speed of motor to max speed
-    if(Math.abs(motorOutput) > maxMotorOutput) motorOutput = maxMotorOutput * Math.signum(motorOutput);
+    if(Math.abs(rotatorSpeed) > maxMotorOutput) rotatorSpeed = maxMotorOutput * Math.signum(rotatorSpeed);
 
-    intakeRotatorMotor.set(motorOutput);
+    intakeRotatorMotor.set(rotatorSpeed);
 
     SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
     SmartDashboard.putNumber("intakeRotatorSpeed", rotatorSpeed);

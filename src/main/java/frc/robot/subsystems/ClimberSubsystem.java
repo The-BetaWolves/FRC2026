@@ -15,7 +15,11 @@ public class ClimberSubsystem extends SubsystemBase {
 
     SparkFlex climberMotor;
     double speed, setpoint;
-    double kP = 0.0;
+    double kP = 0.015;
+    double maxSetpoint = 425;
+    double minSetpoint = 1;
+    double levelOneHight = 365; //6.5in per 365 rotations
+    
     PIDController pid = new PIDController(kP, 0.0, 0.0);
     /** Creates a new testerSubsystem. */
     public ClimberSubsystem() {
@@ -31,9 +35,17 @@ public class ClimberSubsystem extends SubsystemBase {
         kP = SmartDashboard.getNumber("climber kp", kP);
         pid.setP(kP);
 
-        speed = pid.calculate(setpoint);
 
-        if ((climberMotor.getEncoder().getPosition() < 0.0 && speed < 0) || (climberMotor.getEncoder().getPosition() > 425) && speed > 0) {
+        if (setpoint >= maxSetpoint) {
+            setpoint = maxSetpoint;
+        } else if (setpoint <= minSetpoint) {
+            setpoint = minSetpoint;
+        }
+
+        speed = pid.calculate(climberMotor.getEncoder().getPosition(), setpoint);
+
+
+        if ((climberMotor.getEncoder().getPosition() < minSetpoint && speed < 0) || (climberMotor.getEncoder().getPosition() > maxSetpoint) && speed > 0) {
             climberMotor.set(0.0);
         } else {
             climberMotor.set(speed);
@@ -41,6 +53,7 @@ public class ClimberSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("climberSpeed", speed);
         SmartDashboard.putNumber("climberEncoder", climberMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("climberSetpoint", setpoint);
     }
 
     public void setSpeed(double speed) {
@@ -48,5 +61,8 @@ public class ClimberSubsystem extends SubsystemBase {
     }
     public void setSetpoint(double setpoint) {
         this.setpoint = setpoint;
+    }
+    public void incrementSetpoint(double rate) {
+        setpoint = setpoint + rate;
     }
 }
