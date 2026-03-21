@@ -8,20 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.284542168670346,
-        "y": 7.550056236351547
+        "x": 6.805686746987951,
+        "y": 4.450253012048193
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.9873038516405135,
-        "y": 7.379643366619116
+        "x": 6.871253012048193,
+        "y": 4.996638554216868
       },
       "prevControl": {
-        "x": 5.022396576319543,
-        "y": 7.379643366619116
+        "x": 7.042238294268525,
+        "y": 4.814254253181847
+      },
+      "nextControl": {
+        "x": 6.580604721462443,
+        "y": 5.306663397508333
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.297662650602409,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 5.861325231681228,
+        "y": 7.4
+      },
+      "nextControl": {
+        "x": 4.739545628712093,
+        "y": 7.4
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.0,
+        "y": 7.4
+      },
+      "prevControl": {
+        "x": 5.527144578313253,
+        "y": 7.400734939759036
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,15 +62,23 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0,
-      "rotationDegrees": 0.0
+      "waypointRelativePos": 1,
+      "rotationDegrees": -15.376251248826128
+    },
+    {
+      "waypointRelativePos": 2.0,
+      "rotationDegrees": -178.31403955481485
+    },
+    {
+      "waypointRelativePos": 3.0,
+      "rotationDegrees": 46.06400176499809
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -46,8 +86,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 0.0,
+    "rotation": 165.0
   },
   "reversed": false,
   "folder": "2GrabAndClimbLeft",

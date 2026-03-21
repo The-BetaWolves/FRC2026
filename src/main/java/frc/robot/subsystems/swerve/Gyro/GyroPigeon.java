@@ -32,4 +32,9 @@ public class GyroPigeon implements GyroIO {
     public void zeroYaw() {
         gyro.reset();
     }
+
+    @Override
+    public void setYaw(double angle) {
+        gyro.setYaw(angle);
+    }
 }

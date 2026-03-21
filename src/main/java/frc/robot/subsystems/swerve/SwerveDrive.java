@@ -12,6 +12,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -135,7 +136,12 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     public void resetPose(Pose2d pose) {
-        poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+        if (RobotState.isAutonomous()) {
+            gyro.setYaw(pose.getRotation().getDegrees());
+            poseEstimator.resetPosition(pose.getRotation(), getModulePositions(), pose);
+        } else {
+            poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+        }
     }
 
     /** Resets odometry to a known pose */

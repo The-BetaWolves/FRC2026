@@ -49,25 +49,7 @@
         {
           "type": "named",
           "data": {
-            "name": "setToFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setClimberUp"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "G2C4thPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setClimberDown"
+            "name": "staticFire"
           }
         }
       ]

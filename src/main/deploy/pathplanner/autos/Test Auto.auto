@@ -5,33 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Example Path"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIdle"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Example Path2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToFire"
           }
         }
       ]

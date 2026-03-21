@@ -37,7 +37,7 @@ public final class Constants {
         public static final int motor2CanId = 25;
 
         public static final double ballSpeedMetersPerSecond = 2; //Lower = more correction, higher = less
-        public static final double firingTimeSeconds = 3;
+        public static final double firingTimeSeconds = 5;
     }
 
     public static final class Turret {

@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public interface GyroIO {
     Rotation2d getYaw();
     void zeroYaw();
+    void setYaw(double angle);
 
     @AutoLog
     public static class GyroIOInputs  {
@@ -18,4 +19,5 @@ public interface GyroIO {
 
     // simRotationRate is for simulation only
     public default void updateInputs(GyroIOInputs inputs,  double simRotationRate) {}
+    
 }

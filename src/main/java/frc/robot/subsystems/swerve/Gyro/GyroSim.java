@@ -28,6 +28,11 @@ public class GyroSim implements GyroIO {
     }
 
     @Override
+    public void setYaw(double angle) {
+        
+    }
+
+    @Override
     public void zeroYaw() {
         yaw = new Rotation2d();
     }

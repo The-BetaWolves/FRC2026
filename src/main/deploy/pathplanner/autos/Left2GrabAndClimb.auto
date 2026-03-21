@@ -47,12 +47,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "G2C4thPath"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "setToFire"
@@ -67,7 +61,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "G2C5thPath"
+            "pathName": "G2C4thPath"
           }
         },
         {
