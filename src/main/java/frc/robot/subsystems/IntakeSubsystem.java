@@ -32,10 +32,10 @@ public class IntakeSubsystem extends SubsystemBase {
     encoder = new DutyCycleEncoder(1);
     rollerSpeed = 0.0;
     setpoint = 3.0;
-    kp = 0.05; //0.13;
+    kp = 0.01; //0.13;
     ki = 0.00;
     pid = new PIDController(kp, ki, 0.0);
-    intakeEncoderOffset = 0.32;
+    intakeEncoderOffset = 0.449;
     maxMotorOutput = 1.0;
 
     SparkMaxConfig config = new SparkMaxConfig();

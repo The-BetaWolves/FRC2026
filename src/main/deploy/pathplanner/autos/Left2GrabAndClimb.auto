@@ -29,22 +29,9 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "setToFire"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 4.0
-                }
-              }
-            ]
+            "name": "staticFire"
           }
         },
         {
@@ -60,15 +47,33 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "G2C4thPath"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "setToIdle"
+            "name": "setToFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setClimberUp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "G2C4thPath"
+            "pathName": "G2C5thPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setClimberDown"
           }
         }
       ]

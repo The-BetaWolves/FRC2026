@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.ClimberSubsystem;
@@ -122,7 +123,7 @@ public class RobotContainer {
 
         //swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
         //swerveDrive.resetPose(new Pose2d(0.5, 7.25, (new Rotation2d()))); //Math.PI
-        swerveDrive.resetPose(new Pose2d(2.5, 6, (new Rotation2d(-(Math.PI)/2))));
+        //swerveDrive.resetPose(new Pose2d(2.5, 6, (new Rotation2d(-(Math.PI)/2))));
         
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
         //NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
@@ -131,8 +132,12 @@ public class RobotContainer {
         NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
         NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
         
-        NamedCommands.registerCommand("climberSetUp", new InstantCommand(()->climber.setSetpoint(300)));
-        NamedCommands.registerCommand("climberSetDown", new InstantCommand(()->climber.setSetpoint(5)));
+        NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(300)));
+        NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(5)));
+
+        NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
+            new WaitCommand(Constants.Flywheel.firingTimeSeconds),
+            new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))));
 
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();

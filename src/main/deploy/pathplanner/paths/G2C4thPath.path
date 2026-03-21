@@ -36,24 +36,8 @@
         "y": 7.41845934379458
       },
       "prevControl": {
-        "x": 7.260784593437946,
-        "y": 7.4702139800285305
-      },
-      "nextControl": {
-        "x": 2.6903991487542984,
-        "y": 7.398239406096506
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.7914550641940081,
-        "y": 4.869543509272469
-      },
-      "prevControl": {
-        "x": 2.124136947218259,
-        "y": 5.218887303851641
+        "x": 7.417638554216869,
+        "y": 7.739493975903613
       },
       "nextControl": null,
       "isLocked": false,
@@ -83,7 +67,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 0.5801267425107981
   },
   "reversed": false,
   "folder": "2GrabAndClimbLeft",
