@@ -30,7 +30,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     // TODO: add the kicker. make it's rpm based on the FireIntent state
 
     // setup state enums
-    public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, FIREANDINTAKE}
+    public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, SPIT, FIREANDINTAKE}
     private FireIntent fireIntent = FireIntent.STOP;
     public void setFireIntent(FireIntent intent) { this.fireIntent = intent; }
     public FireIntent getFireIntent() { return fireIntent; }
@@ -43,6 +43,8 @@ public class SuperStateSubsystem extends SubsystemBase {
     private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
     private double intakeRotatorSetpoint = 0.0;
     private double distanceToTarget;
+
+    private final double flywheelIdleRPM = 500;
 
     // public getters
     public double getTurretSetpointRadians() {
@@ -69,6 +71,9 @@ public class SuperStateSubsystem extends SubsystemBase {
     public double getIntakeSpeed() {
         return intakeSpeed;
     }
+    //public void setIntakeSpeed(double speed) {
+    //    intakeSpeed = speed;
+    //}
     public double getIntakeRotatorSetpoint() {
         return intakeRotatorSetpoint;
     }
@@ -101,7 +106,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             intakeSpeed = 0.0;
 
         } else if( fireIntent == FireIntent.IDLE) {
-            flywheelSetpointRpm = 500.0;
+            flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = 0.0;
@@ -113,17 +118,23 @@ public class SuperStateSubsystem extends SubsystemBase {
                 clearTimer = 0;
             } 
 
-            flywheelSetpointRpm = 500;
+            flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = -0.8;
             //kickerSpeed = 0.0;
             indexerSpeed = -1.0;
             intakeSpeed = 0.0;
 
         } else if (fireIntent == FireIntent.INTAKE) {
-            flywheelSetpointRpm = 500.0;
+            flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = 0.9;
+            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+        } else if (fireIntent == FireIntent.SPIT) {
+            flywheelSetpointRpm = flywheelIdleRPM;
+            kickerSpeed = 0.0;
+            indexerSpeed = 0.0;
+            intakeSpeed = -0.9;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later

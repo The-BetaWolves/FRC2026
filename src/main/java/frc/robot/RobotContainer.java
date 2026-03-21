@@ -163,8 +163,8 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
         new JoystickButton(driverJoyStick, 4).onTrue(
-            new InstantCommand(()-> intake.setRollerSpeed(-0.8), intake)
-        ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
+             new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
         // Intake Rotator
         /* 
