@@ -14,16 +14,16 @@ public class FieldService {
 
     public Translation2d getTargetPose(Pose2d robotPose) {
         
-        return Constants.Field.realBlueHubPose;
-        /*
-        if (robotPose.getY() < 2) {
+        //return Constants.Field.realBlueHubPose;
+        
+        if (robotPose.getY() < 2  && robotPose.getX() > 5) {
             return Constants.Field.blueLeftPose;
-        } else if (robotPose.getY() > 4) {
+        } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
             return Constants.Field.blueRightPose;
         } else {
-            return Constants.Field.blueHubPose;
+            return Constants.Field.realBlueHubPose;
         }
-        */
+        
     }
 
     public double getDistanceToTarget(Pose2d robotPose, Translation2d targetPose) {
@@ -56,7 +56,7 @@ public class FieldService {
 
     public Translation2d getAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
         double distanceToTargetMeters = getDistanceToTarget(robotPose, targetPose);
-        double ballSpeedFromSmartdashboard = SmartDashboard.getNumber("ballSpeedConstant", Constants.Flywheel.ballSpeedMetersPerSecond);
+        double ballSpeedFromSmartdashboard = Constants.Flywheel.ballSpeedMetersPerSecond; //SmartDashboard.getNumber("ballSpeedConstant", Constants.Flywheel.ballSpeedMetersPerSecond);
         double timeOfFlightSeconds = distanceToTargetMeters / ballSpeedFromSmartdashboard;
 
         Translation2d driftInMeters = new Translation2d(
