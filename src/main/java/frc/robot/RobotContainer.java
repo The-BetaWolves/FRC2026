@@ -36,6 +36,7 @@ import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.turret.TurretSubsystem;
 import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIOLimelight;
 import frc.robot.subsystems.vision.VisionIOPhotonVision;
 import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 
@@ -64,14 +65,16 @@ public class RobotContainer {
             new Vision(
                 swerveDrive::addVisionMeasurement,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
-                new VisionIOPhotonVision(camera1Name, robotToCamera1)
+                new VisionIOPhotonVision(camera1Name, robotToCamera1),
+                new VisionIOLimelight(camera2Name, swerveDrive::getHeading)
             );
         } else {
             vision =
             new Vision(
                 swerveDrive::addVisionMeasurement,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, swerveDrive::getPose),
-                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, swerveDrive::getPose));
+                new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, swerveDrive::getPose),
+                new VisionIOLimelight(camera2Name, swerveDrive::getHeading));
         }
         
 
