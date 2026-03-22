@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.8,
-        "y": 4.507261055634808
+        "x": 7.811,
+        "y": 5.587
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.805686746987951,
-        "y": 4.450253012048193
+        "x": 6.7483331527071915,
+        "y": 5.66635250221544
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.871253012048193,
-        "y": 4.996638554216868
+        "x": 6.67455421686747,
+        "y": 6.50466265060241
       },
       "prevControl": {
-        "x": 7.042238294268525,
-        "y": 4.814254253181847
+        "x": 6.928283169025979,
+        "y": 6.257933324709199
       },
       "nextControl": {
-        "x": 6.580604721462443,
-        "y": 5.306663397508333
+        "x": 6.417277093707031,
+        "y": 6.754842264024942
       },
       "isLocked": false,
       "linkedName": null
@@ -36,12 +36,12 @@
         "y": 7.4
       },
       "prevControl": {
-        "x": 5.861325231681228,
-        "y": 7.4
+        "x": 5.545739715652813,
+        "y": 7.369052143919528
       },
       "nextControl": {
-        "x": 4.739545628712093,
-        "y": 7.4
+        "x": 4.842952349564837,
+        "y": 7.456725554020723
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 7.4
       },
       "prevControl": {
-        "x": 5.527144578313253,
-        "y": 7.400734939759036
+        "x": 5.504400694555462,
+        "y": 7.3618628115357465
       },
       "nextControl": null,
       "isLocked": false,
@@ -63,7 +63,7 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 1,
-      "rotationDegrees": -15.376251248826128
+      "rotationDegrees": 92.35329686610844
     },
     {
       "waypointRelativePos": 2.0,
@@ -78,7 +78,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 1.5,
+    "maxVelocity": 1.75,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -93,7 +93,7 @@
   "folder": "2GrabAndClimbLeft",
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -88.79753059434988
+    "rotation": -88.798
   },
   "useDefaultConstraints": true
 }

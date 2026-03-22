@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.9743651925820247,
-        "y": 7.41845934379458
+        "x": 3.0,
+        "y": 7.4
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.369036144578634,
-        "y": 7.171253012046297
+        "x": 1.3946709519966092,
+        "y": 7.152793668251718
       },
       "isLocked": false,
       "linkedName": null
@@ -48,7 +48,7 @@
   "folder": "2GrabAndClimbLeft",
   "idealStartingState": {
     "velocity": 0.0,
-    "rotation": 180.0
+    "rotation": 165.0
   },
   "useDefaultConstraints": false
 }
