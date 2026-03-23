@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2GRight1stPath"
+            "pathName": "Right2G1stPath"
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2GRight2ndPath"
+            "pathName": "Right2G2ndPath"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2GRight3rdPath"
+            "pathName": "Right2G3rdPath"
           }
         },
         {
@@ -56,6 +56,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right",
   "choreoAuto": false
 }

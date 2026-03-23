@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SafeG2C1stPath"
+            "pathName": "SafeLeft2GC1stPath"
           }
         },
         {
@@ -25,25 +25,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "G2C2ndPath"
+            "pathName": "Left2G2ndPath"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setToFireAndIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "G2C3rdPath"
+            "pathName": "LeftDepotPath"
           }
         },
         {
@@ -55,13 +62,13 @@
         {
           "type": "named",
           "data": {
-            "name": "setClimberUp"
+            "name": "setIntakeUp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "G2C4thPath"
+            "pathName": "AlternativeDepotClimb2ndPath"
           }
         },
         {
@@ -74,6 +81,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Left",
   "choreoAuto": false
 }

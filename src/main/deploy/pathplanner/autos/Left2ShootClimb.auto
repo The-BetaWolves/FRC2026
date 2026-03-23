@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SafeLeft2GC1stPath"
+            "pathName": "Left2G1stPath"
           }
         },
         {
@@ -29,27 +29,52 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setToFireAndIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "LeftDepotPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
+            "name": "setToFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setIntakeUp"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AlternativeDepotClimb2ndPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setClimberDown"
           }
         }
       ]

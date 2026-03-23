@@ -3,10 +3,16 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "2GrabAndClimbLeft",
-    "2GrabRight"
+    "2GrabLeft",
+    "2GrabRight",
+    "DepotClimbMiddle",
+    "Extras",
+    "Testing"
   ],
   "autoFolders": [
+    "Middle",
+    "Left",
+    "Right",
     "Tests"
   ],
   "defaultMaxVel": 1.75,
@@ -24,7 +30,7 @@
   "driveCurrentLimit": 60.0,
   "wheelCOF": 1.2,
   "flModuleX": 0.288925,
-  "flModuleY": 0.276225,
+  "flModuleY": 0.276,
   "frModuleX": 0.288925,
   "frModuleY": -0.276225,
   "blModuleX": -0.288925,
@@ -34,6 +40,8 @@
   "bumperOffsetX": 0.0,
   "bumperOffsetY": 0.0,
   "robotFeatures": [
-    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.55,\"y\":0.0},\"size\":{\"width\":0.78,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.55,\"y\":0.0},\"size\":{\"width\":0.78,\"length\":0.3},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}",
+    "{\"name\":\"Circle\",\"type\":\"circle\",\"data\":{\"center\":{\"x\":-0.3,\"y\":0.0},\"radius\":0.1,\"strokeWidth\":0.02,\"filled\":false}}",
+    "{\"name\":\"Rectangle\",\"type\":\"rounded_rect\",\"data\":{\"center\":{\"x\":0.0,\"y\":-0.276},\"size\":{\"width\":0.1,\"length\":0.2},\"borderRadius\":0.05,\"strokeWidth\":0.02,\"filled\":false}}"
   ]
 }

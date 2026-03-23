@@ -129,22 +129,25 @@ public class RobotContainer {
         //swerveDrive.resetPose(new Pose2d(2.5, 6, (new Rotation2d(-(Math.PI)/2))));
         
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
-        //NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
+        NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
         NamedCommands.registerCommand("setToFire", new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE)));
         NamedCommands.registerCommand("setToClear", new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR)));
         NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
         NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
         
-        NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(300)));
-        NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(5)));
+        NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(365)));
+        NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(1)));
 
         NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
             new WaitCommand(Constants.Flywheel.firingTimeSeconds),
-            new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))));
+            new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))).andThen(
+                new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR))
+            ));
+
+        NamedCommands.registerCommand("setIntakeUp", new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree)));
 
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
-
 
         printDebugValues();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -176,10 +179,12 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 10).whileTrue(
             new RunCommand(()-> intake.decreaseSetpoint(), intake));
         */
+
+        //May need to add the intake as a required subsystem
         new JoystickButton(driverJoyStick, 5).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(1.5), climber));
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(1.5)));
         new JoystickButton(driverJoyStick, 10).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-1.5), climber));
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-1.5)));
         
         
         new JoystickButton(driverJoyStick, 6).onTrue(

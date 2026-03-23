@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "G2C1stPath"
+            "pathName": "Right2G1stPath"
           }
         },
         {
@@ -25,25 +25,32 @@
         {
           "type": "path",
           "data": {
-            "pathName": "G2C2ndPath"
+            "pathName": "Right2G2ndPath"
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "staticFire"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "G2C3rdPath"
+            "pathName": "RightOutpostPath"
           }
         },
         {
@@ -53,15 +60,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "setClimberUp"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "G2C4thPath"
+            "pathName": "OutpostToClimbPath"
           }
         },
         {
@@ -74,6 +75,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right",
   "choreoAuto": false
 }

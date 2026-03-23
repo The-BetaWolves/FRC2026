@@ -29,27 +29,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "staticFire"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "LeftClimbPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
+            "name": "setClimberDown"
           }
         }
       ]

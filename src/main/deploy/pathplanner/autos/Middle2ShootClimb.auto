@@ -13,19 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SafeLeft2GC1stPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIdle"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "AlternativeDepotClimb1stPath"
           }
         },
         {
@@ -35,27 +23,46 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "setToIntake"
+            "pathName": "DepotClimb3rdPath"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "setToFire"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "OutpostToClimbPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
+            "name": "setClimberDown"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Middle",
   "choreoAuto": false
 }

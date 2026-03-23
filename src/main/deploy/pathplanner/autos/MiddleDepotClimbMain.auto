@@ -13,49 +13,50 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SafeLeft2GC1stPath"
+            "pathName": "DepotClimb1stPath"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "setClimberUp"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "staticFire"
+                }
+              }
+            ]
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setToIdle"
+            "name": "setIntakeUp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "DepotClimb2ndPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setToIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left2G3rdPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "staticFire"
+            "name": "setClimberDown"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Middle",
   "choreoAuto": false
 }

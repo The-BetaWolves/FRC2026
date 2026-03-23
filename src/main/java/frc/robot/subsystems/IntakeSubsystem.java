@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class IntakeSubsystem extends SubsystemBase {
-
+  //Includes both the arm (as the rotator) and the rollers
+  
   SparkMax intakeRollerMotor;
   SparkMax intakeRotatorMotor;
   DutyCycleEncoder encoder;
