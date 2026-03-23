@@ -38,6 +38,7 @@ public class VisionConstants {
     // Camera names, must match names configured on coprocessor
     public static String camera0Name = "camera_0";
     public static String camera1Name = "camera_1";
+    public static String camera2Name = "limelight";
 
     // Robot to camera transforms
     // (Not used by Limelight, configure in web UI instead)
@@ -52,7 +53,7 @@ public class VisionConstants {
 
     // Standard deviation baselines, for 1 meter distance and 1 tag
     // (Adjusted automatically based on distance and # of tags)
-    public static double linearStdDevBaseline = 0.1; // Meters
+    public static double linearStdDevBaseline = 0.6; // Meters
     public static double angularStdDevBaseline = 0.12; // Radians
 
     // Standard deviation multipliers for each camera
@@ -60,7 +61,8 @@ public class VisionConstants {
     public static double[] cameraStdDevFactors =
         new double[] {
             1.0, // Camera 0
-            1.0 // Camera 1
+            1.0, // Camera 1
+            1.0
         };
 
     // Multipliers to apply for MegaTag 2 observations
