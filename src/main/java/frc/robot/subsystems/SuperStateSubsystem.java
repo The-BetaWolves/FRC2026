@@ -86,16 +86,17 @@ public class SuperStateSubsystem extends SubsystemBase {
     // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
+        Logger.recordOutput("Superstate/FieldTargetPose", fieldTargetPose);
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.realBlueHubPose, fieldRelativeChassisSpeeds.get());
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         //turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
         //distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), fieldTargetPose);
 
-        double[] adjustedTargetArray = {adjustedTargetPose.getX(), adjustedTargetPose.getY()};
-        SmartDashboard.putNumberArray("adjustedTargetPose", adjustedTargetArray);
-        SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
-        SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
+        //double[] adjustedTargetArray = {adjustedTargetPose.getX(), adjustedTargetPose.getY()};
+        //SmartDashboard.putNumberArray("adjustedTargetPose", adjustedTargetArray);
+        //SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
+        //SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
         
         Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
 

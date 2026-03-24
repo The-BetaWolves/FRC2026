@@ -55,7 +55,7 @@ public final class Constants {
         public static final int rotatorMotorCanId = 4;
         public static final int rollerMotorCanId = 15;
 
-        public static final double minRotatorDegree = 3;
+        public static final double minRotatorDegree = 0.5;
         public static final double maxRotatorDegree = 80; //83.25; //68.8;
     }
 

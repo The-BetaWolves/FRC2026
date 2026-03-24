@@ -32,7 +32,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeRotatorMotor = new SparkMax(4, MotorType.kBrushless);
     encoder = new DutyCycleEncoder(1);
     rollerSpeed = 0.0;
-    setpoint = 3.0;
+    setpoint = Constants.Intake.minRotatorDegree;
     kp = 0.025; //0.13;
     ki = 0.00;
     pid = new PIDController(kp, ki, 0.0);

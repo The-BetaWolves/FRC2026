@@ -34,10 +34,10 @@ public class Flywheel extends SubsystemBase {
     /** Creates a new testerSubsystem. */
     public Flywheel() {
 
-        SmartDashboard.setDefaultNumber("flywheel target rpm", setpointRpm);
-        SmartDashboard.setDefaultNumber("flywheel kp", kP);
-        SmartDashboard.setDefaultNumber("flywheel kv", kV);
-        SmartDashboard.setDefaultNumber("flywheel ks", kS);
+        // SmartDashboard.setDefaultNumber("flywheel target rpm", setpointRpm);
+        // SmartDashboard.setDefaultNumber("flywheel kp", kP);
+        // SmartDashboard.setDefaultNumber("flywheel kv", kV);
+        // SmartDashboard.setDefaultNumber("flywheel ks", kS);
 
         if (RobotBase.isSimulation()) {
             io = new FlywheelIOSim();
@@ -56,13 +56,13 @@ public class Flywheel extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Flywheel", inputs);
 
-        double kPFromShuffleboard = SmartDashboard.getNumber("flywheel kp", kP);
+        //double kPFromShuffleboard = SmartDashboard.getNumber("flywheel kp", kP);
         // pid.setP(kPFromShuffleboard);
-        double kVFromShuffleboard = SmartDashboard.getNumber("flywheel kv", kV);
+        //double kVFromShuffleboard = SmartDashboard.getNumber("flywheel kv", kV);
         // feedForward.setKv(kVFromShuffleboard);
-        double setpointRpmFromShuffleboard = SmartDashboard.getNumber("flywheel target rpm", setpointRpm);
+        //double setpointRpmFromShuffleboard = SmartDashboard.getNumber("flywheel target rpm", setpointRpm);
 
-        double kSFromShuffleboard = SmartDashboard.getNumber("flywheel ks", kS);
+        //double kSFromShuffleboard = SmartDashboard.getNumber("flywheel ks", kS);
 
 
         //double motorOutput = pid.calculate(inputs.velocityRpm, setpointRpm) + feedForward.calculate(setpointRpm);

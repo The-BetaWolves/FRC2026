@@ -32,7 +32,7 @@ public class TurretSubsystem extends SubsystemBase {
 
     public TurretSubsystem() {
         // add default radians and turret kp to shuffleboard
-        SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
+        //SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
         //SmartDashboard.setDefaultNumber("turret kp", kP);
         
         if (RobotBase.isSimulation()) {

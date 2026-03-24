@@ -248,8 +248,8 @@ public class SwerveDrive extends SubsystemBase {
         odometry.updateInputs(odometryInputs, getHeading(), getModulePositions());
         Logger.processInputs("Swerve/Odometry", odometryInputs);
 
-        SmartDashboard.putNumber("odometry X", odometry.getPoseMeters().getX()); 
-        SmartDashboard.putNumber("odometry Y", odometry.getPoseMeters().getY());
+        //SmartDashboard.putNumber("odometry X", odometry.getPoseMeters().getX()); 
+        //SmartDashboard.putNumber("odometry Y", odometry.getPoseMeters().getY());
     }
 
     /** Adds a new timestamped vision measurement. */

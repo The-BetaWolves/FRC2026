@@ -31,12 +31,6 @@
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "setToIntake"
           }
         },
@@ -44,12 +38,6 @@
           "type": "path",
           "data": {
             "pathName": "Right2G3rdPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "staticFire"
           }
         }
       ]

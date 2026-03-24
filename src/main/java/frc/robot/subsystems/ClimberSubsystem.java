@@ -27,12 +27,12 @@ public class ClimberSubsystem extends SubsystemBase {
         speed = 0.0;
         setpoint = 0.0;
 
-        SmartDashboard.setDefaultNumber("climber kp", kP);
+        //SmartDashboard.setDefaultNumber("climber kp", kP);
     }
 
     @Override
     public void periodic() {
-        kP = SmartDashboard.getNumber("climber kp", kP);
+        //kP = SmartDashboard.getNumber("climber kp", kP);
         pid.setP(kP);
 
 

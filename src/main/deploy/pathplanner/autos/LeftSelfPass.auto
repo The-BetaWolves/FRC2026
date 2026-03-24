@@ -15,6 +15,12 @@
           "data": {
             "pathName": "LeftSelfPass1stPath"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftDepotPath"
+          }
         }
       ]
     }
