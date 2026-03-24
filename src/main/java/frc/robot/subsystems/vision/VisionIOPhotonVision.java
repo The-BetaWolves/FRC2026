@@ -55,7 +55,7 @@ public class VisionIOPhotonVision implements VisionIO {
       // Add pose observation
       if (result.multitagResult.isPresent()) { // Multitag result
         var multitagResult = result.multitagResult.get();
-
+        
         // Calculate robot pose
         Transform3d fieldToCamera = multitagResult.estimatedPose.best;
         Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());

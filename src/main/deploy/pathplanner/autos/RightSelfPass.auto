@@ -7,19 +7,19 @@
         {
           "type": "named",
           "data": {
-            "name": "setToIntake"
+            "name": "setToFireAndIntake"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2GRight1stPath"
+            "pathName": "RightSelfPass1stPath"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right",
   "choreoAuto": false
 }

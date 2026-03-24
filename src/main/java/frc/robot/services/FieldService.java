@@ -16,13 +16,17 @@ public class FieldService {
         
         //return Constants.Field.realBlueHubPose;
         
-        if (robotPose.getY() < 2  && robotPose.getX() > 5) {
+        return Constants.Field.realBlueHubPose;
+
+        /*
+        if (robotPose.getY() < 3  && robotPose.getX() > 5) {
             return Constants.Field.blueLeftPose;
-        } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
+        } else if (robotPose.getY() > 5 && robotPose.getX() > 5) {
             return Constants.Field.blueRightPose;
         } else {
             return Constants.Field.realBlueHubPose;
         }
+         */
         
     }
 

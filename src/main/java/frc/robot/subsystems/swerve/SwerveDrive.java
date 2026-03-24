@@ -144,6 +144,10 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    public void setYaw(double yaw) {
+        gyro.setYaw(yaw);
+    }
+
     /** Resets odometry to a known pose */
     public void resetOdometry(Pose2d pose) {
         odometry.resetPose(getHeading(), getModulePositions(), pose);
@@ -253,7 +257,7 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs) {
-        poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
-        //poseEstimator.addVisionMeasurement(new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), getHeading()), timestampSeconds, visionMeasurementStdDevs);
+        //poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+        poseEstimator.addVisionMeasurement(new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), getHeading()), timestampSeconds, visionMeasurementStdDevs);
     }
 }

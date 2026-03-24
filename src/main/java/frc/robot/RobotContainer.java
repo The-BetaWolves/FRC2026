@@ -126,7 +126,7 @@ public class RobotContainer {
 
         //swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
         //swerveDrive.resetPose(new Pose2d(0.5, 7.25, (new Rotation2d()))); //Math.PI
-        //swerveDrive.resetPose(new Pose2d(2.5, 6, (new Rotation2d(-(Math.PI)/2))));
+        //swerveDrive.resetPose(new Pose2d(0, 0, (new Rotation2d((Math.PI)))));
         
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
         NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
@@ -210,6 +210,11 @@ public class RobotContainer {
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
         
+        //ResetGyro
+        new JoystickButton(driverJoyStick, 16).onTrue(
+            new InstantCommand(()-> swerveDrive.setYaw(0))
+        );
+
         //Climber
         /*
         new JoystickButton(driverJoyStick, 7).onTrue(

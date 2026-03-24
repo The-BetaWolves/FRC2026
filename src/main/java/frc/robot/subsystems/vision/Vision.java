@@ -104,7 +104,8 @@ public class Vision extends SubsystemBase {
                 || observation.pose().getX() < 0.0
                 || observation.pose().getX() > aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
-                || observation.pose().getY() > aprilTagLayout.getFieldWidth();
+                || observation.pose().getY() > aprilTagLayout.getFieldWidth()
+                || (cameraIndex < 2 && observation.tagCount() == 1);
 
         // Add pose to log
         robotPoses.add(observation.pose());
@@ -113,6 +114,7 @@ public class Vision extends SubsystemBase {
         } else {
           robotPosesAccepted.add(observation.pose());
         }
+
 
         // Skip if rejected
         if (rejectPose) {
@@ -132,6 +134,7 @@ public class Vision extends SubsystemBase {
           linearStdDev *= cameraStdDevFactors[cameraIndex];
           angularStdDev *= cameraStdDevFactors[cameraIndex];
         }
+
 
         // Send vision observation
         consumer.accept(
