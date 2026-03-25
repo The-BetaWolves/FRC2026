@@ -62,12 +62,15 @@ public final class Constants {
     public static final class Field {
         //public static final Translation2d realBlueHubPose = new Translation2d(4.034536, 4.625594); //Hopefully x and y are not flipped
         //public static final Translation2d realBlueHubPose = new Translation2d(3.7, 4.02);
-        public static final Translation2d realBlueHubPose = new Translation2d(4.5, 4.0);
+        //public static final Translation2d realBlueHubPose = new Translation2d(4.5, 4.0);
 
 
-        //public static final Translation2d blueHubPose = new Translation2d(0.5, 3.0);
+        public static final Translation2d blueHubPose = new Translation2d(4.6, 4.0);
         public static final Translation2d blueLeftPose = new Translation2d(2, 2);
         public static final Translation2d blueRightPose = new Translation2d(2, 6);
+        public static final Translation2d redHubPose = new Translation2d(11.9, 4.0);
+        public static final Translation2d redLeftPose = new Translation2d(14.5, 2);
+        public static final Translation2d redRightPose = new Translation2d(14.5, 6);
     }
 
     public static final class SwerveConfig {

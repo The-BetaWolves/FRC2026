@@ -7,8 +7,11 @@ package frc.robot.services;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Robot;
 
 public class FieldService {
 
@@ -18,16 +21,23 @@ public class FieldService {
         
         //return Constants.Field.realBlueHubPose;
 
-        
-        if (robotPose.getY() < 3  && robotPose.getX() > 5) {
-            return Constants.Field.blueLeftPose;
-        } else if (robotPose.getY() > 5 && robotPose.getX() > 5) {
-            return Constants.Field.blueRightPose;
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            if (robotPose.getY() < 4  && robotPose.getX() > (Constants.Field.redHubPose.getX() - 1.2)) {
+                return Constants.Field.redLeftPose;
+            } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
+                return Constants.Field.redRightPose;
+            } else {
+                return Constants.Field.redHubPose;
+            }
         } else {
-            return Constants.Field.realBlueHubPose;
+            if (robotPose.getY() < 4  && robotPose.getX() > (Constants.Field.blueHubPose.getX() + 1.2)) {
+                return Constants.Field.blueLeftPose;
+            } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
+                return Constants.Field.blueRightPose;
+            } else {
+                return Constants.Field.blueHubPose;
+            }
         }
-         
-        
     }
 
     public double getDistanceToTarget(Pose2d robotPose, Translation2d targetPose) {
