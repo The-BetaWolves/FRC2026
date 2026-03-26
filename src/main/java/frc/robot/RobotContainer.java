@@ -10,10 +10,18 @@ import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
+import java.util.List;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -266,7 +274,40 @@ public class RobotContainer {
             new RunCommand(()-> turret.incrementOffset(-0.05), turret)
         );
         
+        PathConstraints constraints = new PathConstraints(1.0, 3.0, 2 * Math.PI, 3 * Math.PI);
+        PathPlannerPath toTowerPath;
+        if (swerveDrive.getPose().getY() < 4) {
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                swerveDrive.getPose(),
+                new Pose2d(0.990, 3.9, new Rotation2d(0)),
+                new Pose2d(0.990, 4.4, new Rotation2d(-90))
+            );
 
+            toTowerPath = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+        } else {
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                swerveDrive.getPose(),
+                new Pose2d(0.990, 3.5, new Rotation2d(0)),
+                new Pose2d(0.990, 3, new Rotation2d(90))
+            );
+
+            toTowerPath = new PathPlannerPath(
+                waypoints,
+                constraints,
+                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
+                new GoalEndState(0.0, Rotation2d.fromDegrees(180)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
+            );
+        }
+        //toTowerPath.preventFlipping = true;
+
+        new JoystickButton(driverJoyStick, 11).whileTrue(
+            AutoBuilder.followPath(toTowerPath)
+        );
 
         
     }
