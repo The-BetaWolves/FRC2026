@@ -45,7 +45,7 @@ public class ClimberSubsystem extends SubsystemBase {
         speed = pid.calculate(climberMotor.getEncoder().getPosition(), setpoint);
 
 
-        if ((climberMotor.getEncoder().getPosition() < minSetpoint && speed < 0) || (climberMotor.getEncoder().getPosition() > maxSetpoint) && speed > 0) {
+        if ((climberMotor.getEncoder().getPosition() < minSetpoint && speed < 0) || (climberMotor.getEncoder().getPosition() > levelOneHight) && speed > 0) {
             climberMotor.set(0.0);
         } else {
             climberMotor.set(speed);
