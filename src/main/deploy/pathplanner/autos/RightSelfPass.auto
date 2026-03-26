@@ -19,38 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RightOutpostPath"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "setClimberUp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "setToIdle"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OutpostToClimbPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "setClimberDown"
+            "pathName": "RightPassedPath"
           }
         }
       ]

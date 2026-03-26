@@ -28,6 +28,7 @@ public class TurretSubsystem extends SubsystemBase {
     private double toleranceDegrees = 5.0;
     private double maxMotorOutput = 0.8;
     private double kP = 2.5;
+    private double fudge = 0.0;
     PIDController pid = new PIDController(kP, 0.0, 0.0);
 
     public TurretSubsystem() {
@@ -59,7 +60,7 @@ public class TurretSubsystem extends SubsystemBase {
         //double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);
         //pid.setP(kPFromShuffleboard);
 
-        double motorOutput = pid.calculate(inputs.positionRadians, setpointRadians);
+        double motorOutput = pid.calculate((inputs.positionRadians + fudge), setpointRadians);
 
         motorOutput = MathUtil.clamp(motorOutput, -maxMotorOutput, maxMotorOutput);
 
@@ -97,6 +98,10 @@ public class TurretSubsystem extends SubsystemBase {
 
     public void incrementSetpoint(double rate) {
         setpointRadians = setpointRadians + rate;
+    }
+
+    public void incrementOffset(double rateDegrees) {
+        fudge += Math.toRadians(rateDegrees);
     }
 
     public boolean atSetpoint() {

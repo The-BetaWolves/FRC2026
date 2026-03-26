@@ -118,22 +118,22 @@ public class RobotContainer {
 
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
             swerveDrive.setDefaultCommand(
-            new TeleopDriveCommand(
-                swerveDrive,
-                ()-> -(MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
-                ()-> -(MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
-            )
-        );
+                new TeleopDriveCommand(
+                    swerveDrive,
+                    ()-> (MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
+                    ()-> (MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
+                )
+            );
         } else {
             swerveDrive.setDefaultCommand(
-            new TeleopDriveCommand(
-                swerveDrive,
-                ()-> (MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
-                ()-> (MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
-            )
-        );
+                new TeleopDriveCommand(
+                    swerveDrive,
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
+                )
+            );
         }
         
 
@@ -243,8 +243,8 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 8).whileTrue(
             new RunCommand(()-> climber.incrementSetpoint(-3.0), climber));
 
-        new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
-        new JoystickButton(driverJoyStick, 12).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
+        new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
+        new JoystickButton(driverJoyStick, 14).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
 
 
         /* 
@@ -257,16 +257,17 @@ public class RobotContainer {
         */
         
         // Turret CW
-        /* 
-        new JoystickButton(driverJoyStick, 6).whileTrue(
-            new RunCommand(()-> turret.incrementSetpoint(0.05), turret)
+        
+        new JoystickButton(driverJoyStick, 12).whileTrue(
+            new RunCommand(()-> turret.incrementOffset(0.05), turret)
+        );
+        // Turret CCW
+        new JoystickButton(driverJoyStick, 15).whileTrue(
+            new RunCommand(()-> turret.incrementOffset(-0.05), turret)
         );
         
-        // Turret CCW
-        new JoystickButton(driverJoyStick, 9).whileTrue(
-            new RunCommand(()-> turret.incrementSetpoint(-0.05), turret)
-        );
-        */
+
+
         
     }
 

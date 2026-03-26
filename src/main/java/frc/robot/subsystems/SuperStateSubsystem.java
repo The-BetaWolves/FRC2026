@@ -87,7 +87,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("Superstate/FieldTargetPose", fieldTargetPose);
-        adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), Constants.Field.blueHubPose, fieldRelativeChassisSpeeds.get());
+        adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
         turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         //turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
