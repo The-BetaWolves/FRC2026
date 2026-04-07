@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "SafeRight2G1stPath"
+            "pathName": "SafeLeft1stPath"
           }
         },
         {
@@ -25,44 +25,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Right2G2ndPath"
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "setClimberUp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "staticFire"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RightClimbPath"
+            "pathName": "Left2ndPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "setClimberDown"
+            "name": "setToFireAndIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeftDepotPath"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Right",
+  "folder": "Left",
   "choreoAuto": false
 }

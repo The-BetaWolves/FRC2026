@@ -29,34 +29,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "setClimberUp"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "setToFire"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OutpostToClimbPath"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "setClimberDown"
+            "name": "setToFire"
           }
         }
       ]
