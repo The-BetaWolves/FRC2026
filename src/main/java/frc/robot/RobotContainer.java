@@ -176,48 +176,29 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        /* 
-        new JoystickButton(driverJoyStick, 3).onTrue(
-        new InstantCommand(()-> tester.setSpeed(0.7), tester)
-        ).onFalse(new InstantCommand(()-> tester.setSpeed(0.0), tester));
-        */
-
-        // Intake In
-        // new JoystickButton(driverJoyStick, 4).onTrue(
-        //     new InstantCommand(()-> intake.setRollerSpeed(0.8), intake)
-        // ).onFalse(new InstantCommand(()-> intake.setRollerSpeed(0.0), intake));
+        // Intake In and Out 
         new JoystickButton(driverJoyStick, 3).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.INTAKE))
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
-
         new JoystickButton(driverJoyStick, 4).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
-        // Intake Rotator
-        /* 
-        new JoystickButton(driverJoyStick, 5).whileTrue(
-            new RunCommand(()-> intake.increaseSetpoint(), intake));
-        new JoystickButton(driverJoyStick, 10).whileTrue(
-            new RunCommand(()-> intake.decreaseSetpoint(), intake));
-        */
-
-        //May need to add the intake as a required subsystem
-        new JoystickButton(driverJoyStick, 5).whileTrue(
+        // Intake Rotator Arm manual override
+        new JoystickButton(driverJoyStick, 11).whileTrue(
             new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(3)));
-        new JoystickButton(driverJoyStick, 10).whileTrue(
+        new JoystickButton(driverJoyStick, 16).whileTrue(
             new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-3)));
         
-        
-        new JoystickButton(driverJoyStick, 6).onTrue(
+        // Intake Rotator Arm up and down
+        new JoystickButton(driverJoyStick, 12).onTrue(
             new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree))
         );
-        new JoystickButton(driverJoyStick, 9).onTrue(
+        new JoystickButton(driverJoyStick, 15).onTrue(
             new InstantCommand(()-> intake.setSetpoint(Constants.Intake.minRotatorDegree))
         );
-         
 
-        // SHOOT! - Kicker and Flywheel
+        // SHOOT + Intake! - Kicker and Flywheel and Intake
         new JoystickButton(driverJoyStick, 1).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
         ).
@@ -225,6 +206,7 @@ public class RobotContainer {
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
 
+        // SHOOT + Jostle! - Kicker and Flywheel and Intake Rotator Jostle
         new JoystickButton(driverJoyStick, 2).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
         ).
@@ -233,92 +215,28 @@ public class RobotContainer {
         );
         
         //ResetGyro
-        new JoystickButton(driverJoyStick, 16).onTrue(
+        new JoystickButton(driverJoyStick, 10).onTrue(
             new InstantCommand(()-> swerveDrive.setYaw(0))
         );
-
-        //Climber
-        /*
-        new JoystickButton(driverJoyStick, 7).onTrue(
-            new InstantCommand(()-> climber.setSpeed(0.3), climber)
-        ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
-        new JoystickButton(driverJoyStick, 8).onTrue(
-            new InstantCommand(()-> climber.setSpeed(-0.3), climber)
-        ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
-         */
-
-        // new JoystickButton(driverJoyStick, 7).whileTrue(
-        //     new RunCommand(()-> climber.incrementSetpoint(3.0), climber));
-        // new JoystickButton(driverJoyStick, 8).whileTrue(
-        //     new RunCommand(()-> climber.incrementSetpoint(-3.0), climber));
-
-        // new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
-        // new JoystickButton(driverJoyStick, 14).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
-
-        /* 
-        new JoystickButton(driverJoyStick, 2).onTrue(
-        new InstantCommand(()-> indexer.setSpeed(0.5), indexer)
-        ).onFalse(new InstantCommand(()-> indexer.setSpeed(0.0), indexer));
-        new JoystickButton(driverJoyStick, 1).onTrue(
-        new InstantCommand(()-> shooter.setSpeed(0.7), shooter)
-        ).onFalse(new InstantCommand(()-> shooter.setSpeed(0.0), shooter));
-        */
         
-        /*
+        
         // Turret CW
-        new JoystickButton(driverJoyStick, 12).whileTrue(
+        new JoystickButton(driverJoyStick, 10).whileTrue(
             new RunCommand(()-> turret.incrementOffset(0.25), turret)
         );
         // Turret CCW
-        new JoystickButton(driverJoyStick, 15).whileTrue(
+        new JoystickButton(driverJoyStick, 5).whileTrue(
             new RunCommand(()-> turret.incrementOffset(-0.25), turret)
         );
-         */
+         
         // Increase Shot Distance
-        new JoystickButton(driverJoyStick, 12).whileTrue(
+        new JoystickButton(driverJoyStick, 6).whileTrue(
             new RunCommand(()-> superState.incrementSetFudgeFactor(0.005))
         );
         // Decrease Shot Distance
-        new JoystickButton(driverJoyStick, 15).whileTrue(
+        new JoystickButton(driverJoyStick, 9).whileTrue(
             new RunCommand(()-> superState.incrementSetFudgeFactor(-0.005))
         );
-
-        PathConstraints constraints = new PathConstraints(1.0, 3.0, 2 * Math.PI, 3 * Math.PI);
-        PathPlannerPath toTowerPath;
-        if (swerveDrive.getPose().getY() < 4) {
-            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                swerveDrive.getPose(),
-                new Pose2d(1.060, 3.9, new Rotation2d(0)),
-                new Pose2d(1.060, 4.4, new Rotation2d(-90))
-            );
-
-            toTowerPath = new PathPlannerPath(
-                waypoints,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, Rotation2d.fromDegrees(0)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-        } else {
-            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-                swerveDrive.getPose(),
-                new Pose2d(1.060, 3.5, new Rotation2d(0)),
-                new Pose2d(1.060, 3, new Rotation2d(90))
-            );
-
-            toTowerPath = new PathPlannerPath(
-                waypoints,
-                constraints,
-                null, // The ideal starting state, this is only relevant for pre-planned paths, so can be null for on-the-fly paths.
-                new GoalEndState(0.0, Rotation2d.fromDegrees(180)) // Goal end state. You can set a holonomic rotation here. If using a differential drivetrain, the rotation will have no effect.
-            );
-        }
-        //toTowerPath.preventFlipping = true;
-
-        new JoystickButton(driverJoyStick, 11).whileTrue(
-            AutoBuilder.followPath(toTowerPath)
-        );
-
-        
     }
 
     private void printDebugValues() {
