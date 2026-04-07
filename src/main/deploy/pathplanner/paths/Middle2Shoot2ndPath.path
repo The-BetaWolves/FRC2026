@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2270297365479361,
+        "x": 1.2270297365479357,
         "y": 5.038040204196646
       },
       "isLocked": false,
@@ -32,16 +32,16 @@
     },
     {
       "anchor": {
-        "x": 1.6478072289156627,
-        "y": 2.690891566265061
+        "x": 1.2831241084165474,
+        "y": 2.0618544935805994
       },
       "prevControl": {
-        "x": 1.6665086747064737,
-        "y": 2.9841809816271763
+        "x": 2.9133951497860204,
+        "y": 3.368659058487874
       },
       "nextControl": {
-        "x": 1.6318984190709158,
-        "y": 2.441398260203909
+        "x": 1.0880580357345329,
+        "y": 1.9054920067481909
       },
       "isLocked": false,
       "linkedName": null
@@ -52,8 +52,8 @@
         "y": 0.669265060240964
       },
       "prevControl": {
-        "x": 1.202358796688408,
-        "y": 1.8938322015331268
+        "x": 0.8949643366619111,
+        "y": 1.8936519258202578
       },
       "nextControl": null,
       "isLocked": false,
@@ -68,9 +68,16 @@
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "setToFire",
+      "waypointRelativePos": 1.65,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
-    "maxVelocity": 2.25,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -82,10 +89,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "DepotClimbMiddle",
+  "folder": "Middle2Shoot",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

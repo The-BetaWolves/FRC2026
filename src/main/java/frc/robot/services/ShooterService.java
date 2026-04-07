@@ -13,9 +13,9 @@ public class ShooterService {
     InterpolatingDoubleTreeMap lookupTable = new InterpolatingDoubleTreeMap();
 
 
-    public double getShotSpeed(double distance) {
+    public double getShotSpeed(double distance, double fudgeSetFactor) {
         setLookupTable();
-        double fudgeFactor = 1.0; //If all shots are too short or too long, multiply them by a factor
+        double fudgeFactor = fudgeSetFactor; //If all shots are too short or too long, multiply them by a factor
 
         return lookupTable.get(distance) * fudgeFactor;
     }

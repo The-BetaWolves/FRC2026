@@ -1,0 +1,55 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "setToIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "SafeLeft1stPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setToIdle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left2ndPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "staticFire"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setToIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left3rdPath"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Left",
+  "choreoAuto": false
+}

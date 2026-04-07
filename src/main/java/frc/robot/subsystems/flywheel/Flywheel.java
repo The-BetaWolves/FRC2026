@@ -5,7 +5,7 @@
 package frc.robot.subsystems.flywheel;
 
 import org.littletonrobotics.junction.Logger;
-import edu.wpi.first.math.MathUtil;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -71,6 +71,10 @@ public class Flywheel extends SubsystemBase {
         // Command motor speed
         //io.setMotorOutput(0.2);
 
+        double maxRPM = 5900.0;
+        if (setpointRpm > maxRPM) {
+            setpointRpm = maxRPM;
+        }
         // Command motor
         io.setMotorSetpoint(setpointRpm);
 

@@ -99,6 +99,10 @@ public class Vision extends SubsystemBase {
           // || !(tagId == 27)
           // || !(tagId == 24)
           // || !(tagId == 21)
+          // || !(tagId == 8)
+          // || !(tagId == 5)
+          // || !(tagId == 11)
+          // || !(tagId == 12)
         ) {
           tagPoses.add(tagPose.get());
         }

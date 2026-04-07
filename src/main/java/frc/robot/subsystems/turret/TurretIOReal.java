@@ -19,7 +19,7 @@ public class TurretIOReal implements TurretIO {
     double positionRadians, lastMotorOutput;
 
     private final double fudgeFactorDegrees = -2;
-    private final double zeroOffsetRotations = 0.447 + (fudgeFactorDegrees / 360);   // if forward reads 0.6, enter 0.6 here
+    private final double zeroOffsetRotations = 0.283 + (fudgeFactorDegrees / 360);   // if forward reads 0.6, enter 0.6 here
     private final boolean invertEncoder = false;
 
     SparkMax motor;

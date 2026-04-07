@@ -3,10 +3,13 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
+    "1ShootLeft",
+    "1ShootRight",
     "2GrabLeft",
     "2GrabRight",
     "DepotClimbMiddle",
     "Extras",
+    "Middle2Shoot",
     "Testing"
   ],
   "autoFolders": [
@@ -15,7 +18,7 @@
     "Right",
     "Tests"
   ],
-  "defaultMaxVel": 2.0,
+  "defaultMaxVel": 2.25,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,

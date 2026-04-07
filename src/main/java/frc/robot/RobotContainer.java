@@ -35,7 +35,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.TeleopDriveCommand;
-import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.KickerSubsystem;
@@ -57,7 +56,7 @@ public class RobotContainer {
     public IndexerSubsystem indexer = new IndexerSubsystem();
     public Flywheel flywheel = new Flywheel();
     public TurretSubsystem turret = new TurretSubsystem();
-    public ClimberSubsystem climber = new ClimberSubsystem();
+    //public ClimberSubsystem climber = new ClimberSubsystem();
     public KickerSubsystem kicker = new KickerSubsystem();
     public Vision vision;
 
@@ -156,8 +155,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
         NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
         
-        NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(365)));
-        NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(1)));
+        //NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(365)));
+        //NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(1)));
+        NamedCommands.registerCommand("setClimberUp", new InstantCommand());
+        NamedCommands.registerCommand("setClimberDown", new InstantCommand());
 
         NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
             new WaitCommand(Constants.Flywheel.firingTimeSeconds),
@@ -203,9 +204,9 @@ public class RobotContainer {
 
         //May need to add the intake as a required subsystem
         new JoystickButton(driverJoyStick, 5).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(1.5)));
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(3)));
         new JoystickButton(driverJoyStick, 10).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-1.5)));
+            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-3)));
         
         
         new JoystickButton(driverJoyStick, 6).onTrue(
@@ -246,14 +247,13 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> climber.setSpeed(0.0), climber));
          */
 
-        new JoystickButton(driverJoyStick, 7).whileTrue(
-            new RunCommand(()-> climber.incrementSetpoint(3.0), climber));
-        new JoystickButton(driverJoyStick, 8).whileTrue(
-            new RunCommand(()-> climber.incrementSetpoint(-3.0), climber));
+        // new JoystickButton(driverJoyStick, 7).whileTrue(
+        //     new RunCommand(()-> climber.incrementSetpoint(3.0), climber));
+        // new JoystickButton(driverJoyStick, 8).whileTrue(
+        //     new RunCommand(()-> climber.incrementSetpoint(-3.0), climber));
 
-        new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
-        new JoystickButton(driverJoyStick, 14).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
-
+        // new JoystickButton(driverJoyStick, 13).onTrue(new InstantCommand(()-> climber.setSetpoint(365)));
+        // new JoystickButton(driverJoyStick, 14).onTrue(new InstantCommand(()-> climber.setSetpoint(1)));
 
         /* 
         new JoystickButton(driverJoyStick, 2).onTrue(
@@ -264,23 +264,32 @@ public class RobotContainer {
         ).onFalse(new InstantCommand(()-> shooter.setSpeed(0.0), shooter));
         */
         
+        /*
         // Turret CW
-        
         new JoystickButton(driverJoyStick, 12).whileTrue(
-            new RunCommand(()-> turret.incrementOffset(0.05), turret)
+            new RunCommand(()-> turret.incrementOffset(0.25), turret)
         );
         // Turret CCW
         new JoystickButton(driverJoyStick, 15).whileTrue(
-            new RunCommand(()-> turret.incrementOffset(-0.05), turret)
+            new RunCommand(()-> turret.incrementOffset(-0.25), turret)
         );
-        
+         */
+        // Increase Shot Distance
+        new JoystickButton(driverJoyStick, 12).whileTrue(
+            new RunCommand(()-> superState.incrementSetFudgeFactor(0.005))
+        );
+        // Decrease Shot Distance
+        new JoystickButton(driverJoyStick, 15).whileTrue(
+            new RunCommand(()-> superState.incrementSetFudgeFactor(-0.005))
+        );
+
         PathConstraints constraints = new PathConstraints(1.0, 3.0, 2 * Math.PI, 3 * Math.PI);
         PathPlannerPath toTowerPath;
         if (swerveDrive.getPose().getY() < 4) {
             List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
                 swerveDrive.getPose(),
-                new Pose2d(0.990, 3.9, new Rotation2d(0)),
-                new Pose2d(0.990, 4.4, new Rotation2d(-90))
+                new Pose2d(1.060, 3.9, new Rotation2d(0)),
+                new Pose2d(1.060, 4.4, new Rotation2d(-90))
             );
 
             toTowerPath = new PathPlannerPath(
@@ -292,8 +301,8 @@ public class RobotContainer {
         } else {
             List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
                 swerveDrive.getPose(),
-                new Pose2d(0.990, 3.5, new Rotation2d(0)),
-                new Pose2d(0.990, 3, new Rotation2d(90))
+                new Pose2d(1.060, 3.5, new Rotation2d(0)),
+                new Pose2d(1.060, 3, new Rotation2d(90))
             );
 
             toTowerPath = new PathPlannerPath(

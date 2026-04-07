@@ -36,8 +36,8 @@ public class IntakeSubsystem extends SubsystemBase {
     kp = 0.025; //0.13;
     ki = 0.00;
     pid = new PIDController(kp, ki, 0.0);
-    intakeEncoderOffset = 0.33;
-    maxMotorOutput = 1.0;
+    intakeEncoderOffset = 0.035; //was .33, then .32
+    maxMotorOutput = 0.8;
 
     SparkMaxConfig config = new SparkMaxConfig();
     config.inverted(true);

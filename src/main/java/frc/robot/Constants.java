@@ -37,7 +37,7 @@ public final class Constants {
         public static final int motor2CanId = 25;
 
         public static final double ballSpeedMetersPerSecond = 2; //Lower = more correction, higher = less
-        public static final double firingTimeSeconds = 4;
+        public static final double firingTimeSeconds = 4.5;
     }
 
     public static final class Turret {
@@ -55,7 +55,7 @@ public final class Constants {
         public static final int rotatorMotorCanId = 4;
         public static final int rollerMotorCanId = 15;
 
-        public static final double minRotatorDegree = 0.5;
+        public static final double minRotatorDegree = 0.0;
         public static final double maxRotatorDegree = 80; //83.25; //68.8;
     }
 
@@ -68,7 +68,7 @@ public final class Constants {
         public static final Translation2d blueHubPose = new Translation2d(4.6, 4.0);
         public static final Translation2d blueLeftPose = new Translation2d(2, 2);
         public static final Translation2d blueRightPose = new Translation2d(2, 6);
-        public static final Translation2d redHubPose = new Translation2d(11.9, 4.0);
+        public static final Translation2d redHubPose = new Translation2d(11.92, 4.0);
         public static final Translation2d redLeftPose = new Translation2d(14.5, 2);
         public static final Translation2d redRightPose = new Translation2d(14.5, 6);
     }

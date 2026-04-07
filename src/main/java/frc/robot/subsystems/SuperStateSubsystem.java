@@ -43,6 +43,7 @@ public class SuperStateSubsystem extends SubsystemBase {
     private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
     private double intakeRotatorSetpoint = 0.0;
     private double distanceToTarget;
+    double setFudgeFactor = 1.0;
 
     private final double flywheelIdleRPM = 500;
 
@@ -79,6 +80,9 @@ public class SuperStateSubsystem extends SubsystemBase {
     }
     public void incrementIntakeRotatorSetpoint(double rate) {
         intakeRotatorSetpoint = intakeRotatorSetpoint + rate;
+    }
+    public void incrementSetFudgeFactor(double rate) {
+        setFudgeFactor += rate;
     }
 
     int clearTimer, rotatorTimer = 0;
@@ -124,6 +128,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             //kickerSpeed = 0.0;
             indexerSpeed = -1.0;
             intakeSpeed = 0.0;
+            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
 
         } else if (fireIntent == FireIntent.INTAKE) {
             flywheelSetpointRpm = flywheelIdleRPM;
@@ -131,6 +136,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             indexerSpeed = 0.0;
             intakeSpeed = 0.9;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+            
         } else if (fireIntent == FireIntent.SPIT) {
             flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
@@ -138,7 +144,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             intakeSpeed = -0.9;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
         } else if (fireIntent == FireIntent.FIRE) {
-            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
+            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
             kickerSpeed = 0.8;
             intakeSpeed = 0.9;
 
@@ -158,7 +164,7 @@ public class SuperStateSubsystem extends SubsystemBase {
                 rotatorTimer = 0;
             }
         } else if (fireIntent == FireIntent.FIREANDINTAKE) {
-            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget); //Change switch targets later
+            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
             kickerSpeed = 0.8;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
             intakeSpeed = 0.9;

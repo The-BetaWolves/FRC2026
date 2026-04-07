@@ -3,57 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.457,
-        "y": 5.008
+        "x": 7.83,
+        "y": 4.572
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.2270297365479361,
-        "y": 5.038040204196646
+        "x": 7.61039513529658,
+        "y": 4.699618192468447
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6478072289156627,
-        "y": 5.008
+        "x": 7.5,
+        "y": 7.27
       },
       "prevControl": {
-        "x": 1.4737002805864288,
-        "y": 5.187406718222817
+        "x": 8.510585435274274,
+        "y": 7.077342348170518
       },
       "nextControl": {
-        "x": 1.91606927377648,
-        "y": 4.73157212877448
+        "x": 5.574328297168554,
+        "y": 7.637109375924556
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.6478072289156627,
-        "y": 2.690891566265061
+        "x": 4.0,
+        "y": 7.4
       },
       "prevControl": {
-        "x": 1.6665086747064737,
-        "y": 2.9841809816271763
-      },
-      "nextControl": {
-        "x": 1.6318984190709158,
-        "y": 2.441398260203909
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 0.729879518072289,
-        "y": 0.669265060240964
-      },
-      "prevControl": {
-        "x": 1.202358796688408,
-        "y": 1.8938322015331268
+        "x": 4.49191155492154,
+        "y": 7.340827389443652
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,15 +46,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1,
-      "rotationDegrees": -90.0
+      "waypointRelativePos": 1.0,
+      "rotationDegrees": 180.0
     }
   ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.25,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -82,10 +66,10 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "DepotClimbMiddle",
+  "folder": "1ShootLeft",
   "idealStartingState": {
     "velocity": 0,
     "rotation": -90.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

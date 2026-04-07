@@ -8,10 +8,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Robot;
 
 public class FieldService {
 
@@ -21,10 +18,11 @@ public class FieldService {
         
         //return Constants.Field.realBlueHubPose;
 
+        //For Red Change points for passing
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            if (robotPose.getY() < 4  && robotPose.getX() > (Constants.Field.redHubPose.getX() - 1.2)) {
+            if (robotPose.getY() < 4  && robotPose.getX() < (Constants.Field.redHubPose.getX() - 1.2)) {
                 return Constants.Field.redLeftPose;
-            } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
+            } else if (robotPose.getY() > 4 && robotPose.getX() < (Constants.Field.redHubPose.getX() - 1.2)) {
                 return Constants.Field.redRightPose;
             } else {
                 return Constants.Field.redHubPose;
@@ -32,7 +30,7 @@ public class FieldService {
         } else {
             if (robotPose.getY() < 4  && robotPose.getX() > (Constants.Field.blueHubPose.getX() + 1.2)) {
                 return Constants.Field.blueLeftPose;
-            } else if (robotPose.getY() > 4 && robotPose.getX() > 5) {
+            } else if (robotPose.getY() > 4 && robotPose.getX() > (Constants.Field.blueHubPose.getX() + 1.2)) {
                 return Constants.Field.blueRightPose;
             } else {
                 return Constants.Field.blueHubPose;
