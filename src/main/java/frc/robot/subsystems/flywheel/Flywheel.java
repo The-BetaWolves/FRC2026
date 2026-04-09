@@ -22,7 +22,7 @@ public class Flywheel extends SubsystemBase {
     private final QualityControlService.MonitoredHardware monitoredMotor1, monitoredMotor2;
 
     private double setpointRpm = 0.0;
-    private double tolerenceRPM = 300.0;
+    //private double tolerenceRPM = 300.0;
     private double maxMotorOutput = 1.0;
     private double kP = 0.00002;
     private double kV = 0.001815;

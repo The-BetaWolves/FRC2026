@@ -129,7 +129,8 @@ public class RobotContainer {
                     swerveDrive,
                     ()-> (MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
                     ()-> (MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
+                    superState
                 )
             );
         } else {
@@ -138,7 +139,8 @@ public class RobotContainer {
                     swerveDrive,
                     ()-> -(MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
                     ()-> -(MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND))
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
+                    superState
                 )
             );
         }
@@ -160,11 +162,22 @@ public class RobotContainer {
         NamedCommands.registerCommand("setClimberUp", new InstantCommand());
         NamedCommands.registerCommand("setClimberDown", new InstantCommand());
 
+        // NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
+        //     new WaitCommand(Constants.Flywheel.firingTimeSeconds),
+        //     new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))).andThen(
+        //         new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR))
+        //     ));
+
         NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
-            new WaitCommand(Constants.Flywheel.firingTimeSeconds),
-            new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))).andThen(
-                new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR))
-            ));
+            new WaitCommand(Constants.Flywheel.firingTimeSeconds).andThen(
+                    new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR))
+                ),
+            new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)),
+            new WaitCommand(2).andThen(
+                    new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE))
+                )
+            )
+        );
 
         NamedCommands.registerCommand("setIntakeUp", new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree)));
 
@@ -179,10 +192,10 @@ public class RobotContainer {
         // Intake In and Out 
         new JoystickButton(driverJoyStick, 3).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.INTAKE))
-        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.CLEAR)));
         new JoystickButton(driverJoyStick, 4).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
-        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.CLEAR)));
 
         // Intake Rotator Arm manual override
         new JoystickButton(driverJoyStick, 11).whileTrue(
@@ -203,7 +216,7 @@ public class RobotContainer {
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
         ).
         onFalse(
-            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE)) //set to clear in comps
         );
 
         // SHOOT + Jostle! - Kicker and Flywheel and Intake Rotator Jostle

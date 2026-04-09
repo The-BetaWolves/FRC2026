@@ -109,13 +109,13 @@ public class SuperStateSubsystem extends SubsystemBase {
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = 0.0;
-
+            rotatorTimer = 0;
         } else if( fireIntent == FireIntent.IDLE) {
             flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = 0.0;
-
+            rotatorTimer = 0;
         } else if (fireIntent == FireIntent.CLEAR) {
             clearTimer++;
             if(clearTimer > 10) {
@@ -129,36 +129,38 @@ public class SuperStateSubsystem extends SubsystemBase {
             indexerSpeed = -1.0;
             intakeSpeed = 0.0;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-
+            rotatorTimer = 0;
         } else if (fireIntent == FireIntent.INTAKE) {
             flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = 0.9;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            
+            rotatorTimer = 0;
         } else if (fireIntent == FireIntent.SPIT) {
             flywheelSetpointRpm = flywheelIdleRPM;
             kickerSpeed = 0.0;
             indexerSpeed = 0.0;
             intakeSpeed = -0.9;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+            rotatorTimer = 0;
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
             kickerSpeed = 0.8;
             intakeSpeed = 0.9;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
-                indexerSpeed = 0.9;
+                indexerSpeed = 1.0;
             } else {
                 indexerSpeed = 0.0;
             }
 
+            //Maybe flip them so that it goes to the top first
             rotatorTimer++;
             if(rotatorTimer < 50) {
-                intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
+                intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
             } else if (rotatorTimer > 50) {
-                intakeRotatorSetpoint = 5;
+                intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
             } 
             if (rotatorTimer > 100) {
                 rotatorTimer = 0;
@@ -168,6 +170,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             kickerSpeed = 0.8;
             intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
             intakeSpeed = 0.9;
+            rotatorTimer = 0;
 
             /*
             rotatorTimer++;
@@ -180,7 +183,7 @@ public class SuperStateSubsystem extends SubsystemBase {
              */
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
-                indexerSpeed = 0.9;
+                indexerSpeed = 1.0;
             } else {
                 indexerSpeed = 0.0;
             }

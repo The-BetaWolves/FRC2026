@@ -23,7 +23,7 @@ public final class Constants {
 
     public static final class Controls {
         // Joystick deadband for angle-only control (e.g. rotation stick ring)
-        public static final double ANGLE_JOYSTICK_DEADBAND = 0.2;
+        public static final double ANGLE_JOYSTICK_DEADBAND = 0.35;
         public static final double Y_DEADBAND = 0.2;
     
         // PID values for heading hold (used for snapping or rotating to angle)
@@ -37,7 +37,7 @@ public final class Constants {
         public static final int motor2CanId = 25;
 
         public static final double ballSpeedMetersPerSecond = 2; //Lower = more correction, higher = less
-        public static final double firingTimeSeconds = 4.5;
+        public static final double firingTimeSeconds = 8; //Needs to be set
     }
 
     public static final class Turret {

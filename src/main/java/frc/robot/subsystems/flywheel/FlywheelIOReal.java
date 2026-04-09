@@ -33,7 +33,7 @@ public class FlywheelIOReal implements FlywheelIO {
     SparkFlexConfig motor2FollowerConfig;
 
     private double setpointRPM = 0.0;
-    private double tolerenceRPM = 100.0;
+    private double tolerenceRPM = 1000.0; //Should be 100
     private double maxMotorOutput = 1.0;
     private double kP = 0.00002;
     private double kV = 0.001815;
