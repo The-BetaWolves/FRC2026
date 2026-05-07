@@ -25,8 +25,8 @@ public class ShooterService {
         //Distance is center of hub to center of shooter
         lookupTable.put(1.25, 3100.0);
         lookupTable.put(2.25, 3600.0);
-        lookupTable.put(3.0, 4050.0);
-        lookupTable.put(4.0, 4600.0);
+        lookupTable.put(3.0, 3950.0);
+        lookupTable.put(4.0, 4500.0);
         lookupTable.put(5.0, 5200.0);
         lookupTable.put(5.5, 5450.0);
         lookupTable.put(6.0, 5900.0);

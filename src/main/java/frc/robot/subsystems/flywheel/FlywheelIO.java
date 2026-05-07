@@ -22,6 +22,6 @@ public interface FlywheelIO {
     public void setMotorOutput(double output);
     public void setMotorSetpoint(double setpoint);
     public boolean atSetpoint();
-    public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM);
+    public void updateFromSmartDashboard(double setpointRPM);
     public double getMotorOutput();
 }

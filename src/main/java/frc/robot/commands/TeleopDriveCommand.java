@@ -57,7 +57,7 @@ public class TeleopDriveCommand extends Command {
         rawfireState = superState.getFireIntent();
         SmartDashboard.putString("currentState", rawfireState.toString());
         if (rawfireState == FireIntent.FIRE || rawfireState == FireIntent.FIREANDINTAKE) {
-            double maxSpeedMeters = 1.5;
+            double maxSpeedMeters = 0.75;
             swerve.drive(
                 xVelocity * maxSpeedMeters * speedModifier,
                 yVelocity * maxSpeedMeters * speedModifier,

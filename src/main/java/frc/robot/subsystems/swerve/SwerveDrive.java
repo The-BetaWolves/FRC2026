@@ -10,6 +10,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
@@ -191,6 +195,33 @@ public class SwerveDrive extends SubsystemBase {
         } else {
             this.desiredChassisSpeeds = new ChassisSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity);
         }            
+    }
+
+    public void lockWheels() {
+        SwerveModuleState[] desiredStates = new SwerveModuleState[]{
+            new SwerveModuleState(
+                LinearVelocity.ofRelativeUnits(
+                    0.0, 
+                    LinearVelocityUnit.combine(Units.Meters, Units.Seconds)),
+                        new Rotation2d(45)),
+            new SwerveModuleState(
+                LinearVelocity.ofRelativeUnits(
+                    0.0, 
+                    LinearVelocityUnit.combine(Units.Meters, Units.Seconds)),
+                        new Rotation2d(-45)),
+            new SwerveModuleState(
+                LinearVelocity.ofRelativeUnits(
+                    0.0, 
+                    LinearVelocityUnit.combine(Units.Meters, Units.Seconds)),
+                        new Rotation2d(-45)),
+            new SwerveModuleState(
+                LinearVelocity.ofRelativeUnits(
+                    0.0, 
+                    LinearVelocityUnit.combine(Units.Meters, Units.Seconds)),
+                        new Rotation2d(45))
+        
+        };
+        setModuleStates(desiredStates);
     }
 
     public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {

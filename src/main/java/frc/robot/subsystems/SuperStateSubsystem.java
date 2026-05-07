@@ -9,6 +9,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -44,6 +46,10 @@ public class SuperStateSubsystem extends SubsystemBase {
     private double intakeRotatorSetpoint = 0.0;
     private double distanceToTarget;
     double setFudgeFactor = 1.0;
+
+    private double phaseSeconds = 0.0;
+    private boolean phaseState = false;
+     public boolean isTurretLocked = false;
 
     private final double flywheelIdleRPM = 500;
 
@@ -84,6 +90,13 @@ public class SuperStateSubsystem extends SubsystemBase {
     public void incrementSetFudgeFactor(double rate) {
         setFudgeFactor += rate;
     }
+    public void toggleTurretLock() {
+        if (isTurretLocked) {
+            isTurretLocked = false;
+        } else {
+            isTurretLocked = true;
+        }
+    }
 
     int clearTimer, rotatorTimer = 0;
 
@@ -92,7 +105,11 @@ public class SuperStateSubsystem extends SubsystemBase {
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("Superstate/FieldTargetPose", fieldTargetPose);
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
-        turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+        if (isTurretLocked) {
+            turretSetpointRadians = 0.0;
+        } else {
+            turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+        }
         //turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
         //distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), fieldTargetPose);
@@ -103,6 +120,59 @@ public class SuperStateSubsystem extends SubsystemBase {
         //SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
         
         Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
+
+        
+        if (!(DriverStation.getGameSpecificMessage() == null)) {
+            double stationTime = DriverStation.getMatchTime();
+
+            if (
+                (!(DriverStation.getGameSpecificMessage() == "R" && DriverStation.getAlliance().get() == Alliance.Red)) ||
+                (!(DriverStation.getGameSpecificMessage() == "B" && DriverStation.getAlliance().get() == Alliance.Blue))
+            ) {
+                if (stationTime >= 130) {
+                    phaseSeconds = stationTime - 130;
+                    phaseState = true;
+                } else if(stationTime >= 105) {
+                    phaseSeconds = stationTime - 105;
+                    phaseState = false;
+                } else if(stationTime >= 80) {
+                    phaseSeconds = stationTime - 80;
+                    phaseState = true;
+                } else if(stationTime >= 55) {
+                    phaseSeconds = stationTime - 55;
+                    phaseState = false;
+                } else if(stationTime >= 30) {
+                    phaseSeconds = stationTime - 30;
+                    phaseState = true;
+                } else if(stationTime < 30) {
+                    phaseSeconds = stationTime;
+                    phaseState = true;
+                }
+            } else {
+                if (stationTime >= 130) {
+                    phaseSeconds = stationTime - 130;
+                    phaseState = false;
+                } else if(stationTime >= 105) {
+                    phaseSeconds = stationTime - 105;
+                    phaseState = true;
+                } else if(stationTime >= 80) {
+                    phaseSeconds = stationTime - 80;
+                    phaseState = false;
+                } else if(stationTime >= 55) {
+                    phaseSeconds = stationTime - 55;
+                    phaseState = true;
+                } else if(stationTime >= 30) {
+                    phaseSeconds = stationTime - 30;
+                    phaseState = false;
+                } else if(stationTime < 30) {
+                    phaseSeconds = stationTime;
+                    phaseState = true;
+                }
+            }
+        }
+        
+        SmartDashboard.putNumber("Phase Seconds", phaseSeconds);
+        SmartDashboard.putBoolean("Phase State", phaseState);
 
         if(fireIntent == FireIntent.STOP) {
             flywheelSetpointRpm = 0.0;
@@ -147,7 +217,7 @@ public class SuperStateSubsystem extends SubsystemBase {
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
             kickerSpeed = 0.8;
-            intakeSpeed = 0.9;
+            intakeSpeed = 0.5;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
                 indexerSpeed = 1.0;
@@ -158,9 +228,9 @@ public class SuperStateSubsystem extends SubsystemBase {
             //Maybe flip them so that it goes to the top first
             rotatorTimer++;
             if(rotatorTimer < 50) {
-                intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            } else if (rotatorTimer > 50) {
                 intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
+            } else if (rotatorTimer > 50) {
+                intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
             } 
             if (rotatorTimer > 100) {
                 rotatorTimer = 0;
@@ -182,11 +252,16 @@ public class SuperStateSubsystem extends SubsystemBase {
             }
              */
 
-            if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
+            if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()
+            ) {
                 indexerSpeed = 1.0;
             } else {
                 indexerSpeed = 0.0;
             }
+        }
+
+        if (isTurretLocked) {
+            flywheelSetpointRpm = 4050.0;
         }
     }
 }

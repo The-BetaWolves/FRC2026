@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "setToIdle"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "Left2G2ndPath"

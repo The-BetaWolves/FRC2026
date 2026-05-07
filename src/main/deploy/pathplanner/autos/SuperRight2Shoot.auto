@@ -13,13 +13,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G1stPath"
+            "pathName": "Right2G1stPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "setToIdle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "Right2G2ndPath"
           }
         },
         {
@@ -37,19 +43,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "Right2G3rdPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
+            "name": "setToFire"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightOutpostPath"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

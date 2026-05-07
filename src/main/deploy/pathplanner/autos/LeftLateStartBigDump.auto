@@ -7,24 +7,6 @@
         {
           "type": "named",
           "data": {
-            "name": "setToIntake"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left2G1stPath"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left2G2ndPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "staticFire"
           }
         },
@@ -37,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "LeftBigPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "staticFire"
+            "name": "setToFire"
           }
         }
       ]

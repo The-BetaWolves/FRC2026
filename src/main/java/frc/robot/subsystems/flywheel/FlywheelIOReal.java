@@ -110,7 +110,8 @@ public class FlywheelIOReal implements FlywheelIO {
         //return motor2.getAppliedOutput();
     }
 
-    public void updateFromSmartDashboard(double kP, double kV, double kS, double setpointRPM) {
+    public void updateFromSmartDashboard(double setpointRPM) {
+        /*
         motor1Config.closedLoop
             .pid(kP, 0.0, 0.0)
             .feedForward
@@ -119,7 +120,7 @@ public class FlywheelIOReal implements FlywheelIO {
             
 
         motor1.configure(motor1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        
+         */
         controller.setSetpoint(setpointRPM, ControlType.kVelocity);
     }
 }

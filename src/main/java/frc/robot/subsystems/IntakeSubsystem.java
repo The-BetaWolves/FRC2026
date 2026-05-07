@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -36,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
     kp = 0.0175;
     ki = 0.00;
     pid = new PIDController(kp, ki, 0.0);
-    intakeEncoderOffset = 0.035; //was .33, then .32
+    intakeEncoderOffset = 0.170; //was .33, then .32
     maxMotorOutput = 0.8;
 
     SparkMaxConfig config = new SparkMaxConfig();

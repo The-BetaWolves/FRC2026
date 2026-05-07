@@ -36,8 +36,8 @@ public final class Constants {
         public static final int motor1CanId = 24;
         public static final int motor2CanId = 25;
 
-        public static final double ballSpeedMetersPerSecond = 2; //Lower = more correction, higher = less
-        public static final double firingTimeSeconds = 8; //Needs to be set
+        public static final double ballSpeedMetersPerSecond = 1.5; //Lower = more correction, higher = less
+        public static final double firingTimeSeconds = 5; //Needs to be set
     }
 
     public static final class Turret {
@@ -66,11 +66,11 @@ public final class Constants {
 
 
         public static final Translation2d blueHubPose = new Translation2d(4.6, 4.0);
-        public static final Translation2d blueLeftPose = new Translation2d(2, 2);
-        public static final Translation2d blueRightPose = new Translation2d(2, 6);
+        public static final Translation2d blueLeftPose = new Translation2d(2.5, 2.5);
+        public static final Translation2d blueRightPose = new Translation2d(2.5, 5.5);
         public static final Translation2d redHubPose = new Translation2d(11.92, 4.0);
-        public static final Translation2d redLeftPose = new Translation2d(14.5, 2);
-        public static final Translation2d redRightPose = new Translation2d(14.5, 6);
+        public static final Translation2d redLeftPose = new Translation2d(14.0, 2.5);
+        public static final Translation2d redRightPose = new Translation2d(14.0, 5.5);
     }
 
     public static final class SwerveConfig {

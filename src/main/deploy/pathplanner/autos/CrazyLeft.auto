@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G1stPath"
+            "pathName": "CrazyLeft1stPath"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "CrazyLeft2ndPath"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
+            "pathName": "CrazyLeft3rdPath"
           }
         },
         {

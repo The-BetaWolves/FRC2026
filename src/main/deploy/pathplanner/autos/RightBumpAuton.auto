@@ -13,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G1stPath"
+            "pathName": "CrazyRight1stPath"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "RightBump2ndPath"
           }
         },
         {
@@ -37,19 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G3rdPath"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "staticFire"
+            "pathName": "RightBump3rdPath"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Left",
+  "folder": "Right",
   "choreoAuto": false
 }

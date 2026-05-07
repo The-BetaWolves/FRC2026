@@ -13,13 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Left2G1stPath"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Left2G2ndPath"
+            "pathName": "LeftHairpinPath"
           }
         },
         {

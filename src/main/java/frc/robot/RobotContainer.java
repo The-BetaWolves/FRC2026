@@ -192,11 +192,12 @@ public class RobotContainer {
         // Intake In and Out 
         new JoystickButton(driverJoyStick, 3).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.INTAKE))
-        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.CLEAR)));
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
         new JoystickButton(driverJoyStick, 4).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
-        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.CLEAR)));
+        ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
+        /*
         // Intake Rotator Arm manual override
         new JoystickButton(driverJoyStick, 11).whileTrue(
             new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(3)));
@@ -210,13 +211,14 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 15).onTrue(
             new InstantCommand(()-> intake.setSetpoint(Constants.Intake.minRotatorDegree))
         );
+          */
 
         // SHOOT + Intake! - Kicker and Flywheel and Intake
         new JoystickButton(driverJoyStick, 1).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
         ).
         onFalse(
-            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.IDLE)) //set to clear in comps
+            new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
 
         // SHOOT + Jostle! - Kicker and Flywheel and Intake Rotator Jostle
@@ -227,12 +229,17 @@ public class RobotContainer {
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
         
+        
         //ResetGyro
-        new JoystickButton(driverJoyStick, 10).onTrue(
+        new JoystickButton(driverJoyStick, 15).onTrue(
             new InstantCommand(()-> swerveDrive.setYaw(0))
         );
-        
-        
+
+        new JoystickButton(driverJoyStick, 16).onTrue(
+            new InstantCommand(()-> superState.toggleTurretLock())
+        );
+         
+        /*
         // Turret CW
         new JoystickButton(driverJoyStick, 10).whileTrue(
             new RunCommand(()-> turret.incrementOffset(0.25), turret)
@@ -241,7 +248,8 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 5).whileTrue(
             new RunCommand(()-> turret.incrementOffset(-0.25), turret)
         );
-         
+          */
+        /*
         // Increase Shot Distance
         new JoystickButton(driverJoyStick, 6).whileTrue(
             new RunCommand(()-> superState.incrementSetFudgeFactor(0.005))
@@ -250,6 +258,12 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 9).whileTrue(
             new RunCommand(()-> superState.incrementSetFudgeFactor(-0.005))
         );
+         */
+
+        new JoystickButton(driverJoyStick, 14).whileTrue(
+            new RunCommand(()-> swerveDrive.lockWheels(), swerveDrive)
+        );
+         
     }
 
     private void printDebugValues() {
