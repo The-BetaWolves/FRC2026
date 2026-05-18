@@ -4,13 +4,25 @@
 
 package frc.robot.subsystems.flywheel;
 
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
 import frc.robot.services.QualityControlService;
 
@@ -31,6 +43,15 @@ public class Flywheel extends SubsystemBase {
     PIDController pid = new PIDController(kP, 0.0, 0.0);
     SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV);
 
+    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutAngle m_angle = Radians.mutable(0);
+     // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
+
+    private final SysIdRoutine sysIdRoutine;
+
     /** Creates a new testerSubsystem. */
     public Flywheel() {
 
@@ -49,6 +70,29 @@ public class Flywheel extends SubsystemBase {
 
         monitoredMotor1 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor1CanId);
         monitoredMotor2 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor2CanId);
+
+        sysIdRoutine =
+            new SysIdRoutine(
+                // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                    // Tell SysId how to plumb the driving voltage to the motor(s).
+                    (io::setMotorVoltage),
+                    // Tell SysId how to record a frame of data for each motor on the mechanism being
+                    // characterized.
+                    log -> {
+                        // Record a frame for the shooter motor.
+                        log.motor("shooter-wheel")
+                            .voltage(
+                                m_appliedVoltage.mut_replace(
+                                    io.getMotorOutput() * RobotController.getBatteryVoltage(), Volts))
+                            .angularPosition(m_angle.mut_replace(io.getEncoder().getPosition(), Rotations))
+                            .angularVelocity(
+                                m_velocity.mut_replace(io.getEncoder().getVelocity(), RotationsPerSecond));
+                    },
+                    // Tell SysId to make generated commands require this subsystem, suffix test state in
+                    // WPILog with this subsystem's name ("shooter")
+                    this));
     }
 
     @Override
@@ -110,5 +154,13 @@ public class Flywheel extends SubsystemBase {
     }
     public boolean isAtSetpoint() {
         return io.atSetpoint();
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 }

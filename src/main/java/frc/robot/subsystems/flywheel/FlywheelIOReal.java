@@ -15,10 +15,9 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.units.measure.Voltage;
 
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import frc.robot.Constants;
 
@@ -90,6 +89,9 @@ public class FlywheelIOReal implements FlywheelIO {
         motor1.set(speed);
     }
 
+    public void setMotorVoltage(Voltage voltage) {
+        motor1.setVoltage(voltage);
+    }
     
     public void setMotorSetpoint(double setpoint) {
         controller.setSetpoint(setpoint, ControlType.kVelocity);
@@ -108,6 +110,10 @@ public class FlywheelIOReal implements FlywheelIO {
     public double getMotorOutput() {
         return (motor1.getAppliedOutput() + motor2.getAppliedOutput()) /2;
         //return motor2.getAppliedOutput();
+    }
+
+    public RelativeEncoder getEncoder() {
+        return motor1.getEncoder();
     }
 
     public void updateFromSmartDashboard(double setpointRPM) {

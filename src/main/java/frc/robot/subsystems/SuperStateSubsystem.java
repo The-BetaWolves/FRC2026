@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
@@ -6,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -17,90 +20,81 @@ import frc.robot.Constants;
 import frc.robot.services.FieldService;
 import frc.robot.services.ShooterService;
 import frc.robot.services.TurretService;
-import frc.robot.subsystems.flywheel.Flywheel;
 
 public class SuperStateSubsystem extends SubsystemBase {
-    public SuperStateSubsystem () {
-        SmartDashboard.setDefaultNumber("ballSpeedConstant", 1);
-    }
+  /** Creates a new NewSuperStateSubsystem. */
+  public SuperStateSubsystem() {
+    SmartDashboard.setDefaultNumber("ballSpeedConstant", 1);
+  }
 
-    // instantiate logic services
-    private FieldService fieldService = new FieldService();
-    private TurretService turretService = new TurretService();
-    private ShooterService shooterService = new ShooterService();
+  // instantiate logic services
+  private FieldService fieldService = new FieldService();
+  private TurretService turretService = new TurretService();
+  private ShooterService shooterService = new ShooterService();
 
-    // TODO: add the kicker. make it's rpm based on the FireIntent state
+  public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, SPIT, FIREANDINTAKE}
+  private FireIntent fireIntent = FireIntent.STOP;
+  public FireIntent getFireIntent() { return fireIntent; }
 
-    // setup state enums
-    public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, SPIT, FIREANDINTAKE}
-    private FireIntent fireIntent = FireIntent.STOP;
-    public void setFireIntent(FireIntent intent) { this.fireIntent = intent; }
-    public FireIntent getFireIntent() { return fireIntent; }
+  // loop-hydrated variables
+  private double turretSetpointRadians = 0.0;
+  private Translation2d fieldTargetPose = new Translation2d();
+  private Translation2d adjustedTargetPose = new Translation2d();
+  private double flywheelSetpointRpm = 0.0;
+  private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
+  private double intakeRotatorSetpoint = 0.0;
+  private double distanceToTarget;
+  double setFudgeFactor = 1.0;
 
-    // loop-hydrated variables
-    private double turretSetpointRadians = 0.0;
-    private Translation2d fieldTargetPose = new Translation2d();
-    private Translation2d adjustedTargetPose = new Translation2d();
-    private double flywheelSetpointRpm = 0.0;
-    private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
-    private double intakeRotatorSetpoint = 0.0;
-    private double distanceToTarget;
-    double setFudgeFactor = 1.0;
+  private double phaseSeconds = 0.0;
+  private boolean phaseState = false;
+    public boolean isTurretLocked = false;
 
-    private double phaseSeconds = 0.0;
-    private boolean phaseState = false;
-     public boolean isTurretLocked = false;
+  private final double flywheelIdleRPM = 500;
 
-    private final double flywheelIdleRPM = 500;
+  private int clearTimer, rotatorTimer = 0;
 
-    // public getters
-    public double getTurretSetpointRadians() {
-        return turretSetpointRadians;
-    }
-    public Translation2d getFieldTargetPose() {
-        return fieldTargetPose;
-    }
-    public double getFlywheelSetpointRpm() {
-        return flywheelSetpointRpm;
-    }
-    public double getKickerSpeed() {
-        return kickerSpeed;
-    }
-    public double getIndexerSpeed() {
-        return indexerSpeed;
-    }
-    public Translation2d getAdjustedTargetPose() {
-        return adjustedTargetPose;
-    }
-    public double getDistanceToTarget() {
-        return distanceToTarget;
-    }
-    public double getIntakeSpeed() {
-        return intakeSpeed;
-    }
-    //public void setIntakeSpeed(double speed) {
-    //    intakeSpeed = speed;
-    //}
-    public double getIntakeRotatorSetpoint() {
-        return intakeRotatorSetpoint;
-    }
-    public void incrementIntakeRotatorSetpoint(double rate) {
-        intakeRotatorSetpoint = intakeRotatorSetpoint + rate;
-    }
-    public void incrementSetFudgeFactor(double rate) {
-        setFudgeFactor += rate;
-    }
-    public void toggleTurretLock() {
-        if (isTurretLocked) {
-            isTurretLocked = false;
-        } else {
-            isTurretLocked = true;
-        }
-    }
 
-    int clearTimer, rotatorTimer = 0;
+  public void setFireIntent(FireIntent intent) {
+    this.fireIntent = intent;
+    setDefaultValues();
+    setStaticValues();
+  }
 
-    // run on a loop to keep variables hydrated
+  private void setDefaultValues() {
+    flywheelSetpointRpm = flywheelIdleRPM;
+    kickerSpeed = 0.0;
+    indexerSpeed = 0.0;
+    intakeSpeed = 0.0;
+    rotatorTimer = 0;
+  }
+
+  private void setStaticValues() {
+    if (fireIntent == FireIntent.STOP) {
+      flywheelSetpointRpm = 0.0; 
+    } else if( fireIntent == FireIntent.IDLE) {
+      flywheelSetpointRpm = flywheelIdleRPM;
+    } else if (fireIntent == FireIntent.CLEAR) {
+      kickerSpeed = -0.8;
+      indexerSpeed = -1.0;
+      intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+    } else if (fireIntent == FireIntent.INTAKE) {
+      intakeSpeed = 0.9;
+      intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+    } else if (fireIntent == FireIntent.SPIT) {
+      intakeSpeed = -0.9;
+      intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+    } else if (fireIntent == FireIntent.FIRE) {
+      kickerSpeed = 0.8;
+      intakeSpeed = 0.5;
+    } else if (fireIntent == FireIntent.FIREANDINTAKE) {
+      kickerSpeed = 0.8;
+      intakeSpeed = 0.9;
+      intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
+    }
+  }
+
+  // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("Superstate/FieldTargetPose", fieldTargetPose);
@@ -110,18 +104,14 @@ public class SuperStateSubsystem extends SubsystemBase {
         } else {
             turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         }
-        //turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), fieldTargetPose);
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
-        //distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), fieldTargetPose);
 
-        //double[] adjustedTargetArray = {adjustedTargetPose.getX(), adjustedTargetPose.getY()};
-        //SmartDashboard.putNumberArray("adjustedTargetPose", adjustedTargetArray);
-        //SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
-        //SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
+        SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
+        SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
         
         Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
 
-        
+        //Make a timer on Smartdashboard for the phases
         if (!(DriverStation.getGameSpecificMessage() == null)) {
             double stationTime = DriverStation.getMatchTime();
 
@@ -174,50 +164,15 @@ public class SuperStateSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Phase Seconds", phaseSeconds);
         SmartDashboard.putBoolean("Phase State", phaseState);
 
-        if(fireIntent == FireIntent.STOP) {
-            flywheelSetpointRpm = 0.0;
-            kickerSpeed = 0.0;
-            indexerSpeed = 0.0;
-            intakeSpeed = 0.0;
-            rotatorTimer = 0;
-        } else if( fireIntent == FireIntent.IDLE) {
-            flywheelSetpointRpm = flywheelIdleRPM;
-            kickerSpeed = 0.0;
-            indexerSpeed = 0.0;
-            intakeSpeed = 0.0;
-            rotatorTimer = 0;
-        } else if (fireIntent == FireIntent.CLEAR) {
+        //Set periodicly updated values for each state that needs it
+        if (fireIntent == FireIntent.CLEAR) {
             clearTimer++;
             if(clearTimer > 10) {
-                fireIntent = FireIntent.IDLE;
+                setFireIntent(FireIntent.IDLE);
                 clearTimer = 0;
             } 
-
-            flywheelSetpointRpm = flywheelIdleRPM;
-            kickerSpeed = -0.8;
-            //kickerSpeed = 0.0;
-            indexerSpeed = -1.0;
-            intakeSpeed = 0.0;
-            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            rotatorTimer = 0;
-        } else if (fireIntent == FireIntent.INTAKE) {
-            flywheelSetpointRpm = flywheelIdleRPM;
-            kickerSpeed = 0.0;
-            indexerSpeed = 0.0;
-            intakeSpeed = 0.9;
-            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            rotatorTimer = 0;
-        } else if (fireIntent == FireIntent.SPIT) {
-            flywheelSetpointRpm = flywheelIdleRPM;
-            kickerSpeed = 0.0;
-            indexerSpeed = 0.0;
-            intakeSpeed = -0.9;
-            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            rotatorTimer = 0;
         } else if (fireIntent == FireIntent.FIRE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
-            kickerSpeed = 0.8;
-            intakeSpeed = 0.5;
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
                 indexerSpeed = 1.0;
@@ -225,7 +180,6 @@ public class SuperStateSubsystem extends SubsystemBase {
                 indexerSpeed = 0.0;
             }
 
-            //Maybe flip them so that it goes to the top first
             rotatorTimer++;
             if(rotatorTimer < 50) {
                 intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
@@ -237,20 +191,6 @@ public class SuperStateSubsystem extends SubsystemBase {
             }
         } else if (fireIntent == FireIntent.FIREANDINTAKE) {
             flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
-            kickerSpeed = 0.8;
-            intakeRotatorSetpoint = Constants.Intake.minRotatorDegree;
-            intakeSpeed = 0.9;
-            rotatorTimer = 0;
-
-            /*
-            rotatorTimer++;
-            if(rotatorTimer > 60) {
-                intakeRotatorSetpoint = 100;
-            } else if (rotatorTimer > 120) {
-                intakeRotatorSetpoint = 4;
-                rotatorTimer = 0;
-            }
-             */
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()
             ) {
@@ -264,4 +204,46 @@ public class SuperStateSubsystem extends SubsystemBase {
             flywheelSetpointRpm = 4050.0;
         }
     }
+
+  // public getters
+  public double getTurretSetpointRadians() {
+      return turretSetpointRadians;
+  }
+  public Translation2d getFieldTargetPose() {
+      return fieldTargetPose;
+  }
+  public double getFlywheelSetpointRpm() {
+      return flywheelSetpointRpm;
+  }
+  public double getKickerSpeed() {
+      return kickerSpeed;
+  }
+  public double getIndexerSpeed() {
+      return indexerSpeed;
+  }
+  public Translation2d getAdjustedTargetPose() {
+      return adjustedTargetPose;
+  }
+  public double getDistanceToTarget() {
+      return distanceToTarget;
+  }
+  public double getIntakeSpeed() {
+      return intakeSpeed;
+  }
+  public double getIntakeRotatorSetpoint() {
+        return intakeRotatorSetpoint;
+    }
+  public void incrementIntakeRotatorSetpoint(double rate) {
+      intakeRotatorSetpoint = intakeRotatorSetpoint + rate;
+  }
+  public void incrementSetFudgeFactor(double rate) {
+      setFudgeFactor += rate;
+  }
+  public void toggleTurretLock() {
+      if (isTurretLocked) {
+          isTurretLocked = false;
+      } else {
+          isTurretLocked = true;
+      }
+  }
 }

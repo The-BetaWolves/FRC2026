@@ -10,18 +10,10 @@ import static frc.robot.subsystems.vision.VisionConstants.camera2Name;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
 import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
-import java.util.List;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -34,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -63,7 +56,6 @@ public class RobotContainer {
     Joystick driverJoyStick = new Joystick(0);
 
     private final SendableChooser<Command> autoChooser;
-
 
     public RobotContainer() {
 
@@ -144,23 +136,15 @@ public class RobotContainer {
                 )
             );
         }
-        
 
-        //swerveDrive.resetPose(new Pose2d(3.7, 4.02, (new Rotation2d())));
-        //swerveDrive.resetPose(new Pose2d(0.5, 7.25, (new Rotation2d()))); //Math.PI
-        //swerveDrive.resetPose(new Pose2d(0, 0, (new Rotation2d((Math.PI)))));
-        
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
         NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));
         NamedCommands.registerCommand("setToFire", new InstantCommand(()->superState.setFireIntent(FireIntent.FIRE)));
         NamedCommands.registerCommand("setToClear", new InstantCommand(()->superState.setFireIntent(FireIntent.CLEAR)));
         NamedCommands.registerCommand("setToIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.INTAKE)));
         NamedCommands.registerCommand("setToFireAndIntake", new InstantCommand(()->superState.setFireIntent(FireIntent.FIREANDINTAKE)));
-        
-        //NamedCommands.registerCommand("setClimberUp", new InstantCommand(()->climber.setSetpoint(365)));
-        //NamedCommands.registerCommand("setClimberDown", new InstantCommand(()->climber.setSetpoint(1)));
-        NamedCommands.registerCommand("setClimberUp", new InstantCommand());
-        NamedCommands.registerCommand("setClimberDown", new InstantCommand());
+
+        NamedCommands.registerCommand("setIntakeUp", new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree)));
 
         // NamedCommands.registerCommand("staticFire", new ParallelCommandGroup(
         //     new WaitCommand(Constants.Flywheel.firingTimeSeconds),
@@ -179,8 +163,6 @@ public class RobotContainer {
             )
         );
 
-        NamedCommands.registerCommand("setIntakeUp", new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree)));
-
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -197,22 +179,6 @@ public class RobotContainer {
              new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
-        /*
-        // Intake Rotator Arm manual override
-        new JoystickButton(driverJoyStick, 11).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(3)));
-        new JoystickButton(driverJoyStick, 16).whileTrue(
-            new RunCommand(()-> superState.incrementIntakeRotatorSetpoint(-3)));
-        
-        // Intake Rotator Arm up and down
-        new JoystickButton(driverJoyStick, 12).onTrue(
-            new InstantCommand(()-> intake.setSetpoint(Constants.Intake.maxRotatorDegree))
-        );
-        new JoystickButton(driverJoyStick, 15).onTrue(
-            new InstantCommand(()-> intake.setSetpoint(Constants.Intake.minRotatorDegree))
-        );
-          */
-
         // SHOOT + Intake! - Kicker and Flywheel and Intake
         new JoystickButton(driverJoyStick, 1).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
@@ -228,7 +194,6 @@ public class RobotContainer {
         onFalse(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.CLEAR)) //set to clear in comps
         );
-        
         
         //ResetGyro
         new JoystickButton(driverJoyStick, 15).onTrue(
@@ -249,21 +214,26 @@ public class RobotContainer {
             new RunCommand(()-> turret.incrementOffset(-0.25), turret)
         );
           */
-        /*
-        // Increase Shot Distance
-        new JoystickButton(driverJoyStick, 6).whileTrue(
-            new RunCommand(()-> superState.incrementSetFudgeFactor(0.005))
-        );
-        // Decrease Shot Distance
-        new JoystickButton(driverJoyStick, 9).whileTrue(
-            new RunCommand(()-> superState.incrementSetFudgeFactor(-0.005))
-        );
-         */
 
+        
         new JoystickButton(driverJoyStick, 14).whileTrue(
             new RunCommand(()-> swerveDrive.lockWheels(), swerveDrive)
         );
-         
+
+        /* 
+        new JoystickButton(driverJoyStick, 5).whileTrue(
+            new Flywheel().sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+        );
+        new JoystickButton(driverJoyStick, 6).whileTrue(
+            new Flywheel().sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+        );
+        new JoystickButton(driverJoyStick, 7).whileTrue(
+            new Flywheel().sysIdDynamic(SysIdRoutine.Direction.kForward)
+        );
+        new JoystickButton(driverJoyStick, 8).whileTrue(
+            new Flywheel().sysIdDynamic(SysIdRoutine.Direction.kReverse)
+        );
+        */
     }
 
     private void printDebugValues() {
@@ -277,8 +247,6 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
-        //return new TestBangBang(swerveDrive);
-        //return Commands.print("No autonomous command configured");
     }
 
     public void setToIdle() {
