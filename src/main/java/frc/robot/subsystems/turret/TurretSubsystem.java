@@ -10,8 +10,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.services.QualityControlService;
@@ -53,8 +51,6 @@ public class TurretSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
-
-        //pid.setSetpoint((setpointRadians + 180) / 360);
          
         //setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
         //double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);

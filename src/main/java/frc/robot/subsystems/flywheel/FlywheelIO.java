@@ -6,6 +6,10 @@ package frc.robot.subsystems.flywheel;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.units.measure.Voltage;
+
 public interface FlywheelIO {
 
     @AutoLog
@@ -21,7 +25,9 @@ public interface FlywheelIO {
     public default void updateInputs(FlywheelIOInputs inputs) {}
     public void setMotorOutput(double output);
     public void setMotorSetpoint(double setpoint);
+    public void setMotorVoltage(Voltage voltage);
     public boolean atSetpoint();
     public void updateFromSmartDashboard(double setpointRPM);
     public double getMotorOutput();
+    public RelativeEncoder getEncoder();
 }

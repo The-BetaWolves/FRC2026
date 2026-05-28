@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems.flywheel;
 
+import com.revrobotics.RelativeEncoder;
+
+import edu.wpi.first.units.measure.Voltage;
 
 /** Add your docs here. */
 public class FlywheelIOSim implements FlywheelIO {
@@ -31,12 +34,20 @@ public class FlywheelIOSim implements FlywheelIO {
         this.motorOutput = motorOutput;
     }
 
+    public void setMotorVoltage(Voltage voltage) {
+        
+    }
+
     public double getVelocityRPM() {
         return 0.0;
     }
 
     public double getMotorOutput() {
         return 0.0;
+    }
+
+    public RelativeEncoder getEncoder() {
+        return null;
     }
 
     public void setMotorSetpoint(double setpoint) {
