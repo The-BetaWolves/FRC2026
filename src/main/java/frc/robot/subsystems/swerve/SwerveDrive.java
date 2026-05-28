@@ -26,7 +26,6 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import frc.robot.Constants;
-import frc.robot.services.QualityControlService;
 import frc.robot.subsystems.swerve.Gyro.GyroIO;
 import frc.robot.subsystems.swerve.Gyro.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.Gyro.GyroPigeon;
@@ -40,9 +39,6 @@ import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleIOInputs;
 
 
 public class SwerveDrive extends SubsystemBase {
-
-    private final QualityControlService qualityControlService = new QualityControlService("Swerve Drive", 4, 0);
-    private final QualityControlService.MonitoredHardware monitoredGyro;
 
     private ChassisSpeeds desiredChassisSpeeds;
 
@@ -92,8 +88,6 @@ public class SwerveDrive extends SubsystemBase {
             odometry = new OdometryReal(kinematics, getHeading(), getModulePositions());
         }
         gyro.zeroYaw();
-
-        monitoredGyro = qualityControlService.watch("robot gyro");
 
         try{
             config = RobotConfig.fromGUISettings();
@@ -247,8 +241,6 @@ public class SwerveDrive extends SubsystemBase {
         desiredChassisSpeeds = null;
 
         poseEstimator.update(getHeading(), getModulePositions());
-
-        monitoredGyro.update(gyroInputs.gyroIsPowered);
     }
 
     public void log() {

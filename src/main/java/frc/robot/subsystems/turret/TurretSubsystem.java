@@ -12,15 +12,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.services.QualityControlService;
 
 public class TurretSubsystem extends SubsystemBase {
 
     private final TurretIO io;
     private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
-
-    private final QualityControlService qualityControlService = new QualityControlService("Turret", 0, 0);
-    private final QualityControlService.MonitoredHardware monitoredMotor, monitoredEncoder;
 
     private double setpointRadians = 0.0; // not an input, it's an output of what we command, so doesn't go in io
     private double toleranceDegrees = 5.0;
@@ -41,10 +37,6 @@ public class TurretSubsystem extends SubsystemBase {
         }
 
         pid.setTolerance(Math.toRadians(toleranceDegrees));
-
-        // create the quality control motor
-        monitoredMotor = qualityControlService.watch("turret motor " + Constants.Turret.motorCanId);
-        monitoredEncoder = qualityControlService.watch("turret encoder");
     }
 
     @Override
@@ -70,10 +62,6 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.recordOutput("Turret/MotorOutput", motorOutput);
         Logger.recordOutput("Turret/AtSetpoint", pid.atSetpoint());
         Logger.recordOutput("Turret/ErrorRadians", errorRadians);
-
-        // quality control log to shuffleboard
-        monitoredMotor.update(inputs.motorControllerIsPowered);
-        monitoredEncoder.update(inputs.encoderConnected);
     }
 
     public void setMotorOutput(double output) {

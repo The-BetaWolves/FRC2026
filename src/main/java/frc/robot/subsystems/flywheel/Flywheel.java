@@ -24,14 +24,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
-import frc.robot.services.QualityControlService;
 
 public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
-
-    private final QualityControlService qualityControlService = new QualityControlService("Flywheel", 0, 8);
-    private final QualityControlService.MonitoredHardware monitoredMotor1, monitoredMotor2;
 
     private double setpointRpm = 0.0;
     //private double tolerenceRPM = 300.0;
@@ -67,9 +63,6 @@ public class Flywheel extends SubsystemBase {
         }
 
         // pid.setTolerance(tolerenceRPM);
-
-        monitoredMotor1 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor1CanId);
-        monitoredMotor2 = qualityControlService.watch("flywheel motor " + Constants.Flywheel.motor2CanId);
 
         sysIdRoutine =
             new SysIdRoutine(
@@ -142,11 +135,6 @@ public class Flywheel extends SubsystemBase {
         Logger.recordOutput("Flywheel/kS", kS);
 
         SmartDashboard.putNumber("flywheelTrueSpeed", io.getMotorOutput());
-
-        // quality control log to shuffleboard
-        monitoredMotor1.update(inputs.motorController1IsPowered);
-        monitoredMotor2.update(inputs.motorController2IsPowered);
-
     }
 
     public void setSetpoint(double setpointRpm) {

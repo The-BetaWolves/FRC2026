@@ -47,9 +47,8 @@ public class RobotContainer {
 
     public IntakeSubsystem intake = new IntakeSubsystem();
     public IndexerSubsystem indexer = new IndexerSubsystem();
-    public Flywheel flywheel = new Flywheel();
+    public final Flywheel flywheel = new Flywheel();
     public TurretSubsystem turret = new TurretSubsystem();
-    //public ClimberSubsystem climber = new ClimberSubsystem();
     public KickerSubsystem kicker = new KickerSubsystem();
     public Vision vision;
 
@@ -220,20 +219,20 @@ public class RobotContainer {
             new RunCommand(()-> swerveDrive.lockWheels(), swerveDrive)
         );
 
-        /* 
+        
         new JoystickButton(driverJoyStick, 5).whileTrue(
-            new Flywheel().sysIdQuasistatic(SysIdRoutine.Direction.kForward)
+            flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
         );
         new JoystickButton(driverJoyStick, 6).whileTrue(
-            new Flywheel().sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
+            flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
         );
-        new JoystickButton(driverJoyStick, 7).whileTrue(
-            new Flywheel().sysIdDynamic(SysIdRoutine.Direction.kForward)
+        new JoystickButton(driverJoyStick, 10).whileTrue(
+            flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward)
         );
-        new JoystickButton(driverJoyStick, 8).whileTrue(
-            new Flywheel().sysIdDynamic(SysIdRoutine.Direction.kReverse)
+        new JoystickButton(driverJoyStick, 9).whileTrue(
+            flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse)
         );
-        */
+        
     }
 
     private void printDebugValues() {
