@@ -50,7 +50,7 @@ public class SuperStateSubsystem extends SubsystemBase {
   private boolean phaseState = false;
     public boolean isTurretLocked = false;
 
-  private final double flywheelIdleRPM = 500;
+  private final double flywheelIdleRPM = 0;
 
   private int clearTimer, rotatorTimer = 0;
 
@@ -74,6 +74,7 @@ public class SuperStateSubsystem extends SubsystemBase {
       flywheelSetpointRpm = 0.0; 
     } else if( fireIntent == FireIntent.IDLE) {
       flywheelSetpointRpm = flywheelIdleRPM;
+      intakeRotatorSetpoint = Constants.Intake.maxRotatorDegree;
     } else if (fireIntent == FireIntent.CLEAR) {
       kickerSpeed = -0.8;
       indexerSpeed = -1.0;
@@ -102,7 +103,7 @@ public class SuperStateSubsystem extends SubsystemBase {
         if (isTurretLocked) {
             turretSetpointRadians = 0.0;
         } else {
-            turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+            turretSetpointRadians = 0.0; //turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         }
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
 

@@ -14,6 +14,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -21,6 +22,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Voltage;
 import frc.robot.Constants.SwerveConfig;
 import frc.robot.util.SwerveModuleAngleOptimizer;
 
@@ -91,6 +93,11 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
             .apply(
                 new ClosedLoopConfig()
                 .pid(SwerveConfig.DRIVE_kP, SwerveConfig.DRIVE_kI, SwerveConfig.DRIVE_kD)
+                .apply(new FeedForwardConfig()
+                    .kV(SwerveConfig.DRIVE_kV)
+                    .kA(SwerveConfig.DRIVE_kA)
+                    .kS(SwerveConfig.DRIVE_kS)
+                )
             )
             .apply(
                 new EncoderConfig()
@@ -198,5 +205,20 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
         inputs.absoluteAngleDegrees = getAbsoluteAngle().getDegrees();
         inputs.absoluteAdjustedAngleDegrees = getAdjustedAbsoluteAngle().getDegrees();
         inputs.relativeAngleDegrees = getRelativeAngle().getDegrees();
+    }
+
+    @Override
+    public void setDriveMotorVoltage(Voltage voltage) {
+        driveMotor.setVoltage(voltage);
+    }
+
+    @Override
+    public RelativeEncoder getRelativeEncoder() {
+        return driveEncoder;
+    }
+
+    @Override
+    public double getAppliedOutput() {
+        return driveMotor.getAppliedOutput();
     }
 }

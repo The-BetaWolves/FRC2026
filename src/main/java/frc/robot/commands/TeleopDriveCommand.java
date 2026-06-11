@@ -27,7 +27,7 @@ public class TeleopDriveCommand extends Command {
     private final double maxSwerveAngularVelocity = Constants.Drivetrain.MAXIMUM_CHASSIS_ANGULAR_VELOCITY;
 
     private double speedModifier = 1.0;
-    private double rotationModifier = 0.75;
+    private double rotationModifier = 1.0;
 
     public TeleopDriveCommand(
         SwerveDrive swerve, 

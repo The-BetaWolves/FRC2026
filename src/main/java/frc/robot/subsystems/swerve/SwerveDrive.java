@@ -13,11 +13,29 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import static edu.wpi.first.units.Units.Radian;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -50,6 +68,8 @@ public class SwerveDrive extends SubsystemBase {
 
     private RobotConfig config;
 
+    SysIdRoutine sysIdRoutine;
+
     // Modules
     private final SwerveModule[] modules = {
         new SwerveModule("Swerve/FL",0, Constants.SwerveModules.FRONT_LEFT),
@@ -76,6 +96,14 @@ public class SwerveDrive extends SubsystemBase {
 
     private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, gyroInputs.yaw, getModulePositions(), startingPose);
+
+      // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    // Mutable holder for unit-safe linear distance values, persisted to avoid reallocation.
+    private final MutAngle m_angle = Radians.mutable(0);
+     // Mutable holder for unit-safe linear velocity values, persisted to avoid reallocation.
+    private final MutAngularVelocity m_velocity = RadiansPerSecond.mutable(0);
+
 
     public SwerveDrive() {
 
@@ -121,7 +149,32 @@ public class SwerveDrive extends SubsystemBase {
             this // Reference to this subsystem to set requirements
         );
 
-        
+        sysIdRoutine =
+            new SysIdRoutine(
+                // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
+                new SysIdRoutine.Config(
+                    Volts.of(1).per(Seconds),
+                    Volts.of(4),
+                    Time.ofRelativeUnits(3, Seconds)
+                ),
+                new SysIdRoutine.Mechanism(
+                    // Tell SysId how to plumb the driving voltage to the motor(s).
+                    (volts) -> driveWithVoltage(volts),
+                    // Tell SysId how to record a frame of data for each motor on the mechanism being
+                    // characterized.
+                    log -> {
+                        // Record a frame for the shooter motor.
+                        log.motor("drivetrain")
+                            .voltage(
+                                m_appliedVoltage.mut_replace(
+                                    modules[1].getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                            .angularPosition(m_angle.mut_replace(modules[1].getRelativeEncoder().getPosition(), Rotations))
+                            .angularVelocity(
+                                m_velocity.mut_replace(modules[1].getRelativeEncoder().getVelocity(), RotationsPerSecond));
+                    },
+                    // Tell SysId to make generated commands require this subsystem, suffix test state in
+                    // WPILog with this subsystem's name ("shooter")
+                    this));
     }
 
     public Rotation2d getHeading() {
@@ -188,6 +241,12 @@ public class SwerveDrive extends SubsystemBase {
         } else {
             this.desiredChassisSpeeds = new ChassisSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity);
         }            
+    }
+
+    public void driveWithVoltage(Voltage voltage) {
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].setDriveMotorVoltage(voltage);
+        }
     }
 
     public void lockWheels() {
@@ -281,5 +340,13 @@ public class SwerveDrive extends SubsystemBase {
         Matrix<N3, N1> visionMeasurementStdDevs) {
         //poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
         poseEstimator.addVisionMeasurement(new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), getHeading()), timestampSeconds, visionMeasurementStdDevs);
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return sysIdRoutine.dynamic(direction);
     }
 }

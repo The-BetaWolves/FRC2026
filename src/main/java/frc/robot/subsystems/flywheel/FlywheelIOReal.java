@@ -34,9 +34,17 @@ public class FlywheelIOReal implements FlywheelIO {
     private double setpointRPM = 0.0;
     private double tolerenceRPM = 1000.0; //Should be 100
     private double maxMotorOutput = 1.0;
+    //Actually Used
+    /*
     private double kP = 0.00002;
     private double kV = 0.001815;
     private double kS = 0.0;
+     */
+
+    private double kP = 0.0012992;
+    private double kV = 0.0018896;
+    private double kS = 0.055158;
+    private double kA = 0.00053746;
 
     public FlywheelIOReal() {
         motor1 = new SparkFlex(Constants.Flywheel.motor1CanId, MotorType.kBrushless);
@@ -65,7 +73,11 @@ public class FlywheelIOReal implements FlywheelIO {
                     .maxOutput(maxMotorOutput)
                     .minOutput(0.0)
                     //.allowedClosedLoopError(tolerenceRPM, ClosedLoopSlot.kSlot0)
-                .feedForward.kV(kV, ClosedLoopSlot.kSlot0).kS(kS);
+                .feedForward
+                    .kV(kV, ClosedLoopSlot.kSlot0)
+                    .kS(kS)
+                    .kA(kA);
+                
             
         motor2FollowerConfig
             .apply(globalConfig)

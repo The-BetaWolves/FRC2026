@@ -8,15 +8,25 @@ import static edu.wpi.first.units.Units.Radians;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
+import static edu.wpi.first.units.Units.VoltsPerMeterPerSecondSquared;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.controls.VelocityVoltage;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Time;
+import edu.wpi.first.units.measure.Velocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -67,7 +77,11 @@ public class Flywheel extends SubsystemBase {
         sysIdRoutine =
             new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-                new SysIdRoutine.Config(),
+                new SysIdRoutine.Config(
+                    Volts.of(0.5).per(Seconds),
+                    Volts.of(4),
+                    Time.ofRelativeUnits(3, Seconds)
+                ),
                 new SysIdRoutine.Mechanism(
                     // Tell SysId how to plumb the driving voltage to the motor(s).
                     (io::setMotorVoltage),

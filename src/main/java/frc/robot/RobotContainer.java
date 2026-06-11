@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -219,7 +220,7 @@ public class RobotContainer {
             new RunCommand(()-> swerveDrive.lockWheels(), swerveDrive)
         );
 
-        
+        /*
         new JoystickButton(driverJoyStick, 5).whileTrue(
             flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
         );
@@ -232,7 +233,19 @@ public class RobotContainer {
         new JoystickButton(driverJoyStick, 9).whileTrue(
             flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse)
         );
+         */
         
+        new JoystickButton(driverJoyStick, 5).whileTrue(
+            new SequentialCommandGroup(
+                swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
+                new WaitCommand(2),
+                swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                new WaitCommand(2),
+                swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward),
+                new WaitCommand(2),
+                swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+            )
+        );
     }
 
     private void printDebugValues() {
