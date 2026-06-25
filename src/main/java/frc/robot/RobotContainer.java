@@ -121,7 +121,7 @@ public class RobotContainer {
                     swerveDrive,
                     ()-> (MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
                     ()-> (MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
+                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getZ(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
                     superState
                 )
             );

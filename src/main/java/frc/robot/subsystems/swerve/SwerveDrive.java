@@ -159,18 +159,44 @@ public class SwerveDrive extends SubsystemBase {
                 ),
                 new SysIdRoutine.Mechanism(
                     // Tell SysId how to plumb the driving voltage to the motor(s).
-                    (volts) -> driveWithVoltage(volts),
+                    (volts) -> {
+                        driveModuleWithVoltage(0, volts);
+                        driveModuleWithVoltage(1, volts);
+                        driveModuleWithVoltage(2, volts);
+                        driveModuleWithVoltage(3, volts);
+                    },
                     // Tell SysId how to record a frame of data for each motor on the mechanism being
                     // characterized.
                     log -> {
                         // Record a frame for the shooter motor.
-                        log.motor("drivetrain")
+                        log.motor("front-left")
+                            .voltage(
+                                m_appliedVoltage.mut_replace(
+                                    modules[0].getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                            .angularPosition(m_angle.mut_replace(modules[0].getRelativeEncoder().getPosition(), Rotations))
+                            .angularVelocity(
+                                m_velocity.mut_replace((modules[0].getRelativeEncoder().getVelocity()), RotationsPerSecond));
+                        log.motor("front-right")
                             .voltage(
                                 m_appliedVoltage.mut_replace(
                                     modules[1].getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
                             .angularPosition(m_angle.mut_replace(modules[1].getRelativeEncoder().getPosition(), Rotations))
                             .angularVelocity(
-                                m_velocity.mut_replace(modules[1].getRelativeEncoder().getVelocity(), RotationsPerSecond));
+                                m_velocity.mut_replace((modules[1].getRelativeEncoder().getVelocity()), RotationsPerSecond));
+                        log.motor("back-left")
+                            .voltage(
+                                m_appliedVoltage.mut_replace(
+                                    modules[2].getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                            .angularPosition(m_angle.mut_replace(modules[2].getRelativeEncoder().getPosition(), Rotations))
+                            .angularVelocity(
+                                m_velocity.mut_replace((modules[2].getRelativeEncoder().getVelocity()), RotationsPerSecond));
+                        log.motor("back-right")
+                            .voltage(
+                                m_appliedVoltage.mut_replace(
+                                    modules[3].getAppliedOutput() * RobotController.getBatteryVoltage(), Volts))
+                            .angularPosition(m_angle.mut_replace(modules[3].getRelativeEncoder().getPosition(), Rotations))
+                            .angularVelocity(
+                                m_velocity.mut_replace((modules[3].getRelativeEncoder().getVelocity()), RotationsPerSecond));
                     },
                     // Tell SysId to make generated commands require this subsystem, suffix test state in
                     // WPILog with this subsystem's name ("shooter")
@@ -249,6 +275,10 @@ public class SwerveDrive extends SubsystemBase {
         }
     }
 
+    public void driveModuleWithVoltage(int id, Voltage voltage) {
+        modules[id].setDriveMotorVoltage(voltage);
+    }
+
     public void lockWheels() {
         SwerveModuleState[] desiredStates = new SwerveModuleState[]{
             new SwerveModuleState(
@@ -314,7 +344,6 @@ public class SwerveDrive extends SubsystemBase {
             } else {
                 SmartDashboard.putNumber("swerve raw absolute encoder value " + i, modules[i].getAbsoluteAngle().getDegrees());
             }
-
             
         }
         Logger.recordOutput("Swerve/MyStates", getModuleStates());

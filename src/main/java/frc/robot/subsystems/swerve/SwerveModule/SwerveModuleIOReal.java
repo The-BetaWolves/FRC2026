@@ -183,9 +183,8 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
 
         //Velocity in RPM  (convert from m/s if needed)
         //Position in rotations
-        double targetDriveRPM = optimizedState.speedMetersPerSecond / SwerveConfig.DRIVE_VELOCITY_CONVERSION;
         drivePID.setSetpoint(
-            targetDriveRPM, SparkBase.ControlType.kVelocity);
+            optimizedState.speedMetersPerSecond, SparkBase.ControlType.kVelocity);
 
         //Prevent rotating module if speed is less than 1%. Prevents Jittering.
         // Rotation2d angle = (Math.abs(desired.speedMetersPerSecond) <= (Constants.Drivetrain.MAXIMUM_CHASSIS_VELOCITY * 0.01)) ?

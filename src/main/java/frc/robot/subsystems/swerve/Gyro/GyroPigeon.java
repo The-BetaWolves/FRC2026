@@ -1,7 +1,11 @@
 package frc.robot.subsystems.swerve.Gyro;
 
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 
 public class GyroPigeon implements GyroIO {
@@ -21,6 +25,8 @@ public class GyroPigeon implements GyroIO {
         inputs.yaw = getYaw();
         inputs.yawDegrees = getYaw().getDegrees();
         inputs.gyroIsPowered = gyro.getYaw().getStatus().isOK();
+
+        SmartDashboard.putNumber("angular velocity", gyro.getAngularVelocityXWorld().getValue().in(RadiansPerSecond));
     }
 
     @Override
