@@ -54,7 +54,7 @@ public class SwerveModule {
         );
     }
 
-    public void updateInputs() {
+    public void updateInputs(SwerveModuleIOInputs inputs) {
         io.updateInputs(inputs);
     }
 

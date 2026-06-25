@@ -153,8 +153,8 @@ public class SwerveDrive extends SubsystemBase {
             new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
                 new SysIdRoutine.Config(
-                    Volts.of(1).per(Seconds),
-                    Volts.of(4),
+                    Volts.of(2).per(Seconds),
+                    Volts.of(6),
                     Time.ofRelativeUnits(3, Seconds)
                 ),
                 new SysIdRoutine.Mechanism(
@@ -335,8 +335,12 @@ public class SwerveDrive extends SubsystemBase {
     public void log() {
          // Update inputs for logging
          for (int i = 0; i < modules.length; i++) {
-            modules[i].updateInputs();
+            modules[i].updateInputs(moduleInputs[i]);
             Logger.processInputs("Swerve/Module" + i, moduleInputs[i]);
+            //Just for checking if PIDF values are correct
+            Logger.recordOutput("Swerve/AbsoluteDesiredSpeed" + i, Math.abs(moduleInputs[i].driveVelocityMetersPerSecond));
+
+
 
             double rawAbsoluteEncoderValue = modules[i].getAbsoluteAngle().getDegrees();
             if(rawAbsoluteEncoderValue < 0) {
