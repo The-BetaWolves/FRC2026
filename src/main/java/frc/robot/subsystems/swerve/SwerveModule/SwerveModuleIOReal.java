@@ -90,6 +90,7 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
                 .inverted(constants.driveInverted)
                 .smartCurrentLimit(SwerveConfig.DRIVE_CURRENT_LIMIT)
                 .openLoopRampRate(SwerveConfig.DRIVE_RAMP)
+                .voltageCompensation(12)
             .apply(
                 new ClosedLoopConfig()
                 .pid(SwerveConfig.DRIVE_kP, SwerveConfig.DRIVE_kI, SwerveConfig.DRIVE_kD)
@@ -187,7 +188,7 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
             optimizedState.speedMetersPerSecond, SparkBase.ControlType.kVelocity);
 
         //Prevent rotating module if speed is less than 1%. Prevents Jittering.
-        // Rotation2d angle = (Math.abs(desired.speedMetersPerSecond) <= (Constants.Drivetrain.MAXIMUM_CHASSIS_VELOCITY * 0.01)) ?
+        // Rotation2d angle = (Math.abs(desired.speedMetersPerSecond) <= (Constants.SwerveConfig.MAXIMUM_CHASSIS_VELOCITY * 0.01)) ?
         //     currentReferenceAngle :
         //     desired.angle; 
 

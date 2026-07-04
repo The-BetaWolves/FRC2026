@@ -155,7 +155,7 @@ public class SwerveDrive extends SubsystemBase {
                 new SysIdRoutine.Config(
                     Volts.of(2).per(Seconds),
                     Volts.of(6),
-                    Time.ofRelativeUnits(3, Seconds)
+                    Time.ofRelativeUnits(10, Seconds)
                 ),
                 new SysIdRoutine.Mechanism(
                     // Tell SysId how to plumb the driving voltage to the motor(s).
@@ -338,7 +338,7 @@ public class SwerveDrive extends SubsystemBase {
             modules[i].updateInputs(moduleInputs[i]);
             Logger.processInputs("Swerve/Module" + i, moduleInputs[i]);
             //Just for checking if PIDF values are correct
-            Logger.recordOutput("Swerve/AbsoluteDesiredSpeed" + i, Math.abs(moduleInputs[i].driveVelocityMetersPerSecond));
+            Logger.recordOutput("Swerve/AbsoluteSpeed" + i, Math.abs(moduleInputs[i].driveVelocityMetersPerSecond));
 
 
 

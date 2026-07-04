@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -235,15 +236,32 @@ public class RobotContainer {
         );
          */
         
+        double quasistaticTimeout = 4;
+        double dynamicTimeout = 3;
         new JoystickButton(driverJoyStick, 5).whileTrue(
             new SequentialCommandGroup(
-                swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
+                new ParallelRaceGroup(
+                    swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
+                    new WaitCommand(quasistaticTimeout)
+                ),
+
                 new WaitCommand(2),
-                swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                new ParallelRaceGroup(
+                    swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
+                    new WaitCommand(quasistaticTimeout)
+                ),
+
                 new WaitCommand(2),
-                swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward),
+                new ParallelRaceGroup(
+                    swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward),
+                    new WaitCommand(dynamicTimeout)
+                ),
+
                 new WaitCommand(2),
-                swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse)
+                new ParallelRaceGroup(
+                    swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse),
+                    new WaitCommand(dynamicTimeout)
+                )
             )
         );
     }

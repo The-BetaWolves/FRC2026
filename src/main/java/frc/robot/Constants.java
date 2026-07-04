@@ -7,19 +7,6 @@ import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleConstants;
 
 public final class Constants {
 
-    public static final class Drivetrain {
-        // Physical robot dimensions (meters)
-        public static final double TRACK_WIDTH = Units.inchesToMeters(21.75);
-        public static final double WHEEL_BASE = Units.inchesToMeters(22.75);
-
-        // Gyro
-        public static final int GYRO_ID = 9;
-        public static final String GYRO_CAN_BUS_NAME = "rio";
-
-        public static final double MAXIMUM_CHASSIS_VELOCITY = 2.0; //3.75; // m/s
-        public static final double MAXIMUM_CHASSIS_ANGULAR_VELOCITY = (4.0); // radians/s
-    }
-
     public static final class Controls {
         // Joystick deadband for angle-only control (e.g. rotation stick ring)
         public static final double ANGLE_JOYSTICK_DEADBAND = 0.35;
@@ -68,16 +55,28 @@ public final class Constants {
     }
 
     public static final class SwerveConfig {
+
+        // Physical robot dimensions (meters)
+        public static final double TRACK_WIDTH = Units.inchesToMeters(21.75);
+        public static final double WHEEL_BASE = Units.inchesToMeters(22.75);
+
+        // Gyro
+        public static final int GYRO_ID = 9;
+        public static final String GYRO_CAN_BUS_NAME = "rio";
+
+        public static final double MAXIMUM_CHASSIS_VELOCITY = 3.75; // m/s
+        public static final double MAXIMUM_CHASSIS_ANGULAR_VELOCITY = (4.0); // radians/s
+        
         // Gearing
         public static final double DRIVE_GEAR_RATIO = 6.75;
         public static final double ANGLE_GEAR_RATIO = 21.4285714286;
     
         // used to adjust auto drive distance
         // multiply by wheel diameter to fudge from tuning steps
-        public static final double fudge = 0.983;
+        public static final double fudge = 1.0;
 
         // Wheel diameter in meters (4 inch wheel)
-        public static final double WHEEL_DIAMETER_METERS = 0.1016 * fudge; // 4 inches
+        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.75) * fudge; // was 4 inches
 
         public static final double WHEEL_CIRCUMFRENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     
@@ -108,10 +107,10 @@ public final class Constants {
         public static final double DRIVE_kA = 0.0;
         public static final double DRIVE_kS = 0.0;
         */
-        public static final double DRIVE_kS = 0.0; //0.22912; 
-        public static final double DRIVE_kV = 2.3797; 
-        public static final double DRIVE_kA = 0.52815; 
-        public static final double DRIVE_kP = 0.00027912; 
+        public static final double DRIVE_kS = 0.22912; 
+        public static final double DRIVE_kV = 2.7; //2.3797;
+        public static final double DRIVE_kA = 20.0; //0.8; //10.0; //0.6; //0.52815; //0.75; 
+        public static final double DRIVE_kP = 0.02; //0.00027912; //0.4; 
         public static final double DRIVE_kI = 0.0;
         public static final double DRIVE_kD = 0.0;
         /*
@@ -144,7 +143,7 @@ public final class Constants {
             true,
             true,
             Rotation2d.fromDegrees(204.79), // degrees
-            new Translation2d(Drivetrain.WHEEL_BASE / 2.0, Drivetrain.TRACK_WIDTH / 2.0)
+            new Translation2d(SwerveConfig.WHEEL_BASE / 2.0, SwerveConfig.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants FRONT_RIGHT = new SwerveModuleConstants(
@@ -154,7 +153,7 @@ public final class Constants {
             "rio",
             true, true,
             Rotation2d.fromDegrees(191.34),
-            new Translation2d(Drivetrain.WHEEL_BASE / 2.0, -Drivetrain.TRACK_WIDTH / 2.0)
+            new Translation2d(SwerveConfig.WHEEL_BASE / 2.0, -SwerveConfig.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants BACK_LEFT = new SwerveModuleConstants(
@@ -164,7 +163,7 @@ public final class Constants {
             "rio",
             true, true,
             Rotation2d.fromDegrees(50.19),
-            new Translation2d(-Drivetrain.WHEEL_BASE / 2.0, Drivetrain.TRACK_WIDTH / 2.0)
+            new Translation2d(-SwerveConfig.WHEEL_BASE / 2.0, SwerveConfig.TRACK_WIDTH / 2.0)
         );
 
         public static final SwerveModuleConstants BACK_RIGHT = new SwerveModuleConstants(
@@ -174,7 +173,7 @@ public final class Constants {
             "rio",
             true, true,
             Rotation2d.fromDegrees(352.71),
-            new Translation2d(-Drivetrain.WHEEL_BASE / 2.0, -Drivetrain.TRACK_WIDTH / 2.0)
+            new Translation2d(-SwerveConfig.WHEEL_BASE / 2.0, -SwerveConfig.TRACK_WIDTH / 2.0)
         );
     }
 }

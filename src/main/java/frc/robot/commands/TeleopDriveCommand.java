@@ -23,8 +23,8 @@ public class TeleopDriveCommand extends Command {
     private final DoubleSupplier   vZ;
     private FireIntent rawfireState;
 
-    private final double maxSwerveVelocity = Constants.Drivetrain.MAXIMUM_CHASSIS_VELOCITY;
-    private final double maxSwerveAngularVelocity = Constants.Drivetrain.MAXIMUM_CHASSIS_ANGULAR_VELOCITY;
+    private final double maxSwerveVelocity = Constants.SwerveConfig.MAXIMUM_CHASSIS_VELOCITY;
+    private final double maxSwerveAngularVelocity = Constants.SwerveConfig.MAXIMUM_CHASSIS_ANGULAR_VELOCITY;
 
     private double speedModifier = 1.0;
     private double rotationModifier = 1.0;
@@ -64,11 +64,16 @@ public class TeleopDriveCommand extends Command {
                 angVelocity * maxSwerveAngularVelocity * rotationModifier
             );
         } else {
-            swerve.drive(
+            if (xVelocity == 0.0 && yVelocity == 0.0 && angVelocity == 0.0) {
+                swerve.lockWheels();
+            } else {
+                swerve.drive(
                 xVelocity * maxSwerveVelocity * speedModifier,
                 yVelocity * maxSwerveVelocity * speedModifier,
                 angVelocity * maxSwerveAngularVelocity * rotationModifier
             );
+            }
+            
         }
              
     }

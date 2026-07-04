@@ -12,7 +12,7 @@ public class GyroPigeon implements GyroIO {
     private final Pigeon2 gyro;
     
     public GyroPigeon() {
-        this.gyro = new Pigeon2(Constants.Drivetrain.GYRO_ID);
+        this.gyro = new Pigeon2(Constants.SwerveConfig.GYRO_ID);
         configureGyro();
     }
 
