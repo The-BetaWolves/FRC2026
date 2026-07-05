@@ -62,6 +62,10 @@ public class SwerveModule {
         return io.getAbsoluteAngle();
     }
 
+    public void setAzimuth(Rotation2d angle) {
+        io.setAzimuth(angle);
+    }
+
     public void periodic() {
         Logger.processInputs(logPath, inputs);
     }

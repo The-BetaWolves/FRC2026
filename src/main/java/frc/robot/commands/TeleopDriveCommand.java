@@ -5,10 +5,9 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
-import java.util.function.Supplier;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStateSubsystem;
@@ -55,7 +54,7 @@ public class TeleopDriveCommand extends Command {
         double angVelocity =  Math.pow(vZ.getAsDouble(), 3);
 
         rawfireState = superState.getFireIntent();
-        SmartDashboard.putString("currentState", rawfireState.toString());
+        Logger.recordOutput("SuperState/FireIntent", rawfireState.toString());
         if (rawfireState == FireIntent.FIRE || rawfireState == FireIntent.FIREANDINTAKE) {
             double maxSpeedMeters = 0.75;
             swerve.drive(

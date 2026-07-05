@@ -70,4 +70,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     public double getAppliedOutput() {
         return 1;
     }
+
+    @Override 
+    public void setAzimuth(Rotation2d angle) {
+        
+    }
 }

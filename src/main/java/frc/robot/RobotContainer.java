@@ -23,12 +23,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.TeleopDriveCommand;
 import frc.robot.subsystems.IndexerSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -167,21 +164,20 @@ public class RobotContainer {
         configureBindings();
         autoChooser = AutoBuilder.buildAutoChooser();
 
-        printDebugValues();
         SmartDashboard.putData("Auto Chooser", autoChooser);
     }
 
     private void configureBindings() {
-        // Intake In and Out 
-        new JoystickButton(driverJoyStick, 3).onTrue(
+        // Intake In and Out
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_INTAKE).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.INTAKE))
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
-        new JoystickButton(driverJoyStick, 4).onTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_SPIT).onTrue(
              new InstantCommand(()-> superState.setFireIntent(FireIntent.SPIT))
         ).onFalse(new InstantCommand(()-> superState.setFireIntent(FireIntent.IDLE)));
 
         // SHOOT + Intake! - Kicker and Flywheel and Intake
-        new JoystickButton(driverJoyStick, 1).onTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_FIRE_AND_INTAKE).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIREANDINTAKE))
         ).
         onFalse(
@@ -189,7 +185,7 @@ public class RobotContainer {
         );
 
         // SHOOT + Jostle! - Kicker and Flywheel and Intake Rotator Jostle
-        new JoystickButton(driverJoyStick, 2).onTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_FIRE).onTrue(
             new InstantCommand(()->superState.setFireIntent(SuperStateSubsystem.FireIntent.FIRE))
         ).
         onFalse(
@@ -197,82 +193,20 @@ public class RobotContainer {
         );
         
         //ResetGyro
-        new JoystickButton(driverJoyStick, 15).onTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_RESET_GYRO).onTrue(
             new InstantCommand(()-> swerveDrive.setYaw(0))
         );
 
-        new JoystickButton(driverJoyStick, 16).onTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_TOGGLE_TURRET_LOCK).onTrue(
             new InstantCommand(()-> superState.toggleTurretLock())
         );
-         
-        /*
-        // Turret CW
-        new JoystickButton(driverJoyStick, 10).whileTrue(
-            new RunCommand(()-> turret.incrementOffset(0.25), turret)
-        );
-        // Turret CCW
-        new JoystickButton(driverJoyStick, 5).whileTrue(
-            new RunCommand(()-> turret.incrementOffset(-0.25), turret)
-        );
-          */
-
         
-        new JoystickButton(driverJoyStick, 14).whileTrue(
+        new JoystickButton(driverJoyStick, Constants.Controls.BTN_LOCK_WHEELS).whileTrue(
             new RunCommand(()-> swerveDrive.lockWheels(), swerveDrive)
         );
 
-        /*
-        new JoystickButton(driverJoyStick, 5).whileTrue(
-            flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kForward)
-        );
-        new JoystickButton(driverJoyStick, 6).whileTrue(
-            flywheel.sysIdQuasistatic(SysIdRoutine.Direction.kReverse)
-        );
-        new JoystickButton(driverJoyStick, 10).whileTrue(
-            flywheel.sysIdDynamic(SysIdRoutine.Direction.kForward)
-        );
-        new JoystickButton(driverJoyStick, 9).whileTrue(
-            flywheel.sysIdDynamic(SysIdRoutine.Direction.kReverse)
-        );
-         */
-        
-        double quasistaticTimeout = 4;
-        double dynamicTimeout = 3;
-        new JoystickButton(driverJoyStick, 5).whileTrue(
-            new SequentialCommandGroup(
-                new ParallelRaceGroup(
-                    swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kForward),
-                    new WaitCommand(quasistaticTimeout)
-                ),
-
-                new WaitCommand(2),
-                new ParallelRaceGroup(
-                    swerveDrive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse),
-                    new WaitCommand(quasistaticTimeout)
-                ),
-
-                new WaitCommand(2),
-                new ParallelRaceGroup(
-                    swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kForward),
-                    new WaitCommand(dynamicTimeout)
-                ),
-
-                new WaitCommand(2),
-                new ParallelRaceGroup(
-                    swerveDrive.sysIdDynamic(SysIdRoutine.Direction.kReverse),
-                    new WaitCommand(dynamicTimeout)
-                )
-            )
-        );
-    }
-
-    private void printDebugValues() {
-        // add smart dashboard debug calls here instead of in subsystems
-
-        //double[] adjustedTargetArray = {superState.getAdjustedTargetPose().getX(), superState.getAdjustedTargetPose().getY()};
-        //SmartDashboard.putNumberArray("Adjusted Target Position Meters", adjustedTargetArray);
-        //SmartDashboard.putNumber("Distance to Target", superState.getDistanceToTarget());
-
+        // SysId characterization routines
+        new SysIdBindings(driverJoyStick, swerveDrive, flywheel);
     }
 
     public Command getAutonomousCommand() {

@@ -10,9 +10,10 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -65,11 +66,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakeRotatorMotor.set(rotatorSpeed);
 
-    SmartDashboard.putNumber("intakeRollerSpeed", rollerSpeed);
-    SmartDashboard.putNumber("intakeRotatorSpeed", rotatorSpeed);
-    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderValue", encoder.get());
-    SmartDashboard.putNumber("intakeRotatorAbsoluteEncoderDegree", intakePositionDegrees);
-    SmartDashboard.putNumber("intakeRotatorSetpoint", setpoint);
+    Logger.recordOutput("Intake/RollerSpeed", rollerSpeed);
+    Logger.recordOutput("Intake/RotatorSpeed", rotatorSpeed);
+    Logger.recordOutput("Intake/RotatorAbsoluteEncoderValue", encoder.get());
+    Logger.recordOutput("Intake/RotatorAbsoluteEncoderDegrees", intakePositionDegrees);
+    Logger.recordOutput("Intake/RotatorSetpoint", setpoint);
   }
 
   public void setRollerSpeed(double speed) {

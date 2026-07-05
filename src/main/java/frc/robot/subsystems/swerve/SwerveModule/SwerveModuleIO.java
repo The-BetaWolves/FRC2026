@@ -13,4 +13,5 @@ public interface SwerveModuleIO {
     Rotation2d getAbsoluteAngle();
     RelativeEncoder getRelativeEncoder();
     double getAppliedOutput();
+    void setAzimuth(Rotation2d angle);
 }

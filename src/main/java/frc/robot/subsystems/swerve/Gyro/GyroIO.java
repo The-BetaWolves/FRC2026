@@ -12,6 +12,7 @@ public interface GyroIO {
     public static class GyroIOInputs  {
         public Rotation2d yaw = new Rotation2d();
         public double yawDegrees = 0.0;
+        public double yawVelocityRadiansPerSecond = 0.0;
         public boolean gyroIsPowered = false;
     }
 

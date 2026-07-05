@@ -15,6 +15,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.SignalsConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -104,6 +105,12 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
                 new EncoderConfig()
                 .positionConversionFactor(SwerveConfig.DRIVE_POSITION_CONVERSION)
                 .velocityConversionFactor(SwerveConfig.DRIVE_VELOCITY_CONVERSION)
+                .uvwMeasurementPeriod(16) // smaller, more accurate but noisier
+                .uvwAverageDepth(2) // smaller, more accurate but noisier
+            )
+            .apply(
+                new SignalsConfig()
+                    .primaryEncoderVelocityPeriodMs(10) // read more often
             ), 
             ResetMode.kNoResetSafeParameters, 
             PersistMode.kNoPersistParameters
@@ -210,6 +217,15 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
     @Override
     public void setDriveMotorVoltage(Voltage voltage) {
         driveMotor.setVoltage(voltage);
+    }
+
+    @Override
+    public void setAzimuth(Rotation2d angle) {
+        // removes the 180 flip, won't unwind full turns
+        double targetDegrees = SwerveModuleAngleOptimizer.placeInAppropriate0To360Scope(
+            getRelativeAngle().getDegrees(), angle.getDegrees());
+        
+        anglePID.setSetpoint(Rotation2d.fromDegrees(targetDegrees).getRotations(), ControlType.kPosition);
     }
 
     @Override

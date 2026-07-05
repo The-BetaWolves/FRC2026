@@ -24,7 +24,6 @@ import frc.robot.services.TurretService;
 public class SuperStateSubsystem extends SubsystemBase {
   /** Creates a new NewSuperStateSubsystem. */
   public SuperStateSubsystem() {
-    SmartDashboard.setDefaultNumber("ballSpeedConstant", 1);
   }
 
   // instantiate logic services
@@ -98,7 +97,7 @@ public class SuperStateSubsystem extends SubsystemBase {
   // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
         fieldTargetPose = fieldService.getTargetPose(robotPose.get());
-        Logger.recordOutput("Superstate/FieldTargetPose", fieldTargetPose);
+        Logger.recordOutput("SuperState/FieldTargetPose", fieldTargetPose);
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
         if (isTurretLocked) {
             turretSetpointRadians = 0.0;
@@ -107,8 +106,8 @@ public class SuperStateSubsystem extends SubsystemBase {
         }
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
 
-        SmartDashboard.putNumber("distanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
-        SmartDashboard.putNumber("distanceFromTurretToTarget", distanceToTarget);
+        Logger.recordOutput("SuperState/DistanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
+        Logger.recordOutput("SuperState/DistanceFromTurretToTarget", distanceToTarget);
         
         Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
 
@@ -162,6 +161,7 @@ public class SuperStateSubsystem extends SubsystemBase {
             }
         }
         
+        // Driver-facing dashboard widgets — intentionally SmartDashboard, not Logger
         SmartDashboard.putNumber("Phase Seconds", phaseSeconds);
         SmartDashboard.putBoolean("Phase State", phaseState);
 

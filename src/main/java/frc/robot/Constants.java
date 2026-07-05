@@ -8,6 +8,17 @@ import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleConstants;
 public final class Constants {
 
     public static final class Controls {
+        // Driver joystick button map — the single source of truth for what's bound.
+        // Check here before claiming a button in any file.
+        public static final int BTN_FIRE_AND_INTAKE = 1;
+        public static final int BTN_FIRE = 2;
+        public static final int BTN_INTAKE = 3;
+        public static final int BTN_SPIT = 4;
+        public static final int BTN_SYSID_RUN = 5;
+        public static final int BTN_LOCK_WHEELS = 14;
+        public static final int BTN_RESET_GYRO = 15;
+        public static final int BTN_TOGGLE_TURRET_LOCK = 16;
+
         // Joystick deadband for angle-only control (e.g. rotation stick ring)
         public static final double ANGLE_JOYSTICK_DEADBAND = 0.35;
         public static final double Y_DEADBAND = 0.2;
@@ -85,34 +96,29 @@ public final class Constants {
         public static final double FREE_SPEED_RPS = NEO_FREE_SPEED / 60;
         public static final double DRIVE_FREE_SPEED_RPS = (FREE_SPEED_RPS * WHEEL_CIRCUMFRENCE_METERS) / DRIVE_GEAR_RATIO;
 
-        public static final double DRIVE_POSITION_CONVERSION = WHEEL_CIRCUMFRENCE_METERS / DRIVE_GEAR_RATIO; // meters/rev
-        public static final double DRIVE_VELOCITY_CONVERSION = DRIVE_POSITION_CONVERSION / 60.0; // m/s per RPM
+        public static final double DRIVE_POSITION_CONVERSION = WHEEL_CIRCUMFRENCE_METERS / DRIVE_GEAR_RATIO; // meters
+        public static final double DRIVE_VELOCITY_CONVERSION = DRIVE_POSITION_CONVERSION / 60.0; // meters per second
     
-        public static final double ANGLE_POSITION_CONVERSION = 1 / ANGLE_GEAR_RATIO; // motor revolutions per 1 swerve module rotation
+        public static final double ANGLE_POSITION_CONVERSION = 1 / ANGLE_GEAR_RATIO; // motor rotations per 1 swerve module rotation
     
         // Current limits
         public static final int DRIVE_CURRENT_LIMIT = 40;
         public static final int ANGLE_CURRENT_LIMIT = 20;
     
-        // Ramp rates
-        public static final double DRIVE_RAMP = 0.25; // seconds to full throttle
-        public static final double ANGLE_RAMP = 0.25;
+        // Ramp rates - saves current from drawing instant power
+        public static final double DRIVE_RAMP = 0.0; // seconds to full throttle
+        public static final double ANGLE_RAMP = 0.0;
     
-        // PID (from JSON)
-        /* 
-        public static final double DRIVE_kP = 0.000215;
-        public static final double DRIVE_kI = 0.0;
-        public static final double DRIVE_kD = 0.0;
-        public static final double DRIVE_kV = 0.0;
-        public static final double DRIVE_kA = 0.0;
-        public static final double DRIVE_kS = 0.0;
-        */
+        // Feedforward gains
         public static final double DRIVE_kS = 0.22912; 
         public static final double DRIVE_kV = 2.7; //2.3797;
         public static final double DRIVE_kA = 20.0; //0.8; //10.0; //0.6; //0.52815; //0.75; 
+
+        // Feedback gains
         public static final double DRIVE_kP = 0.02; //0.00027912; //0.4; 
         public static final double DRIVE_kI = 0.0;
         public static final double DRIVE_kD = 0.0;
+
         /*
         On Blocks
         0.09

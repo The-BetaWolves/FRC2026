@@ -11,7 +11,8 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class KickerSubsystem extends SubsystemBase {
@@ -38,7 +39,7 @@ public class KickerSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         motor.set(speed);
-        SmartDashboard.putNumber("kickerSpeed", speed);
+        Logger.recordOutput("Kicker/Speed", speed);
     }
 
     public void setSpeed(double speed) {
