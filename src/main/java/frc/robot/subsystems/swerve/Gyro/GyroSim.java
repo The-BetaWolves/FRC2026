@@ -24,6 +24,13 @@ public class GyroSim implements GyroIO {
     }
 
     @Override
+    public void updateInputs(GyroIOInputs inputs) {
+        inputs.yaw = yaw;
+        inputs.yawDegrees = MathUtil.inputModulus(yaw.getDegrees(), -180.0, 180.0);
+        inputs.gyroIsPowered = true;
+    }
+
+    @Override
     public Rotation2d getYaw() {
         return yaw;
     }

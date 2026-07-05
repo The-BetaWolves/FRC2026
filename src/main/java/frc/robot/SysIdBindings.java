@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.swerve.SwerveDrive;
 
@@ -28,7 +27,7 @@ public class SysIdBindings {
     public SysIdBindings(Joystick joystick, SwerveDrive swerveDrive, Flywheel flywheel) {
         Trigger test = RobotModeTriggers.test();
 
-        // Routine menu — add new characterizations here, not new buttons
+        // Routine menu: add new characterizations here
         sysIdChooser.setDefaultOption("None", Commands.none());
         sysIdChooser.addOption("Drive Characterization", driveCharacterization(swerveDrive));
         sysIdChooser.addOption("Flywheel Characterization", flywheelCharacterization(flywheel));

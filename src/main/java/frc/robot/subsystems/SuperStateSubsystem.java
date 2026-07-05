@@ -13,7 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.util.AllianceUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -106,62 +106,42 @@ public class SuperStateSubsystem extends SubsystemBase {
         }
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
 
-        Logger.recordOutput("SuperState/DistanceToTarget", fieldService.getDistanceToTarget(robotPose.get(), fieldTargetPose));
+        Logger.recordOutput("SuperState/DistanceToTarget", robotPose.get().getTranslation().getDistance(fieldTargetPose));
         Logger.recordOutput("SuperState/DistanceFromTurretToTarget", distanceToTarget);
         
         Logger.recordOutput("SuperState/AdjustedTarget", new Pose2d(adjustedTargetPose, new Rotation2d()));
 
-        //Make a timer on Smartdashboard for the phases
-        if (!(DriverStation.getGameSpecificMessage() == null)) {
-            double stationTime = DriverStation.getMatchTime();
-
-            if (
-                (!(DriverStation.getGameSpecificMessage() == "R" && DriverStation.getAlliance().get() == Alliance.Red)) ||
-                (!(DriverStation.getGameSpecificMessage() == "B" && DriverStation.getAlliance().get() == Alliance.Blue))
-            ) {
-                if (stationTime >= 130) {
-                    phaseSeconds = stationTime - 130;
-                    phaseState = true;
-                } else if(stationTime >= 105) {
-                    phaseSeconds = stationTime - 105;
-                    phaseState = false;
-                } else if(stationTime >= 80) {
-                    phaseSeconds = stationTime - 80;
-                    phaseState = true;
-                } else if(stationTime >= 55) {
-                    phaseSeconds = stationTime - 55;
-                    phaseState = false;
-                } else if(stationTime >= 30) {
-                    phaseSeconds = stationTime - 30;
-                    phaseState = true;
-                } else if(stationTime < 30) {
-                    phaseSeconds = stationTime;
-                    phaseState = true;
-                }
-            } else {
-                if (stationTime >= 130) {
-                    phaseSeconds = stationTime - 130;
-                    phaseState = false;
-                } else if(stationTime >= 105) {
-                    phaseSeconds = stationTime - 105;
-                    phaseState = true;
-                } else if(stationTime >= 80) {
-                    phaseSeconds = stationTime - 80;
-                    phaseState = false;
-                } else if(stationTime >= 55) {
-                    phaseSeconds = stationTime - 55;
-                    phaseState = true;
-                } else if(stationTime >= 30) {
-                    phaseSeconds = stationTime - 30;
-                    phaseState = false;
-                } else if(stationTime < 30) {
-                    phaseSeconds = stationTime;
-                    phaseState = true;
-                }
-            }
-        }
         
-        // Driver-facing dashboard widgets — intentionally SmartDashboard, not Logger
+        String phaseMessage = DriverStation.getGameSpecificMessage();
+        boolean isOurPhase = ("R".equals(phaseMessage) && AllianceUtil.isRed())
+                          || ("B".equals(phaseMessage) && !AllianceUtil.isRed());
+
+        double stationTime = DriverStation.getMatchTime();
+
+        // Seconds into the current phase window, and the base on/off pattern
+        if (stationTime >= 130) {
+            phaseSeconds = stationTime - 130;
+            phaseState = true;
+        } else if (stationTime >= 105) {
+            phaseSeconds = stationTime - 105;
+            phaseState = false;
+        } else if (stationTime >= 80) {
+            phaseSeconds = stationTime - 80;
+            phaseState = true;
+        } else if (stationTime >= 55) {
+            phaseSeconds = stationTime - 55;
+            phaseState = false;
+        } else if (stationTime >= 30) {
+            phaseSeconds = stationTime - 30;
+            phaseState = true;
+        } else {
+            phaseSeconds = stationTime;
+            phaseState = true;
+        }
+
+        if (isOurPhase && stationTime >= 30) {
+            phaseState = !phaseState;
+        }        
         SmartDashboard.putNumber("Phase Seconds", phaseSeconds);
         SmartDashboard.putBoolean("Phase State", phaseState);
 
@@ -224,9 +204,6 @@ public class SuperStateSubsystem extends SubsystemBase {
   }
   public Translation2d getAdjustedTargetPose() {
       return adjustedTargetPose;
-  }
-  public double getDistanceToTarget() {
-      return distanceToTarget;
   }
   public double getIntakeSpeed() {
       return intakeSpeed;

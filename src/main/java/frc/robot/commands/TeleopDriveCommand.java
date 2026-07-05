@@ -8,11 +8,13 @@ import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.SuperStateSubsystem;
 import frc.robot.subsystems.SuperStateSubsystem.FireIntent;
 import frc.robot.subsystems.swerve.SwerveDrive;
+import frc.robot.util.AllianceUtil;
 
 public class TeleopDriveCommand extends Command {
     private final SwerveDrive  swerve;
@@ -49,9 +51,14 @@ public class TeleopDriveCommand extends Command {
 
     @Override
     public void execute() {
-        double xVelocity   = Math.pow(vX.getAsDouble(), 3);
-        double yVelocity   = Math.pow(vY.getAsDouble(), 3);
-        double angVelocity =  Math.pow(vZ.getAsDouble(), 3);
+        // Field-relative driving: the field origin is always on the blue side, so a red
+        // driver's "downfield" is the opposite direction. Flip translation only
+        // rotation is not alliance-dependent.
+        double allianceSign = AllianceUtil.isRed() ? 1.0 : -1.0;
+
+        double xVelocity   = deadbandAndCube(vX.getAsDouble(), Constants.Controls.Y_DEADBAND) * allianceSign;
+        double yVelocity   = deadbandAndCube(vY.getAsDouble(), Constants.Controls.Y_DEADBAND) * allianceSign;
+        double angVelocity = -deadbandAndCube(vZ.getAsDouble(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND);
 
         rawfireState = superState.getFireIntent();
         Logger.recordOutput("SuperState/FireIntent", rawfireState.toString());
@@ -75,6 +82,10 @@ public class TeleopDriveCommand extends Command {
             
         }
              
+    }
+
+    private double deadbandAndCube(double raw, double deadband) {
+        return Math.pow(MathUtil.applyDeadband(raw, deadband), 3);
     }
 
     @Override

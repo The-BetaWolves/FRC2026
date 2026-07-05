@@ -13,8 +13,6 @@ import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -113,27 +111,16 @@ public class RobotContainer {
             }, intake)
         );
 
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            swerveDrive.setDefaultCommand(
-                new TeleopDriveCommand(
-                    swerveDrive,
-                    ()-> (MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
-                    ()-> (MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getZ(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
-                    superState
-                )
-            );
-        } else {
-            swerveDrive.setDefaultCommand(
-                new TeleopDriveCommand(
-                    swerveDrive,
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getY(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getX(), Constants.Controls.Y_DEADBAND)),
-                    ()-> -(MathUtil.applyDeadband(driverJoyStick.getTwist(), Constants.Controls.ANGLE_JOYSTICK_DEADBAND)),
-                    superState
-                )
-            );
-        }
+        // Deadband, cubing, and alliance-based inversion all live in TeleopDriveCommand
+        swerveDrive.setDefaultCommand(
+            new TeleopDriveCommand(
+                swerveDrive,
+                driverJoyStick::getY,
+                driverJoyStick::getX,
+                driverJoyStick::getZ,
+                superState
+            )
+        );
 
         //NamedCommands.registerCommand("setToStop", new InstantCommand(()->superState.setFireIntent(FireIntent.STOP)));
         NamedCommands.registerCommand("setToIdle", new InstantCommand(()->superState.setFireIntent(FireIntent.IDLE)));

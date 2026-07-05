@@ -8,7 +8,9 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -27,6 +29,8 @@ public class Flywheel extends SubsystemBase {
     SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV);
 
     private final FlywheelSysId sysId;
+    private final Alert motor1Alert = new Alert("Flywheel motor 1 not powered!", AlertType.kError);
+    private final Alert motor2Alert = new Alert("Flywheel motor 2 not powered!", AlertType.kError);
 
     public Flywheel() {
         if (RobotBase.isSimulation()) {
@@ -41,6 +45,8 @@ public class Flywheel extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Flywheel", inputs);
+        motor1Alert.set(!inputs.motorController1IsPowered);
+        motor2Alert.set(!inputs.motorController2IsPowered);
 
         double maxRPM = 5900.0;
         if (setpointRpm > maxRPM) {

@@ -21,8 +21,7 @@ public class FlywheelIOSim implements FlywheelIO {
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
         inputs.motorController1IsPowered = true;
-        inputs.motorController2IsPowered = true;
-
+        inputs.motorController2IsPowered = false;
     }
 
     public double getAbsolutePos() {

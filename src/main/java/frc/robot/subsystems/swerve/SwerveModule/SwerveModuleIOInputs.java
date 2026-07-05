@@ -11,6 +11,9 @@ public class SwerveModuleIOInputs implements LoggableInputs {
     public double absoluteAdjustedAngleDegrees = 0.0;
     public double relativeAngleDegrees = 0.0;
     public double desiredMetersPerSecond = 0.0;
+    public boolean driveMotorIsPowered = false;
+    public boolean angleMotorIsPowered = false;
+    public boolean absoluteEncoderIsConnected = false;
 
     @Override
     public void toLog(LogTable table) {
@@ -21,6 +24,9 @@ public class SwerveModuleIOInputs implements LoggableInputs {
         table.put("AbsoluteAdjustedAngleDegrees", absoluteAdjustedAngleDegrees);
         table.put("RelativeAngleDegrees", relativeAngleDegrees);
         table.put("DesiredMetersPerSecond", desiredMetersPerSecond);
+        table.put("DriveMotorIsPowered", driveMotorIsPowered);
+        table.put("AngleMotorIsPowered", angleMotorIsPowered);
+        table.put("AbsoluteEncoderIsConnected", absoluteEncoderIsConnected);
     }
 
     @Override
@@ -32,5 +38,8 @@ public class SwerveModuleIOInputs implements LoggableInputs {
         absoluteAdjustedAngleDegrees = table.get("AbsoluteAdjustedAngleDegrees", absoluteAdjustedAngleDegrees);
         relativeAngleDegrees = table.get("RelativeAngleDegrees", relativeAngleDegrees);
         desiredMetersPerSecond = table.get("DesiredMetersPerSecond", desiredMetersPerSecond);
+        driveMotorIsPowered = table.get("DriveMotorIsPowered", driveMotorIsPowered);
+        angleMotorIsPowered = table.get("AngleMotorIsPowered", angleMotorIsPowered);
+        absoluteEncoderIsConnected = table.get("AbsoluteEncoderIsConnected", absoluteEncoderIsConnected);
     }
 }

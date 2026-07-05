@@ -7,19 +7,15 @@ package frc.robot.services;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.Constants;
+import frc.robot.util.AllianceUtil;
 
 public class FieldService {
 
     public Translation2d getTargetPose(Pose2d robotPose) {
-        
-        //return Constants.Field.realBlueHubPose;
-        
-        //return Constants.Field.realBlueHubPose;
 
         //For Red Change points for passing
-        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        if (AllianceUtil.isRed()) {
             if (robotPose.getY() < 4  && robotPose.getX() < (Constants.Field.redHubPose.getX() - 1.2)) {
                 return Constants.Field.redLeftPose;
             } else if (robotPose.getY() > 4 && robotPose.getX() < (Constants.Field.redHubPose.getX() - 1.2)) {
@@ -38,13 +34,6 @@ public class FieldService {
         }
     }
 
-    public double getDistanceToTarget(Pose2d robotPose, Translation2d targetPose) {
-        //The distance formula, which calculate the absolute distance between two vector points 
-        //The square root of( (x2 - x1)^2 + (y2 - y1)^2 )
-        //return Math.sqrt(Math.pow(targetPose.getX() - robotPose.getX(), 2) + Math.pow(targetPose.getY() - robotPose.getY(), 2));
-        return robotPose.getTranslation().getDistance(targetPose);
-    }
-
     public double getDistanceFromTurretToTarget(Pose2d robotPose, Translation2d targetPose) {
 
         double distanceOfTurretToCenterMeters = 0.19;
@@ -53,13 +42,6 @@ public class FieldService {
         double translationX = -(distanceOfTurretToCenterMeters * cos);
         double translationY = -distanceOfTurretToCenterMeters * sin;
 
-        /*
-        SmartDashboard.putNumber("turret distance cos", cos);
-        SmartDashboard.putNumber("turret distance sin", sin);
-        SmartDashboard.putNumber("turret distance x", translationX);
-        SmartDashboard.putNumber("turret distance y", translationY);
-         */
-
         //Gets the point along the circle from x = r*cos(theta) and y = r*sin(theta)
         Translation2d turretHoleRobotRelativePose = new Translation2d(translationX, translationY);
 
@@ -67,8 +49,8 @@ public class FieldService {
     }
 
     public Translation2d getAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
-        double distanceToTargetMeters = getDistanceToTarget(robotPose, targetPose);
-        double ballSpeedFromSmartdashboard = Constants.Flywheel.ballSpeedMetersPerSecond; //SmartDashboard.getNumber("ballSpeedConstant", Constants.Flywheel.ballSpeedMetersPerSecond);
+        double distanceToTargetMeters =  robotPose.getTranslation().getDistance(targetPose);
+        double ballSpeedFromSmartdashboard = Constants.Flywheel.ballSpeedMetersPerSecond; 
         double timeOfFlightSeconds = distanceToTargetMeters / ballSpeedFromSmartdashboard;
 
         Translation2d driftInMeters = new Translation2d(

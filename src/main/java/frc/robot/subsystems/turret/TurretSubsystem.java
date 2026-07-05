@@ -9,6 +9,8 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,6 +26,9 @@ public class TurretSubsystem extends SubsystemBase {
     private double kP = 2.5;
     private double fudge = 0.0;
     PIDController pid = new PIDController(kP, 0.0, 0.0);
+
+    private final Alert motorAlert = new Alert("Turret motor not powered!", AlertType.kError);
+    private final Alert encoderAlert = new Alert("Turret encoder disconnected!", AlertType.kError);
 
     public TurretSubsystem() {
         // add default radians and turret kp to shuffleboard
@@ -43,6 +48,8 @@ public class TurretSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Turret", inputs);
+        motorAlert.set(!inputs.motorControllerIsPowered);
+        encoderAlert.set(!inputs.encoderConnected);
          
         //setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
         //double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);

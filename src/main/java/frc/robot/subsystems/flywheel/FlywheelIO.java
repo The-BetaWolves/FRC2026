@@ -19,7 +19,6 @@ public interface FlywheelIO {
         // quality control
         public boolean motorController1IsPowered = false;
         public boolean motorController2IsPowered = false;
-
     }
 
     public default void updateInputs(FlywheelIOInputs inputs) {}

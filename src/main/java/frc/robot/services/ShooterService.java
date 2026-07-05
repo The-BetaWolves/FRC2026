@@ -6,10 +6,8 @@ package frc.robot.services;
 
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
-/** Add your docs here. */
 public class ShooterService {
     InterpolatingDoubleTreeMap lookupTable = new InterpolatingDoubleTreeMap();
-
 
     public double getShotSpeed(double distance, double fudgeSetFactor) {
         setLookupTable();

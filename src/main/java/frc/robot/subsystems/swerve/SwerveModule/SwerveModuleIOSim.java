@@ -32,6 +32,11 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         inputs.driveVelocityMetersPerSecond = simDriveVelocityMps;
         inputs.turnAngleRotations = simAngle.getRotations();
         inputs.absoluteAngleDegrees = simAbsoluteAngle.getDegrees();
+        inputs.driveMotorIsPowered = true;
+        inputs.angleMotorIsPowered = true;
+        inputs.absoluteEncoderIsConnected = true;
+
+        inputs.desiredMetersPerSecond = simDriveVelocityMps;
     }
 
     @Override

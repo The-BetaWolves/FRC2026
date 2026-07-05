@@ -47,6 +47,7 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
     private int moduleNumber;
     private Rotation2d angleOffset;
     private Rotation2d currentReferenceAngle;
+    private double lastDesiredMetersPerSecond = 0.0; 
 
     private final SparkMax driveMotor;
     private final SparkMax angleMotor;
@@ -172,12 +173,6 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
         angleEncoder.setPosition(getAdjustedAbsoluteAngle().getRotations());
     }
 
-    // Returns instantaneous speed and angle
-    // used by driving logic, calculating chassis speed, telemetry
-    // public SwerveModuleState getState() {
-    //     return new SwerveModuleState(driveEncoder.getVelocity(), getRelativeAngle());
-    // }
-
     // Returns total distance driven and angle
     // used by odometry/pose estimation
     public SwerveModulePosition getPosition() {
@@ -189,10 +184,14 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
     public void setDesiredState(SwerveModuleState desired) {
         SwerveModuleState optimizedState = SwerveModuleAngleOptimizer.optimize(desired, getRelativeAngle());
 
+        lastDesiredMetersPerSecond = optimizedState.speedMetersPerSecond;
+
+
         //Velocity in RPM  (convert from m/s if needed)
         //Position in rotations
         drivePID.setSetpoint(
             optimizedState.speedMetersPerSecond, SparkBase.ControlType.kVelocity);
+
 
         //Prevent rotating module if speed is less than 1%. Prevents Jittering.
         // Rotation2d angle = (Math.abs(desired.speedMetersPerSecond) <= (Constants.SwerveConfig.MAXIMUM_CHASSIS_VELOCITY * 0.01)) ?
@@ -212,6 +211,11 @@ public class SwerveModuleIOReal implements SwerveModuleIO {
         inputs.absoluteAngleDegrees = getAbsoluteAngle().getDegrees();
         inputs.absoluteAdjustedAngleDegrees = getAdjustedAbsoluteAngle().getDegrees();
         inputs.relativeAngleDegrees = getRelativeAngle().getDegrees();
+        inputs.driveMotorIsPowered = driveMotor.getBusVoltage() > 6.0;
+        inputs.angleMotorIsPowered = angleMotor.getBusVoltage() > 6.0;
+        inputs.absoluteEncoderIsConnected = absoluteEncoder.getAbsolutePosition().getStatus().isOK();
+
+        inputs.desiredMetersPerSecond = lastDesiredMetersPerSecond;
     }
 
     @Override

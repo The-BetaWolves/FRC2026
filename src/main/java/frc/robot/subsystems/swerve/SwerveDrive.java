@@ -11,7 +11,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation;
+import frc.robot.util.AllianceUtil;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -68,6 +70,12 @@ public class SwerveDrive extends SubsystemBase {
         new SwerveModuleIOInputs()
     };
 
+    private static final String[] MODULE_NAMES = {"FL", "FR", "BL", "BR"};
+    private final Alert[] driveMotorAlerts = new Alert[4];
+    private final Alert[] angleMotorAlerts = new Alert[4];
+    private final Alert[] absoluteEncoderAlerts = new Alert[4];
+    private final Alert gyroAlert = new Alert("Gyro not powered!", AlertType.kError);
+
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
         Constants.SwerveModules.FRONT_LEFT.modulePosition,
         Constants.SwerveModules.FRONT_RIGHT.modulePosition,
@@ -81,6 +89,12 @@ public class SwerveDrive extends SubsystemBase {
       new SwerveDrivePoseEstimator(kinematics, gyroInputs.yaw, getModulePositions(), startingPose);
 
     public SwerveDrive() {
+
+        for (int i = 0; i < MODULE_NAMES.length; i++) {
+            driveMotorAlerts[i] = new Alert(MODULE_NAMES[i] + " drive motor not powered!", AlertType.kError);
+            angleMotorAlerts[i] = new Alert(MODULE_NAMES[i] + " angle motor not powered!", AlertType.kError);
+            absoluteEncoderAlerts[i] = new Alert(MODULE_NAMES[i] + " CANcoder disconnected!", AlertType.kError);
+        }
 
         // Gyro
         if(RobotBase.isSimulation()) {
@@ -110,17 +124,8 @@ public class SwerveDrive extends SubsystemBase {
                     new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
-            () -> {
-            // Boolean supplier that controls when the path will be mirrored for the red alliance
-            // This will flip the path being followed to the red side of the field.
-            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-            var alliance = DriverStation.getAlliance();
-            if (alliance.isPresent()) {
-                return alliance.get() == DriverStation.Alliance.Red;
-            }
-            return false;
-            },
+            // Mirror paths for the red alliance (the field origin stays on the blue side)
+            AllianceUtil::isRed,
             this // Reference to this subsystem to set requirements
         );
 
@@ -235,20 +240,20 @@ public class SwerveDrive extends SubsystemBase {
         for (int i = 0; i < modules.length; i++) {
             modules[i].updateInputs(moduleInputs[i]);
             Logger.processInputs("Swerve/Module" + i, moduleInputs[i]);
-            
-            // Absolute value of module velocity
-            // Used for comparing commanded and actual speeds
-            Logger.recordOutput("Swerve/AbsoluteSpeed" + i, Math.abs(moduleInputs[i].driveVelocityMetersPerSecond));
 
             // log the absolute values of the modules for zeroing
             Logger.recordOutput("Swerve/RawAbsoluteEncoderDegrees" + i,
                 MathUtil.inputModulus(moduleInputs[i].absoluteAngleDegrees, 0, 360));
-            
+
+            driveMotorAlerts[i].set(!moduleInputs[i].driveMotorIsPowered);
+            angleMotorAlerts[i].set(!moduleInputs[i].angleMotorIsPowered);
+            absoluteEncoderAlerts[i].set(!moduleInputs[i].absoluteEncoderIsConnected);
         }
         Logger.recordOutput("Swerve/MyStates", getModuleStates());
 
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
+        gyroAlert.set(!gyroInputs.gyroIsPowered);
 
         Logger.recordOutput("Swerve/Pose", getPose());
 
