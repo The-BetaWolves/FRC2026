@@ -16,9 +16,7 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotState;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -35,33 +33,27 @@ import frc.robot.subsystems.swerve.Gyro.GyroSim;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModule;
 import frc.robot.subsystems.swerve.SysId.SwerveDriveSysId;
 
-
 public class SwerveDrive extends SubsystemBase {
 
     private ChassisSpeeds desiredChassisSpeeds;
 
     private final GyroIO gyro;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
-
-    private RobotConfig config;
+    private final Alert gyroAlert = new Alert("Gyro not powered!", AlertType.kError);
 
     private SwerveDriveOdometry wheelOdometry;
 
     private final SwerveDriveSysId sysId;
 
+    private RobotConfig config; // pathplanner physical description of robot
+
     // Modules
     private final SwerveModule[] modules = {
-        new SwerveModule("Swerve/FL",0, Constants.SwerveModules.FRONT_LEFT),
-        new SwerveModule("Swerve/FR", 1, Constants.SwerveModules.FRONT_RIGHT),
-        new SwerveModule("Swerve/BL", 2, Constants.SwerveModules.BACK_LEFT),
-        new SwerveModule("Swerve/BR", 3, Constants.SwerveModules.BACK_RIGHT)
+        new SwerveModule("FL", 0, Constants.SwerveModules.FRONT_LEFT),
+        new SwerveModule("FR", 1, Constants.SwerveModules.FRONT_RIGHT),
+        new SwerveModule("BL", 2, Constants.SwerveModules.BACK_LEFT),
+        new SwerveModule("BR", 3, Constants.SwerveModules.BACK_RIGHT)
     };
-
-    private static final String[] MODULE_NAMES = {"FL", "FR", "BL", "BR"};
-    private final Alert[] driveMotorAlerts = new Alert[4];
-    private final Alert[] angleMotorAlerts = new Alert[4];
-    private final Alert[] absoluteEncoderAlerts = new Alert[4];
-    private final Alert gyroAlert = new Alert("Gyro not powered!", AlertType.kError);
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
         Constants.SwerveModules.FRONT_LEFT.modulePosition,
@@ -72,18 +64,10 @@ public class SwerveDrive extends SubsystemBase {
 
     private Pose2d startingPose = new Pose2d();
 
-
-
     private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, gyroInputs.yaw, getModulePositions(), startingPose);
 
     public SwerveDrive() {
-
-        for (int i = 0; i < MODULE_NAMES.length; i++) {
-            driveMotorAlerts[i] = new Alert(MODULE_NAMES[i] + " drive motor not powered!", AlertType.kError);
-            angleMotorAlerts[i] = new Alert(MODULE_NAMES[i] + " angle motor not powered!", AlertType.kError);
-            absoluteEncoderAlerts[i] = new Alert(MODULE_NAMES[i] + " CANcoder disconnected!", AlertType.kError);
-        }
 
         // Gyro
         if(RobotBase.isSimulation()) {
@@ -95,33 +79,44 @@ public class SwerveDrive extends SubsystemBase {
 
         wheelOdometry = new SwerveDriveOdometry(kinematics, getHeading(), getModulePositions());
 
+        sysId = new SwerveDriveSysId(this, modules);
+
         try{
-            config = RobotConfig.fromGUISettings();
+            config = RobotConfig.fromGUISettings(); // load from pathplanner file
         } catch (Exception e) {
             e.printStackTrace();
         }
    
-        // Configure AutoBuilder last
+        // Configure Pathplanner's AutoBuilder last
         AutoBuilder.configure(
-            this::getPose, // Robot pose supplier
-            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> driveRobotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+            this::getPose, // pose supplier
+            this::resetPose, // will be called if your auto has a starting pose
+            this::getChassisSpeeds, // ROBOT RELATIVE ChassisSpeeds supplier
+            (speeds, feedforwards) -> driveRobotRelative(speeds), // method for ROBOT RELATIVE driving
+            new PPHolonomicDriveController( 
                     new PIDConstants(5, 0.0, 0.0), // Translation PID constants
                     new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
             ),
-            config, // The robot configuration
-            // Mirror paths for the red alliance (the field origin stays on the blue side)
-            AllianceUtil::isRed,
+            config, // The robot configuration from saved deploy file
+            AllianceUtil::isRed, // mirror if red, origin stays on blue side
             this // Reference to this subsystem to set requirements
         );
-
-        sysId = new SwerveDriveSysId(this, modules);
     }
 
     public Rotation2d getHeading() {
         return gyro.getYaw();
+    }
+
+    // READ: used by Vision to reduce trust in observations while spinning
+    public double getYawVelocityRadiansPerSecond() {
+        return gyroInputs.yawVelocityRadiansPerSecond;
+    }
+
+    // while disabled, seed the heading if robot sees 2 tags with mt1
+    // otherwise, gyro is used and gyro will be 0
+    public void seedHeading(Rotation2d heading) {
+        gyro.setYaw(heading.getDegrees());
+        poseEstimator.resetRotation(heading);
     }
 
     public Pose2d getPose() {
@@ -135,15 +130,11 @@ public class SwerveDrive extends SubsystemBase {
         } else {
             poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
         }
+        wheelOdometry.resetPosition(getHeading(), getModulePositions(), pose);
     }
 
     public void setYaw(double yaw) {
         gyro.setYaw(yaw);
-    }
-
-    // Resets the "wheel-only" odometry to a known pose
-    public void resetOdometry(Pose2d pose) {
-        wheelOdometry.resetPosition(getHeading(), getModulePositions(), pose);
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -172,18 +163,14 @@ public class SwerveDrive extends SubsystemBase {
         return positions;
     }
 
-    // Drive Field Relative (x, y z)
-    public void drive(double desiredXVelocity, double desiredYVelocity, double desiredRotationalVelocity) {
-        this.drive(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity, true);
+    // Drive Field Relative (telep joysticks)
+    public void drive(double xVelocity, double yVelocity, double rotationalVelocity) {
+        this.desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rotationalVelocity, getPose().getRotation());
     }
 
-    // Drive (x, y, z, isFieldRelative)
-    public void drive(double desiredXVelocity, double desiredYVelocity, double desiredRotationalVelocity, boolean isFieldRelative) {
-        if(isFieldRelative) {
-            this.desiredChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity, getPose().getRotation());
-        } else {
-            this.desiredChassisSpeeds = new ChassisSpeeds(desiredXVelocity, desiredYVelocity, desiredRotationalVelocity);
-        }            
+    // Drive Robot Relative (pathplanner)
+    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
+        this.desiredChassisSpeeds = chassisSpeeds; 
     }
 
     public void lockWheels() {
@@ -194,10 +181,6 @@ public class SwerveDrive extends SubsystemBase {
             new SwerveModuleState(0.0, Rotation2d.fromDegrees(45))    // BR
         };
         setModuleStates(desiredStates);
-    }
-
-    public void driveRobotRelative(ChassisSpeeds chassisSpeeds) {
-        this.desiredChassisSpeeds = chassisSpeeds;
     }
 
     // send the values to the pods
@@ -224,13 +207,9 @@ public class SwerveDrive extends SubsystemBase {
 
     public void log() {
 
-        // loop the swerve modules!
+        // update the swerve modules!
         for (int i = 0; i < modules.length; i++) {
             modules[i].updateInputs();
-
-            driveMotorAlerts[i].set(!modules[i].getInputs().driveMotorIsPowered);
-            angleMotorAlerts[i].set(!modules[i].getInputs().angleMotorIsPowered);
-            absoluteEncoderAlerts[i].set(!modules[i].getInputs().absoluteEncoderIsConnected);
         }
 
         // For AdvantageScope Module Tuning
@@ -251,22 +230,10 @@ public class SwerveDrive extends SubsystemBase {
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs) {
-        //poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
-        poseEstimator.addVisionMeasurement(new Pose2d(visionRobotPoseMeters.getX(), visionRobotPoseMeters.getY(), getHeading()), timestampSeconds, visionMeasurementStdDevs);
+        poseEstimator.addVisionMeasurement(visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs); // manage heading w/ stn devs
     }
 
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return sysId.quasistatic(direction);
-    }
-
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-        return sysId.dynamic(direction);
-    }
-
-    // helper to point wheels before sysid runs (so they are ready freddy)
-    public void pointWheelsForward() {
-        for (int i = 0; i < modules.length; i++) {
-            modules[i].setAzimuth(Rotation2d.kZero);
-        }
+    public SwerveDriveSysId getSysId() {
+        return sysId;
     }
 }

@@ -51,9 +51,23 @@ public class VisionConstants {
     public static double maxAmbiguity = 0.2;
     public static double maxZError = 0.75;
 
+    // Vision Trust During Rotation
+    // observations above maxYarRate are rejected outright. 
+    //For MT1: blur + latency.
+    // For MT2: its x/y is computed FROM the heading we feed it, fast spin = bad
+    // Below it, linear std devs are inflated smoothly by yawRateStdDevFactor per rad/s.
+    // Both are first-guess values (tune!).
+    public static double maxYawRateRadPerSec = Math.toRadians(540);
+    public static double yawRateStdDevFactor = 0.5;
+
     // Standard deviation baselines, for 1 meter distance and 1 tag
     // (Adjusted automatically based on distance and # of tags)
     public static double linearStdDevBaseline = 0.1; // Meters
+
+    // MT2 and single-tag headings get infinite std dev in Vision
+    // multi-tag MT1/Photon headings are trusted through distance, tag count and this baseline.
+    // lower it to trust vision heading more
+    // raise it to not truse vision as much (slowly correct gyro)
     public static double angularStdDevBaseline = 0.12; // Radians
 
     // Standard deviation multipliers for each camera
@@ -65,8 +79,5 @@ public class VisionConstants {
             1.0
         };
 
-    // Multipliers to apply for MegaTag 2 observations
-    public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
-    public static double angularStdDevMegatag2Factor =
-        Double.POSITIVE_INFINITY; // No rotation data available
+    public static double linearStdDevMegatag2Factor = 0.5;
 }

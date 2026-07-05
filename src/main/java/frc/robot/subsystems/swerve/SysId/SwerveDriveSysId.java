@@ -13,6 +13,9 @@ import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.swerve.SwerveDrive;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModule;
@@ -31,10 +34,12 @@ public class SwerveDriveSysId {
     private final MutDistance m_distance = Meters.mutable(0);
     private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
 
+    private final SwerveDrive drive;
     private final SwerveModule[] modules;
     private final SysIdRoutine routine;
 
     public SwerveDriveSysId(SwerveDrive drive, SwerveModule[] modules) {
+        this.drive = drive;
         this.modules = modules;
         routine = new SysIdRoutine(
             new SysIdRoutine.Config(
@@ -50,12 +55,35 @@ public class SwerveDriveSysId {
         );
     }
 
-    public Command quasistatic(SysIdRoutine.Direction direction) { 
-        return routine.quasistatic(direction); 
+    public Command quasistatic(SysIdRoutine.Direction direction) {
+        return routine.quasistatic(direction);
     }
 
-    public Command dynamic(SysIdRoutine.Direction direction) { 
+    public Command dynamic(SysIdRoutine.Direction direction) {
         return routine.dynamic(direction);
+    }
+
+    /** The complete characterization sequence: settle wheels forward, then both ramps in both directions. */
+    public Command fullCharacterization() {
+        double quasistaticTimeout = 4;
+        double dynamicTimeout = 3;
+
+        return new SequentialCommandGroup(
+            new RunCommand(this::pointWheelsForward, drive).withTimeout(1.0),
+            quasistatic(SysIdRoutine.Direction.kForward).withTimeout(quasistaticTimeout),
+            new WaitCommand(2),
+            quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(quasistaticTimeout),
+            new WaitCommand(2),
+            dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout),
+            new WaitCommand(2),
+            dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout)
+        );
+    }
+
+    private void pointWheelsForward() {
+        for (int i = 0; i < modules.length; i++) {
+            modules[i].setAzimuth(Rotation2d.kZero);
+        }
     }
 
     private void driveAllModules(Voltage volts) {

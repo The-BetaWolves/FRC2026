@@ -60,6 +60,8 @@ public class RobotContainer {
             vision =
             new Vision(
                 swerveDrive::addVisionMeasurement,
+                swerveDrive::seedHeading,
+                swerveDrive::getYawVelocityRadiansPerSecond,
                 new VisionIOPhotonVision(camera0Name, robotToCamera0),
                 new VisionIOPhotonVision(camera1Name, robotToCamera1),
                 new VisionIOLimelight(camera2Name, swerveDrive::getHeading)
@@ -68,6 +70,8 @@ public class RobotContainer {
             vision =
             new Vision(
                 swerveDrive::addVisionMeasurement,
+                swerveDrive::seedHeading,
+                swerveDrive::getYawVelocityRadiansPerSecond,
                 new VisionIOPhotonVisionSim(camera0Name, robotToCamera0, swerveDrive::getPose),
                 new VisionIOPhotonVisionSim(camera1Name, robotToCamera1, swerveDrive::getPose),
                 new VisionIOLimelight(camera2Name, swerveDrive::getHeading));

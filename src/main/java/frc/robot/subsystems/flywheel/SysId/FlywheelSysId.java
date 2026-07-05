@@ -11,6 +11,8 @@ import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.subsystems.flywheel.Flywheel;
 import frc.robot.subsystems.flywheel.FlywheelIO;
@@ -47,6 +49,21 @@ public class FlywheelSysId {
 
     public Command dynamic(SysIdRoutine.Direction direction) {
         return routine.dynamic(direction);
+    }
+
+    public Command fullCharacterization() {
+        double quasistaticTimeout = 5;
+        double dynamicTimeout = 3;
+
+        return new SequentialCommandGroup(
+            quasistatic(SysIdRoutine.Direction.kForward).withTimeout(quasistaticTimeout),
+            new WaitCommand(3),
+            quasistatic(SysIdRoutine.Direction.kReverse).withTimeout(quasistaticTimeout),
+            new WaitCommand(3),
+            dynamic(SysIdRoutine.Direction.kForward).withTimeout(dynamicTimeout),
+            new WaitCommand(3),
+            dynamic(SysIdRoutine.Direction.kReverse).withTimeout(dynamicTimeout)
+        );
     }
 
     private void logMotor(SysIdRoutineLog log) {

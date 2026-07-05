@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.RobotBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -13,12 +15,20 @@ import com.revrobotics.RelativeEncoder;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleIO.SwerveModuleIOInputs;
 
 public class SwerveModule {
-    private final String logPath;
+    private final String logPath; // Logger path: "Swerve/FL"
     private final SwerveModuleIO io;
     private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
 
-    public SwerveModule(String logPath, int moduleNumber, SwerveModuleConstants constants) {
-        this.logPath = logPath;
+    private final Alert driveMotorAlert;
+    private final Alert angleMotorAlert;
+    private final Alert absoluteEncoderAlert;
+
+    public SwerveModule(String moduleName, int moduleNumber, SwerveModuleConstants constants) {
+        this.logPath = "Swerve/" + moduleName;
+
+        driveMotorAlert = new Alert(moduleName + " drive motor not powered!", AlertType.kError);
+        angleMotorAlert = new Alert(moduleName + " angle motor not powered!", AlertType.kError);
+        absoluteEncoderAlert = new Alert(moduleName + " CANcoder disconnected!", AlertType.kError);
 
         if(RobotBase.isSimulation()) {
             io = new SwerveModuleIOSim(constants);
@@ -64,6 +74,10 @@ public class SwerveModule {
         // 0-360 view of the absolute encoder, matches the angleOffset convention for zeroing
         Logger.recordOutput(logPath + "/RawAbsoluteEncoderDegrees",
             MathUtil.inputModulus(inputs.absoluteAngleDegrees, 0, 360));
+
+        driveMotorAlert.set(!inputs.driveMotorIsPowered);
+        angleMotorAlert.set(!inputs.angleMotorIsPowered);
+        absoluteEncoderAlert.set(!inputs.absoluteEncoderIsConnected);
     }
 
     public Rotation2d getAbsoluteAngle() {
@@ -72,9 +86,5 @@ public class SwerveModule {
 
     public void setAzimuth(Rotation2d angle) {
         io.setAzimuth(angle);
-    }
-
-    public SwerveModuleIOInputs getInputs() {
-        return inputs;
     }
 }

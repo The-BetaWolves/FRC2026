@@ -8,16 +8,18 @@
 package frc.robot.subsystems.vision;
 
 import static frc.robot.subsystems.vision.VisionConstants.angularStdDevBaseline;
-import static frc.robot.subsystems.vision.VisionConstants.angularStdDevMegatag2Factor;
 import static frc.robot.subsystems.vision.VisionConstants.aprilTagLayout;
 import static frc.robot.subsystems.vision.VisionConstants.cameraStdDevFactors;
 import static frc.robot.subsystems.vision.VisionConstants.linearStdDevBaseline;
 import static frc.robot.subsystems.vision.VisionConstants.linearStdDevMegatag2Factor;
 import static frc.robot.subsystems.vision.VisionConstants.maxAmbiguity;
+import static frc.robot.subsystems.vision.VisionConstants.maxYawRateRadPerSec;
 import static frc.robot.subsystems.vision.VisionConstants.maxZError;
+import static frc.robot.subsystems.vision.VisionConstants.yawRateStdDevFactor;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -30,6 +32,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.vision.VisionIO.PoseObservationType;
 
@@ -39,8 +42,18 @@ public class Vision extends SubsystemBase {
   private final VisionIOInputsAutoLogged[] inputs;
   private final Alert[] disconnectedAlerts;
 
-  public Vision(VisionConsumer consumer, VisionIO... io) {
+  private final HeadingConsumer headingConsumer;
+  private final DoubleSupplier yawRateSupplier;
+
+  // constructor has a yaw rate supplier for spin-based trust reduction.
+  public Vision(
+      VisionConsumer consumer,
+      HeadingConsumer headingConsumer,
+      DoubleSupplier yawRateSupplier,
+      VisionIO... io) {
     this.consumer = consumer;
+    this.headingConsumer = headingConsumer;
+    this.yawRateSupplier = yawRateSupplier;
     this.io = io;
 
     // Initialize inputs
@@ -73,6 +86,10 @@ public class Vision extends SubsystemBase {
       io[i].updateInputs(inputs[i]);
       Logger.processInputs("Vision/Camera" + Integer.toString(i), inputs[i]);
     }
+
+    // current spin rate, read once per loop. This is the rate NOW, not at the
+    // observation's capture time (fine for gating)
+    double yawRateRadPerSec = Math.abs(yawRateSupplier.getAsDouble());
 
     // Initialize logging values
     List<Pose3d> allTagPoses = new LinkedList<>();
@@ -123,7 +140,13 @@ public class Vision extends SubsystemBase {
                 || observation.pose().getX() > aprilTagLayout.getFieldLength()
                 || observation.pose().getY() < 0.0
                 || observation.pose().getY() > aprilTagLayout.getFieldWidth()
-                || (cameraIndex < 2 && observation.tagCount() == 1);
+
+                // Cameras 0/1 (PhotonVision) gave bad single-tag poses on this robot —
+                // only trust their multi-tag solves. Limelight single-tag is OK via MegaTag2.
+                || (cameraIndex < 2 && observation.tagCount() == 1)
+
+                // spinning too fast, too much blur and latency
+                || yawRateRadPerSec > maxYawRateRadPerSec;
 
         // Add pose to log
         robotPoses.add(observation.pose());
@@ -142,12 +165,24 @@ public class Vision extends SubsystemBase {
         // Calculate standard deviations
         double stdDevFactor =
             Math.pow(observation.averageTagDistance(), 2.0) / observation.tagCount();
-        double linearStdDev = linearStdDevBaseline * stdDevFactor;
+
+        // linear trust degrades smoothly with spin rate, on top of the usual
+        // distance/tag-count scaling.
+        double linearStdDev = linearStdDevBaseline * stdDevFactor
+            * (1.0 + yawRateStdDevFactor * yawRateRadPerSec);
         double angularStdDev = angularStdDevBaseline * stdDevFactor;
+
+        // heading trust policy
+        //  MT2: never (its heading is our own gyro echoed back)
+        //  single-tag MT1/Photon: never (ambiguity flip)
+        //  multi-tag MT1/Photon: trusted, graduated by distance/count via the baseline
         if (observation.type() == PoseObservationType.MEGATAG_2) {
           linearStdDev *= linearStdDevMegatag2Factor;
-          angularStdDev *= angularStdDevMegatag2Factor;
+          angularStdDev = Double.POSITIVE_INFINITY;
+        } else if (observation.tagCount() < 2) {
+          angularStdDev = Double.POSITIVE_INFINITY;
         }
+
         if (cameraIndex < cameraStdDevFactors.length) {
           linearStdDev *= cameraStdDevFactors[cameraIndex];
           angularStdDev *= cameraStdDevFactors[cameraIndex];
@@ -159,6 +194,13 @@ public class Vision extends SubsystemBase {
             observation.pose().toPose2d(),
             observation.timestamp(),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
+
+        // While disabled, seed the gyro from trustworthy multi-tag headings
+        if (DriverStation.isDisabled()
+                && observation.tagCount() >= 2
+                && observation.type() != PoseObservationType.MEGATAG_2) {
+            headingConsumer.accept(observation.pose().toPose2d().getRotation());
+        }
       }
 
       // Log camera metadata
@@ -195,5 +237,10 @@ public class Vision extends SubsystemBase {
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,
         Matrix<N3, N1> visionMeasurementStdDevs);
+  }
+
+  @FunctionalInterface
+  public static interface HeadingConsumer {
+    public void accept(Rotation2d heading);
   }
 }
