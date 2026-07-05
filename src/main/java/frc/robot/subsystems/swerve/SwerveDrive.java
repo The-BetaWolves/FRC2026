@@ -1,12 +1,12 @@
 package frc.robot.subsystems.swerve;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
@@ -32,12 +32,7 @@ import frc.robot.subsystems.swerve.Gyro.GyroIO;
 import frc.robot.subsystems.swerve.Gyro.GyroIOInputsAutoLogged;
 import frc.robot.subsystems.swerve.Gyro.GyroPigeon;
 import frc.robot.subsystems.swerve.Gyro.GyroSim;
-import frc.robot.subsystems.swerve.Odometry.OdometryIO;
-import frc.robot.subsystems.swerve.Odometry.OdometryIOInputs;
-import frc.robot.subsystems.swerve.Odometry.OdometryReal;
-import frc.robot.subsystems.swerve.Odometry.OdometrySim;
 import frc.robot.subsystems.swerve.SwerveModule.SwerveModule;
-import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleIOInputs;
 import frc.robot.subsystems.swerve.SysId.SwerveDriveSysId;
 
 
@@ -48,10 +43,9 @@ public class SwerveDrive extends SubsystemBase {
     private final GyroIO gyro;
     private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-    private final OdometryIO odometry;
-    private final OdometryIOInputs odometryInputs = new OdometryIOInputs();
-
     private RobotConfig config;
+
+    private SwerveDriveOdometry wheelOdometry;
 
     private final SwerveDriveSysId sysId;
 
@@ -61,13 +55,6 @@ public class SwerveDrive extends SubsystemBase {
         new SwerveModule("Swerve/FR", 1, Constants.SwerveModules.FRONT_RIGHT),
         new SwerveModule("Swerve/BL", 2, Constants.SwerveModules.BACK_LEFT),
         new SwerveModule("Swerve/BR", 3, Constants.SwerveModules.BACK_RIGHT)
-    };
-
-    private final SwerveModuleIOInputs[] moduleInputs = {
-        new SwerveModuleIOInputs(),
-        new SwerveModuleIOInputs(),
-        new SwerveModuleIOInputs(),
-        new SwerveModuleIOInputs()
     };
 
     private static final String[] MODULE_NAMES = {"FL", "FR", "BL", "BR"};
@@ -85,6 +72,8 @@ public class SwerveDrive extends SubsystemBase {
 
     private Pose2d startingPose = new Pose2d();
 
+
+
     private SwerveDrivePoseEstimator poseEstimator =
       new SwerveDrivePoseEstimator(kinematics, gyroInputs.yaw, getModulePositions(), startingPose);
 
@@ -99,17 +88,16 @@ public class SwerveDrive extends SubsystemBase {
         // Gyro
         if(RobotBase.isSimulation()) {
             gyro = new GyroSim();
-            odometry = new OdometrySim(kinematics, getHeading(), getModulePositions());
         } else {
             gyro = new GyroPigeon();
-            odometry = new OdometryReal(kinematics, getHeading(), getModulePositions());
         }
         gyro.zeroYaw();
+
+        wheelOdometry = new SwerveDriveOdometry(kinematics, getHeading(), getModulePositions());
 
         try{
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
-            // Handle exception as needed
             e.printStackTrace();
         }
    
@@ -153,9 +141,9 @@ public class SwerveDrive extends SubsystemBase {
         gyro.setYaw(yaw);
     }
 
-    /** Resets odometry to a known pose */
+    // Resets the "wheel-only" odometry to a known pose
     public void resetOdometry(Pose2d pose) {
-        odometry.resetPose(getHeading(), getModulePositions(), pose);
+        wheelOdometry.resetPosition(getHeading(), getModulePositions(), pose);
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -218,8 +206,8 @@ public class SwerveDrive extends SubsystemBase {
             modules[i].setDesiredState(desiredStates[i]);
         }
 
-        // Log Desired Angle and Speed of Modules for Advantage Scope swerve pod tuning
-        Logger.recordOutput("Swerve/MyDesiredStates", desiredStates);
+        // For AdvantageScope Module Tuning
+        Logger.recordOutput("Swerve/DesiredModuleStates", desiredStates);
     }
 
     @Override
@@ -238,18 +226,15 @@ public class SwerveDrive extends SubsystemBase {
 
         // loop the swerve modules!
         for (int i = 0; i < modules.length; i++) {
-            modules[i].updateInputs(moduleInputs[i]);
-            Logger.processInputs("Swerve/Module" + i, moduleInputs[i]);
+            modules[i].updateInputs();
 
-            // log the absolute values of the modules for zeroing
-            Logger.recordOutput("Swerve/RawAbsoluteEncoderDegrees" + i,
-                MathUtil.inputModulus(moduleInputs[i].absoluteAngleDegrees, 0, 360));
-
-            driveMotorAlerts[i].set(!moduleInputs[i].driveMotorIsPowered);
-            angleMotorAlerts[i].set(!moduleInputs[i].angleMotorIsPowered);
-            absoluteEncoderAlerts[i].set(!moduleInputs[i].absoluteEncoderIsConnected);
+            driveMotorAlerts[i].set(!modules[i].getInputs().driveMotorIsPowered);
+            angleMotorAlerts[i].set(!modules[i].getInputs().angleMotorIsPowered);
+            absoluteEncoderAlerts[i].set(!modules[i].getInputs().absoluteEncoderIsConnected);
         }
-        Logger.recordOutput("Swerve/MyStates", getModuleStates());
+
+        // For AdvantageScope Module Tuning
+        Logger.recordOutput("Swerve/ModuleStates", getModuleStates());
 
         gyro.updateInputs(gyroInputs);
         Logger.processInputs("Swerve/Gyro", gyroInputs);
@@ -257,12 +242,11 @@ public class SwerveDrive extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Pose", getPose());
 
-        // Update odometry
-        odometry.updateInputs(odometryInputs, getHeading(), getModulePositions());
-        Logger.processInputs("Swerve/Odometry", odometryInputs);
+        wheelOdometry.update(getHeading(), getModulePositions());
+        Logger.recordOutput("Swerve/WheelOdometryPose", wheelOdometry.getPoseMeters());
+
     }
 
-    /** Adds a new timestamped vision measurement. */
     public void addVisionMeasurement(
         Pose2d visionRobotPoseMeters,
         double timestampSeconds,

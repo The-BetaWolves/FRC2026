@@ -1,5 +1,6 @@
 package frc.robot.subsystems.swerve.SwerveModule;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -9,10 +10,12 @@ import org.littletonrobotics.junction.Logger;
 
 import com.revrobotics.RelativeEncoder;
 
+import frc.robot.subsystems.swerve.SwerveModule.SwerveModuleIO.SwerveModuleIOInputs;
+
 public class SwerveModule {
     private final String logPath;
     private final SwerveModuleIO io;
-    private final SwerveModuleIOInputs inputs = new SwerveModuleIOInputs();
+    private final SwerveModuleIOInputsAutoLogged inputs = new SwerveModuleIOInputsAutoLogged();
 
     public SwerveModule(String logPath, int moduleNumber, SwerveModuleConstants constants) {
         this.logPath = logPath;
@@ -54,8 +57,13 @@ public class SwerveModule {
         );
     }
 
-    public void updateInputs(SwerveModuleIOInputs inputs) {
+    public void updateInputs() {
         io.updateInputs(inputs);
+        Logger.processInputs(logPath, inputs);
+
+        // 0-360 view of the absolute encoder, matches the angleOffset convention for zeroing
+        Logger.recordOutput(logPath + "/RawAbsoluteEncoderDegrees",
+            MathUtil.inputModulus(inputs.absoluteAngleDegrees, 0, 360));
     }
 
     public Rotation2d getAbsoluteAngle() {
@@ -66,7 +74,7 @@ public class SwerveModule {
         io.setAzimuth(angle);
     }
 
-    public void periodic() {
-        Logger.processInputs(logPath, inputs);
+    public SwerveModuleIOInputs getInputs() {
+        return inputs;
     }
 }

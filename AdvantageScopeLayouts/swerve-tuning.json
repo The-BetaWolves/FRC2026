@@ -7,7 +7,7 @@
       "height": 1048,
       "state": {
         "sidebar": {
-          "width": 300,
+          "width": 383,
           "expanded": [
             "/AdvantageKit/Vision/Camera2",
             "/AdvantageKit/Vision/Camera2/TagIds",
@@ -15,11 +15,15 @@
             "/AdvantageKit/Vision/Camera2/PoseObservations",
             "/AdvantageKit/Vision/Camera1",
             "/AdvantageKit/Vision/Camera0",
-            "/AdvantageKit/RealOutputs/Vision",
             "/AdvantageKit/RealOutputs/Vision/Camera2",
             "/AdvantageKit",
+            "/AdvantageKit/Swerve/Odometry/RobotPose",
+            "/AdvantageKit/RealOutputs",
+            "/AdvantageKit/RealOutputs/Swerve",
+            "/AdvantageKit/RealOutputs/Swerve/Pose/rotation",
+            "/AdvantageKit/RealOutputs/Swerve/Pose/translation",
             "/AdvantageKit/Swerve",
-            "/AdvantageKit/Swerve/Module3"
+            "/AdvantageKit/Swerve/BL"
           ]
         },
         "tabs": {
@@ -40,7 +44,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module0/DesiredMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/FL/DesiredMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -50,7 +54,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module0/DriveVelocityMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/FL/DriveVelocityMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -85,7 +89,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module1/DesiredMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/FR/DesiredMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -95,7 +99,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module1/DriveVelocityMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/FR/DriveVelocityMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -130,7 +134,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module2/DesiredMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/BL/DesiredMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -140,7 +144,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module2/DriveVelocityMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/BL/DriveVelocityMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -175,7 +179,7 @@
                 "leftSources": [
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module3/DesiredMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/BR/DesiredMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
@@ -185,7 +189,7 @@
                   },
                   {
                     "type": "stepped",
-                    "logKey": "NT:/AdvantageKit/Swerve/Module3/DriveVelocityMetersPerSecond",
+                    "logKey": "NT:/AdvantageKit/Swerve/BR/DriveVelocityMetersPerSecond",
                     "logType": "Number",
                     "visible": true,
                     "options": {
