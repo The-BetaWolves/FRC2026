@@ -69,7 +69,7 @@ public class VisionIOLimelight implements VisionIO {
     NetworkTableInstance.getDefault()
         .flush(); // Increases network traffic but recommended by Limelight
 
-    // Read new pose observations from NetworkTables
+    // new pose observations from NetworkTables
     Set<Integer> tagIds = new HashSet<>();
     List<PoseObservation> poseObservations = new LinkedList<>();
     for (var rawSample : megatag1Subscriber.readQueue()) {

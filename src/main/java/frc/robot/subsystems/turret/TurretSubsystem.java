@@ -31,10 +31,6 @@ public class TurretSubsystem extends SubsystemBase {
     private final Alert encoderAlert = new Alert("Turret encoder disconnected!", AlertType.kError);
 
     public TurretSubsystem() {
-        // add default radians and turret kp to shuffleboard
-        //SmartDashboard.setDefaultNumber("turret setpoint radians", setpointRadians);
-        //SmartDashboard.setDefaultNumber("turret kp", kP);
-        
         if (RobotBase.isSimulation()) {
             io = new TurretIOSim();
         } else {
@@ -50,10 +46,6 @@ public class TurretSubsystem extends SubsystemBase {
         Logger.processInputs("Turret", inputs);
         motorAlert.set(!inputs.motorControllerIsPowered);
         encoderAlert.set(!inputs.encoderConnected);
-         
-        //setpointRadians = SmartDashboard.getNumber("turret setpoint radians", setpointRadians);
-        //double kPFromShuffleboard = SmartDashboard.getNumber("turret kp", kP);
-        //pid.setP(kPFromShuffleboard);
 
         double motorOutput = pid.calculate((inputs.positionRadians + fudge), setpointRadians);
 

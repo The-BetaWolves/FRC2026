@@ -107,7 +107,7 @@ public class SwerveDrive extends SubsystemBase {
         return gyro.getYaw();
     }
 
-    // READ: used by Vision to reduce trust in observations while spinning
+    // used by Vision to reduce trust in observations while spinning
     public double getYawVelocityRadiansPerSecond() {
         return gyroInputs.yawVelocityRadiansPerSecond;
     }

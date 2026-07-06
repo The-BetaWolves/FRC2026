@@ -45,6 +45,11 @@ public class Vision extends SubsystemBase {
   private final HeadingConsumer headingConsumer;
   private final DoubleSupplier yawRateSupplier;
 
+  // alert if using custom lab field
+  // toggle off the custom lab in VisionConstants.java
+  private final Alert labFieldAlert =
+      new Alert("Using custom lab field layout not the competition field!", AlertType.kWarning);
+
   // constructor has a yaw rate supplier for spin-based trust reduction.
   public Vision(
       VisionConsumer consumer,
@@ -55,6 +60,8 @@ public class Vision extends SubsystemBase {
     this.headingConsumer = headingConsumer;
     this.yawRateSupplier = yawRateSupplier;
     this.io = io;
+
+    labFieldAlert.set(VisionConstants.USE_LAB_FIELD);
 
     // Initialize inputs
     this.inputs = new VisionIOInputsAutoLogged[io.length];
@@ -144,6 +151,12 @@ public class Vision extends SubsystemBase {
                 // Cameras 0/1 (PhotonVision) gave bad single-tag poses on this robot —
                 // only trust their multi-tag solves. Limelight single-tag is OK via MegaTag2.
                 || (cameraIndex < 2 && observation.tagCount() == 1)
+
+                // Single-tag translation is only trusted via MegaTag2 (gyro-conditioned).
+                // MT1 exists for multi-tag heading; its single-tag solve carries the
+                // same ambiguity noise we reject from PhotonVision.
+                || (observation.type() == PoseObservationType.MEGATAG_1
+                    && observation.tagCount() == 1)
 
                 // spinning too fast, too much blur and latency
                 || yawRateRadPerSec > maxYawRateRadPerSec;
