@@ -25,7 +25,8 @@ public class VisionConstants {
     // switch to false before competition :)
     public static final boolean USE_LAB_FIELD = true;
 
-    static Path jsonPath = Filesystem.getDeployDirectory().toPath().resolve("Betawolves2026LabField.json");
+    static Path jsonPath = Filesystem.getDeployDirectory().toPath()
+        .resolve("betawolves-custom-lab").resolve("Betawolves2026LabField.json");
 
     public static AprilTagFieldLayout aprilTagLayout =
         USE_LAB_FIELD

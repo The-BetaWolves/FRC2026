@@ -15,6 +15,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -59,10 +60,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
     intakePositionDegrees = (encoder.get() - intakeEncoderOffset) * 360;
 
+    // Test mode allows resting the intake above the comp limit for sysid runs
+    double maxRotatorDegree = DriverStation.isTest()
+        ? Constants.Intake.testMaxRotatorDegree
+        : Constants.Intake.maxRotatorDegree;
+
     if (setpoint < Constants.Intake.minRotatorDegree) {
       setpoint = Constants.Intake.minRotatorDegree;
-    } else if (setpoint > Constants.Intake.maxRotatorDegree) {
-      setpoint = Constants.Intake.maxRotatorDegree;
+    } else if (setpoint > maxRotatorDegree) {
+      setpoint = maxRotatorDegree;
     }
 
     rotatorSpeed = pid.calculate(intakePositionDegrees, setpoint);
@@ -102,5 +108,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public void setState(double setpoint, double rollerSpeed) {
     this.setpoint = setpoint;
     this.rollerSpeed = rollerSpeed;
+  }
+
+  // Hold the rotator wherever it physically is right now, rollers off (sysid)
+  public void holdCurrentPosition() {
+    setpoint = intakePositionDegrees;
+    rollerSpeed = 0.0;
   }
 }

@@ -115,7 +115,6 @@ public class RobotContainer {
             }, intake)
         );
 
-        // Deadband, cubing, and alliance-based inversion all live in TeleopDriveCommand
         swerveDrive.setDefaultCommand(
             new TeleopDriveCommand(
                 swerveDrive,
@@ -197,7 +196,7 @@ public class RobotContainer {
         );
 
         // SysId characterization routines
-        new SysIdBindings(driverJoyStick, swerveDrive, flywheel);
+        new SysIdBindings(driverJoyStick, swerveDrive, flywheel, intake);
     }
 
     public Command getAutonomousCommand() {

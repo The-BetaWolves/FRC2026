@@ -54,6 +54,10 @@ public final class Constants {
 
         public static final double minRotatorDegree = 0.0;
         public static final double maxRotatorDegree = 80; //83.25; //68.8;
+
+        // Test mode only: allows the intake to rest above the bot (past the comp
+        // limit) during sysid runs. Measure the actual resting angle and adjust.
+        public static final double testMaxRotatorDegree = 110;
     }
 
     public static final class Field {
