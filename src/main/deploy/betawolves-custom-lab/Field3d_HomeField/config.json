@@ -1,0 +1,13 @@
+{
+  "name": "BetaWolves Lab",
+  "isFTC": false,
+   "rotations": [
+    {
+      "axis": "x",
+      "degrees": 0
+    }
+  ],
+  "widthInches": 8.0,
+  "heightInches": 6.04,
+  "defaultOrigin": "blue"
+}
