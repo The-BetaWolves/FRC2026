@@ -65,8 +65,8 @@ public class SwerveDriveSysId {
 
     /** The complete characterization sequence: settle wheels forward, then both ramps in both directions. */
     public Command fullCharacterization() {
-        double quasistaticTimeout = 4;
-        double dynamicTimeout = 3;
+        double quasistaticTimeout = 3.5;
+        double dynamicTimeout = 2.5;
 
         return new SequentialCommandGroup(
             new RunCommand(this::pointWheelsForward, drive).withTimeout(1.0),

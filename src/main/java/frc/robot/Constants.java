@@ -91,7 +91,7 @@ public final class Constants {
         public static final double fudge = 1.0;
 
         // Wheel diameter in meters (4 inch wheel)
-        public static final double WHEEL_DIAMETER_METERS = Units.inchesToMeters(3.75) * fudge; // was 4 inches
+        public static final double WHEEL_DIAMETER_METERS = 0.10198 * fudge; // was 4 inches
 
         public static final double WHEEL_CIRCUMFRENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     
