@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveForward5Test"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReverseDriveForward5Test"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveForward5Test"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ReverseDriveForward5Test"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Tests",
+  "choreoAuto": false
+}

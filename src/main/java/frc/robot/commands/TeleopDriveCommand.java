@@ -81,6 +81,13 @@ public class TeleopDriveCommand extends Command {
                 angVelocity * maxSwerveAngularVelocity * rotationModifier
             );
         } else {
+            swerve.drive(
+                xVelocity * maxSwerveVelocity * speedModifier,
+                yVelocity * maxSwerveVelocity * speedModifier, 
+                angVelocity * maxSwerveAngularVelocity * rotationModifier 
+                );
+
+            /*
             if (xVelocity == 0.0 && yVelocity == 0.0 && angVelocity == 0.0) {
                 if (!RobotState.isTest()) {
                     if (timer > 10) {
@@ -100,11 +107,12 @@ public class TeleopDriveCommand extends Command {
             } else {
                 swerve.drive(
                 xVelocity * maxSwerveVelocity * speedModifier,
-                yVelocity * maxSwerveVelocity * speedModifier, //testing
+                yVelocity * maxSwerveVelocity * speedModifier,
                 angVelocity * maxSwerveAngularVelocity * rotationModifier 
                 );
                 timer = 0;
             }
+                 */
             
         }
              
