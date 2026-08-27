@@ -94,8 +94,8 @@ public class SwerveDrive extends SubsystemBase {
             this::getChassisSpeeds, // ROBOT RELATIVE ChassisSpeeds supplier
             (speeds, feedforwards) -> driveRobotRelative(speeds), // method for ROBOT RELATIVE driving
             new PPHolonomicDriveController( 
-                    new PIDConstants(5, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration from saved deploy file
             AllianceUtil::isRed, // mirror if red, origin stays on blue side
