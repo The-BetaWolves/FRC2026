@@ -13,13 +13,13 @@ public class ShooterService {
         setLookupTable();
         double fudgeFactor = fudgeSetFactor; //If all shots are too short or too long, multiply them by a factor
 
-        return lookupTable.get(distance) * fudgeFactor;
+        return lookupTable.get(distance) * fudgeFactor * 0.8365;
     }
 
     private void setLookupTable() {
         //Key = distance in Meters, value = speed in RPM
         //Distance is center of hub to center of shooter
-        lookupTable.put(1.25, 3100.0);
+        lookupTable.put(1.25, 3100.0); //2500.0
         lookupTable.put(2.25, 3600.0);
         lookupTable.put(3.0, 3950.0);
         lookupTable.put(4.0, 4500.0);

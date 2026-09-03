@@ -24,6 +24,7 @@ import frc.robot.services.TurretService;
 public class SuperStateSubsystem extends SubsystemBase {
   /** Creates a new NewSuperStateSubsystem. */
   public SuperStateSubsystem() {
+            //SmartDashboard.setDefaultNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
   }
 
   // instantiate logic services
@@ -39,6 +40,7 @@ public class SuperStateSubsystem extends SubsystemBase {
   private double turretSetpointRadians = 0.0;
   private Translation2d fieldTargetPose = new Translation2d();
   private Translation2d adjustedTargetPose = new Translation2d();
+  private Translation2d customTargetPose = new Translation2d(3.35, 5.5);
   private double flywheelSetpointRpm = 0.0;
   private double kickerSpeed, indexerSpeed, intakeSpeed = 0.0;
   private double intakeRotatorSetpoint = 0.0;
@@ -96,13 +98,13 @@ public class SuperStateSubsystem extends SubsystemBase {
 
   // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
-        fieldTargetPose = fieldService.getTargetPose(robotPose.get());
+        fieldTargetPose = customTargetPose; //fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("SuperState/FieldTargetPose", fieldTargetPose);
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
         if (isTurretLocked) {
             turretSetpointRadians = 0.0;
         } else {
-            turretSetpointRadians = 0.0; //turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+            turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         }
         distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
 
@@ -184,6 +186,9 @@ public class SuperStateSubsystem extends SubsystemBase {
         if (isTurretLocked) {
             flywheelSetpointRpm = 4050.0;
         }
+        //SmartDashboard.updateValues();
+        //flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+        
     }
 
   // public getters

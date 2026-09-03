@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "setToFire"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "DriveForward5Test"

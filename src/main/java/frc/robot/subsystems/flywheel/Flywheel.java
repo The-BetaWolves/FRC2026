@@ -9,8 +9,8 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.Alert;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.flywheel.SysId.FlywheelSysId;
 
@@ -19,12 +19,12 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
     private double setpointRpm = 0.0;
-    private double kP = 0.00002;
-    private double kV = 0.001815;
-    private double kS = 0.0;
+    // private double kP = 0.00002;
+    // private double kV = 0.001815;
+    // private double kS = 0.0;
 
-    PIDController pid = new PIDController(kP, 0.0, 0.0);
-    SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV);
+    // //PIDController pid = new PIDController(kP, 0.0, 0.0);
+    //SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(kS, kV);
 
     private final FlywheelSysId sysId;
     private final Alert motor1Alert = new Alert("Flywheel motor 1 not powered!", AlertType.kError);
@@ -67,5 +67,9 @@ public class Flywheel extends SubsystemBase {
 
     public FlywheelSysId getSysId() {
         return sysId;
+    }
+
+    public void updateFromSmartDashboard(double setpointRpm) {
+        io.updateFromSmartDashboard(setpointRpm);
     }
 }

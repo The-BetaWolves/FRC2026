@@ -211,7 +211,8 @@ public class Vision extends SubsystemBase {
         // While disabled, seed the gyro from trustworthy multi-tag headings
         if (DriverStation.isDisabled()
                 && observation.tagCount() >= 2
-                && observation.type() != PoseObservationType.MEGATAG_2) {
+                && observation.type() != PoseObservationType.MEGATAG_2
+                && !DriverStation.isAutonomous()) {
             headingConsumer.accept(observation.pose().toPose2d().getRotation());
         }
       }
@@ -252,8 +253,10 @@ public class Vision extends SubsystemBase {
         Matrix<N3, N1> visionMeasurementStdDevs);
   }
 
+  
   @FunctionalInterface
   public static interface HeadingConsumer {
     public void accept(Rotation2d heading);
   }
+     
 }

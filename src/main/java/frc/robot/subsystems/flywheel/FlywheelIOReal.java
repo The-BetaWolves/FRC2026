@@ -32,7 +32,7 @@ public class FlywheelIOReal implements FlywheelIO {
     SparkFlexConfig motor2FollowerConfig;
 
     private double setpointRPM = 0.0;
-    private double tolerenceRPM = 1000.0; //Should be 100
+    private double tolerenceRPM = 100.0; //Should be 100
     private double maxMotorOutput = 1.0;
     //Actually Used
     /*
@@ -41,9 +41,9 @@ public class FlywheelIOReal implements FlywheelIO {
     private double kS = 0.0;
      */
 
-    private double kP = 0.0012992;
-    private double kV = 0.0018896;
-    private double kS = 0.055158;
+    private double kP = 0.00015;//0.0012992;
+    private double kV = 0.0018;
+    private double kS = 0.0;//0.055158;
     private double kA = 0.00053746;
 
     public FlywheelIOReal() {
@@ -139,7 +139,7 @@ public class FlywheelIOReal implements FlywheelIO {
 
         motor1.configure(motor1Config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
          */
-        controller.setSetpoint(setpointRPM, ControlType.kVelocity);
+        //controller.setSetpoint(setpointRPM, ControlType.kVelocity);
     }
 }
  
