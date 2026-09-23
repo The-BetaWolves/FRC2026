@@ -24,7 +24,7 @@ import frc.robot.services.TurretService;
 public class SuperStateSubsystem extends SubsystemBase {
   /** Creates a new NewSuperStateSubsystem. */
   public SuperStateSubsystem() {
-            //SmartDashboard.setDefaultNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+            SmartDashboard.setDefaultNumber("flywheelRPMHelpMeGod", 0);
   }
 
   // instantiate logic services
@@ -97,7 +97,10 @@ public class SuperStateSubsystem extends SubsystemBase {
   }
 
   // run on a loop to keep variables hydrated
-    public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {       
+    public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {  
+        //testing
+        flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+
         fieldTargetPose = customTargetPose; //fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("SuperState/FieldTargetPose", fieldTargetPose);
         adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
@@ -186,8 +189,10 @@ public class SuperStateSubsystem extends SubsystemBase {
         if (isTurretLocked) {
             flywheelSetpointRpm = 4050.0;
         }
-        //SmartDashboard.updateValues();
-        //flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+
+        //testing
+        SmartDashboard.updateValues();
+        flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
         
     }
 

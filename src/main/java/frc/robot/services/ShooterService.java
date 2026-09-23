@@ -27,4 +27,7 @@ public class ShooterService {
         lookupTable.put(5.5, 5450.0);
         lookupTable.put(6.0, 5900.0);
     }
+
+    //Distance Equation y=755.78129x+1277.33324
+    //TOF Equation y=\frac{1.37626}{1+e^{-\left(1.71737x-1.79862\right)}}      y = (1.37626)/1+e - (1.71737x-1.79862)
 }
