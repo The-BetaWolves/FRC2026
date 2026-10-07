@@ -7,8 +7,9 @@ package frc.robot.services;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class ShooterService {
-    InterpolatingDoubleTreeMap lookupTable = new InterpolatingDoubleTreeMap();
+    //InterpolatingDoubleTreeMap lookupTable = new InterpolatingDoubleTreeMap();
 
+    /* This is the old system
     public double getShotSpeed(double distance, double fudgeSetFactor) {
         setLookupTable();
         double fudgeFactor = fudgeSetFactor; //If all shots are too short or too long, multiply them by a factor
@@ -27,7 +28,17 @@ public class ShooterService {
         lookupTable.put(5.5, 5450.0);
         lookupTable.put(6.0, 5900.0);
     }
+         */
 
+    public double getShotSpeed(double distance, double fudgeSetFactor) {
+        //This is the equation for the line of the shot speed over distance, gotten via taking data points and plotting them in desmos, and then using regression.
+        return (755.78*(distance) + 1277.33)*fudgeSetFactor;
+    }
+
+    public double getTimeOfFlight(double distance, double fudgeFactor) {
+        //This is the equation for the line of time of flight over distance, gotten via taking data points and plotting them in desmos, and then using regression.
+        return ((1.37626)/1+Math.pow(Math.E, (-(1.71737*(distance)-1.79862))))*fudgeFactor;
+    }
     //Distance Equation y=755.78129x+1277.33324
     //TOF Equation y=\frac{1.37626}{1+e^{-\left(1.71737x-1.79862\right)}}      y = (1.37626)/1+e - (1.71737x-1.79862)
 }

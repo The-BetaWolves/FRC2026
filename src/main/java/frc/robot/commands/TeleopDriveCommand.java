@@ -74,7 +74,7 @@ public class TeleopDriveCommand extends Command {
         Logger.recordOutput("Joystick/yVelocity", yVelocity);
         Logger.recordOutput("Joystick/angularVelocity", angVelocity);
         if (rawfireState == FireIntent.FIRE || rawfireState == FireIntent.FIREANDINTAKE) {
-            double maxSpeedMeters = 0.75;
+            double maxSpeedMeters = maxSwerveVelocity; //Change if you want it to slow down when shooting
             swerve.drive(
                 xVelocity * maxSpeedMeters * speedModifier,
                 yVelocity * maxSpeedMeters * speedModifier,

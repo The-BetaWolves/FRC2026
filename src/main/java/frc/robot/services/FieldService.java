@@ -9,8 +9,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.util.AllianceUtil;
+import frc.robot.services.ShooterService;
 
 public class FieldService {
+
+    ShooterService shooterService = new ShooterService();
 
     public Translation2d getTargetPose(Pose2d robotPose) {
 
@@ -50,8 +53,7 @@ public class FieldService {
 
     public Translation2d getAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
         double distanceToTargetMeters =  robotPose.getTranslation().getDistance(targetPose);
-        double ballSpeedFromSmartdashboard = Constants.Flywheel.ballSpeedMetersPerSecond; 
-        double timeOfFlightSeconds = distanceToTargetMeters / ballSpeedFromSmartdashboard;
+        double timeOfFlightSeconds = shooterService.getTimeOfFlight(distanceToTargetMeters, 0.8); 
 
         Translation2d driftInMeters = new Translation2d(
             -robotFieldRelativeVelocity.vyMetersPerSecond * timeOfFlightSeconds,

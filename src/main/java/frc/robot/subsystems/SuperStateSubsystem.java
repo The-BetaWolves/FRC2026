@@ -99,7 +99,7 @@ public class SuperStateSubsystem extends SubsystemBase {
   // run on a loop to keep variables hydrated
     public void updateValues(Supplier<Pose2d> robotPose, Supplier<ChassisSpeeds> fieldRelativeChassisSpeeds, Supplier<Boolean> flywheelIsAtSetpoint, Supplier<Boolean> turretIsAtSetpoint) {  
         //testing
-        flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+        //flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMManual", flywheelSetpointRpm);
 
         fieldTargetPose = customTargetPose; //fieldService.getTargetPose(robotPose.get());
         Logger.recordOutput("SuperState/FieldTargetPose", fieldTargetPose);
@@ -191,8 +191,8 @@ public class SuperStateSubsystem extends SubsystemBase {
         }
 
         //testing
-        SmartDashboard.updateValues();
-        flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMHelpMeGod", flywheelSetpointRpm);
+        //SmartDashboard.updateValues();
+        //flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMManual", flywheelSetpointRpm);
         
     }
 
