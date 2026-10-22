@@ -2,20 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.services;
+package frc.robot.BetaUtil;
+
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import frc.robot.Constants;
 import frc.robot.util.AllianceUtil;
-import frc.robot.services.ShooterService;
 
-public class FieldService {
 
-    ShooterService shooterService = new ShooterService();
+public class BetaTargetingUtil {
 
-    public Translation2d getTargetPose(Pose2d robotPose) {
+    public static Translation2d getVariableTargetPose(Pose2d robotPose) {
 
         //For Red Change points for passing
         if (AllianceUtil.isRed()) {
@@ -37,7 +37,7 @@ public class FieldService {
         }
     }
 
-    public double getDistanceFromTurretToTarget(Pose2d robotPose, Translation2d targetPose) {
+    public static double getDistanceFromTurretToTarget(Pose2d robotPose, Translation2d targetPose) {
 
         double distanceOfTurretToCenterMeters = 0.19;
         double cos = Math.cos(robotPose.getRotation().getRadians());
@@ -51,9 +51,9 @@ public class FieldService {
         return robotPose.getTranslation().plus(turretHoleRobotRelativePose).getDistance(targetPose);
     }
 
-    public Translation2d getAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
+    public static Translation2d getMotionAdjustedTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity) {
         double distanceToTargetMeters =  robotPose.getTranslation().getDistance(targetPose);
-        double timeOfFlightSeconds = shooterService.getTimeOfFlight(distanceToTargetMeters, 0.8); 
+        double timeOfFlightSeconds = BetaShootingUtil.getTOF_atDistance(distanceToTargetMeters, 0.8); 
 
         Translation2d driftInMeters = new Translation2d(
             -robotFieldRelativeVelocity.vyMetersPerSecond * timeOfFlightSeconds,
@@ -63,5 +63,35 @@ public class FieldService {
         return targetPose.plus(driftInMeters);
     }
 
+    public static Translation2d getMovingShotTargetPose(Pose2d robotPose, Translation2d targetPose, ChassisSpeeds robotFieldRelativeVelocity, double minRobotSpeedMeters, double maxRobotSpeedMeters) {
+        Translation2d newTargetPose;
+        if (
+            (robotFieldRelativeVelocity.vxMetersPerSecond + 
+            robotFieldRelativeVelocity.vyMetersPerSecond) >= minRobotSpeedMeters) {
 
+            Translation2d lastTargetPose = targetPose;
+            for(int i = 0; i < 5; i++) {
+                Translation2d addedTargetPose = getMotionAdjustedTargetPose(robotPose, lastTargetPose, robotFieldRelativeVelocity).plus(targetPose);
+                Translation2d averagedTargetPose = addedTargetPose.div(2);
+                lastTargetPose = averagedTargetPose;
+            }
+
+            if (
+            (robotFieldRelativeVelocity.vxMetersPerSecond + 
+            robotFieldRelativeVelocity.vyMetersPerSecond) < maxRobotSpeedMeters) {
+
+                newTargetPose = lastTargetPose;
+                Logger.recordOutput("Can_Make_Current_Shot", true);
+
+            } else {
+                newTargetPose = targetPose;
+                Logger.recordOutput("Can_Make_Current_Shot", false);
+            }
+        } else {
+            newTargetPose = targetPose;
+            Logger.recordOutput("Can_Make_Current_Shot", true);
+        }
+
+        return newTargetPose;
+    }
 }

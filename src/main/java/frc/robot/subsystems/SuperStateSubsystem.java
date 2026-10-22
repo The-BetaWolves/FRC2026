@@ -17,20 +17,15 @@ import frc.robot.util.AllianceUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.services.FieldService;
-import frc.robot.services.ShooterService;
-import frc.robot.services.TurretService;
+import frc.robot.BetaUtil.BetaTargetingUtil;
+import frc.robot.BetaUtil.BetaTurretUtil;
+import frc.robot.BetaUtil.BetaShootingUtil;
 
 public class SuperStateSubsystem extends SubsystemBase {
   /** Creates a new NewSuperStateSubsystem. */
   public SuperStateSubsystem() {
             SmartDashboard.setDefaultNumber("flywheelRPMHelpMeGod", 0);
   }
-
-  // instantiate logic services
-  private FieldService fieldService = new FieldService();
-  private TurretService turretService = new TurretService();
-  private ShooterService shooterService = new ShooterService();
 
   public enum FireIntent { STOP, IDLE, FIRE, CLEAR, INTAKE, SPIT, FIREANDINTAKE}
   private FireIntent fireIntent = FireIntent.STOP;
@@ -101,15 +96,19 @@ public class SuperStateSubsystem extends SubsystemBase {
         //testing
         //flywheelSetpointRpm = SmartDashboard.getNumber("flywheelRPMManual", flywheelSetpointRpm);
 
-        fieldTargetPose = customTargetPose; //fieldService.getTargetPose(robotPose.get());
+        if (customTargetPose != null) {
+            fieldTargetPose = customTargetPose; 
+        } else {
+            BetaTargetingUtil.getVariableTargetPose(robotPose.get());
+        }
         Logger.recordOutput("SuperState/FieldTargetPose", fieldTargetPose);
-        adjustedTargetPose = fieldService.getAdjustedTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get());
+        adjustedTargetPose = BetaTargetingUtil.getMovingShotTargetPose(robotPose.get(), fieldTargetPose, fieldRelativeChassisSpeeds.get(), 2.5,3.75);
         if (isTurretLocked) {
             turretSetpointRadians = 0.0;
         } else {
-            turretSetpointRadians = turretService.getSetpointRadians(robotPose.get(), adjustedTargetPose);
+            turretSetpointRadians = BetaTurretUtil.getSetpointRadians(robotPose.get(), adjustedTargetPose);
         }
-        distanceToTarget = fieldService.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
+        distanceToTarget = BetaTargetingUtil.getDistanceFromTurretToTarget(robotPose.get(), adjustedTargetPose);
 
         Logger.recordOutput("SuperState/DistanceToTarget", robotPose.get().getTranslation().getDistance(fieldTargetPose));
         Logger.recordOutput("SuperState/DistanceFromTurretToTarget", distanceToTarget);
@@ -158,7 +157,7 @@ public class SuperStateSubsystem extends SubsystemBase {
                 clearTimer = 0;
             } 
         } else if (fireIntent == FireIntent.FIRE) {
-            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
+            flywheelSetpointRpm = BetaShootingUtil.getRPM_atDistance(distanceToTarget, setFudgeFactor); //Change switch targets later
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()) {
                 indexerSpeed = 1.0;
@@ -176,7 +175,7 @@ public class SuperStateSubsystem extends SubsystemBase {
                 rotatorTimer = 0;
             }
         } else if (fireIntent == FireIntent.FIREANDINTAKE) {
-            flywheelSetpointRpm = shooterService.getShotSpeed(distanceToTarget, setFudgeFactor); //Change switch targets later
+            flywheelSetpointRpm = BetaShootingUtil.getTOF_atDistance(distanceToTarget, setFudgeFactor); //Change switch targets later
 
             if (flywheelIsAtSetpoint.get() && turretIsAtSetpoint.get()
             ) {

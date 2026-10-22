@@ -1,13 +1,13 @@
-package frc.robot.services;
+package frc.robot.BetaUtil;
 
 import frc.robot.Constants;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
-public class TurretService {
+public class BetaTurretUtil {
 
-    public double getSetpointRadians(Pose2d robotPose, Translation2d targetPose) {
+    public static double  getSetpointRadians(Pose2d robotPose, Translation2d targetPose) {
 
         // get the differenece between the target and the robot
         double dx = targetPose.getX() - robotPose.getX();
